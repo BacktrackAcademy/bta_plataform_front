@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import BTALogo from './icons/BTALogo.vue'
 import Mail from './icons/Mail.vue'
+
+const landingUrl = useLandingUrl()
 </script>
 
 <template>
@@ -38,12 +40,12 @@ import Mail from './icons/Mail.vue'
             </NuxtLink>
           </li>
           <li class="mb-4">
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/team')" class="foot__link">
               Nosotros
             </NuxtLink>
           </li>
           <li class="mb-4">
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/sponsorship')" class="foot__link">
               Patrocinios
             </NuxtLink>
           </li>
@@ -60,12 +62,12 @@ import Mail from './icons/Mail.vue'
         </h3>
         <ul>
           <li class="mb-4">
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/privacy_policy')" class="foot__link">
               Políticas de Privacidad
             </NuxtLink>
           </li>
           <li class="mb-8">
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/terms_of_use')" class="foot__link">
               Términos de servicio
             </NuxtLink>
           </li>
@@ -77,12 +79,12 @@ import Mail from './icons/Mail.vue'
             </NuxtLink>
           </li>
           <li class="mb-4">
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/preguntas-frecuentes')" class="foot__link">
               Preguntas Frecuentes
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/" class="foot__link">
+            <NuxtLink :to="landingUrl('/validate_certificate')" class="foot__link">
               Valida tus certificado
             </NuxtLink>
           </li>

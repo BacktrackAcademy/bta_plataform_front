@@ -63,6 +63,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_AUTH_ORIGIN,
+      // Base URL of the public landing app. Override with NUXT_PUBLIC_LANDING_URL
+      landingUrl: 'http://localhost:4322',
       authCookieName: process.env.NUXT_PUBLIC_AUTH_COOKIE_NAME,
       authTokenName: process.env.NUXT_PUBLIC_AUTH_TOKEN_NAME,
       // web3forms_access_key: '',
@@ -70,6 +72,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // The public landing lives in its own app: the platform always starts at the login
+    // (authenticated users are bounced to the dashboard by the `guest` middleware).
+    '/': { redirect: '/login' },
     '/registro': { redirect: { to: '/crear-cuenta', statusCode: 301 } },
     '/olvide-contrasena': { redirect: { to: '/recuperar-contrasena', statusCode: 301 } },
     '/reenviar-email': { redirect: { to: '/reenviar-confirmacion', statusCode: 301 } },

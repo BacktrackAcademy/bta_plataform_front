@@ -12,7 +12,11 @@ import {
 const { data: session, signOut } = useAuth()
 
 const user = computed(() => session.value?.user)
+const shortName = computed(() => [user.value?.name?.split(' ')[0], user.value?.lastname?.split(' ')[0]].filter(Boolean).join(' '))
+const fullName = computed(() => [user.value?.name, user.value?.lastname].filter(Boolean).join(' '))
 const initials = computed(() => (user.value?.name?.[0] ?? '?').toUpperCase())
+
+const itemClass = 'cursor-pointer gap-3 rounded-md px-3 py-2 text-sm text-white focus:bg-white/[0.06] focus:text-white'
 
 async function handleLogout() {
   await signOut()
@@ -28,12 +32,12 @@ async function handleLogout() {
     >
       <Avatar class="size-8 border border-white/15">
         <AvatarImage v-if="user?.avatar_url" :src="user.avatar_url" :alt="user?.name ?? 'Avatar'" />
-        <AvatarFallback class="bg-bta-elevated text-xs font-semibold text-white">
+        <AvatarFallback class="flex size-full items-center justify-center bg-bta-elevated text-xs font-semibold text-white">
           {{ initials }}
         </AvatarFallback>
       </Avatar>
-      <span class="hidden max-w-[140px] truncate text-sm font-medium text-white sm:block">
-        {{ user?.name }} {{ user?.lastname }}
+      <span class="hidden max-w-[180px] truncate text-sm font-medium text-white sm:block">
+        {{ shortName }}
       </span>
       <Icon
         name="lucide:chevron-down"
@@ -41,25 +45,25 @@ async function handleLogout() {
       />
     </DropdownMenuTrigger>
 
-    <DropdownMenuContent align="end" class="mt-1 w-60 border-white/[0.08] bg-bta-elevated text-white">
+    <DropdownMenuContent align="end" class="mt-1 w-64 border-white/[0.08] bg-bta-elevated text-white">
       <DropdownMenuLabel class="font-normal">
         <p class="truncate text-sm font-medium text-white">
-          {{ user?.name }} {{ user?.lastname }}
+          {{ fullName }}
         </p>
         <p class="truncate text-xs text-bta-text-2">
           {{ user?.email }}
         </p>
       </DropdownMenuLabel>
       <DropdownMenuSeparator class="bg-white/[0.08]" />
-      <DropdownMenuItem as-child>
-        <NuxtLink to="/perfil" class="flex w-full cursor-pointer items-center gap-2 text-white">
-          <Icon name="lucide:user" class="size-4" />
+      <DropdownMenuItem as-child :class="itemClass">
+        <NuxtLink to="/perfil">
+          <Icon name="lucide:user" class="size-4 shrink-0 text-bta-text-2" />
           <span>Ver mi perfil</span>
         </NuxtLink>
       </DropdownMenuItem>
-      <DropdownMenuItem class="cursor-pointer" @select="handleLogout">
-        <Icon name="lucide:log-out" class="mr-2 size-4 text-red-400" />
-        <span class="text-red-400">Cerrar sesión</span>
+      <DropdownMenuItem :class="itemClass" class="!text-red-400 focus:!bg-red-500/10 focus:!text-red-300" @select="handleLogout">
+        <Icon name="lucide:log-out" class="size-4 shrink-0" />
+        <span>Cerrar sesión</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

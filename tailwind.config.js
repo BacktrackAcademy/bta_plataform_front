@@ -33,6 +33,12 @@ module.exports = {
         'bta-blue': '#141224', // body-back
         'bta-dark-blue': '#070916', // header
         'bta-section': '#141224', //
+        // Dashboard / authenticated shell surfaces
+        'bta-bg': '#05060B',
+        'bta-side': '#070914',
+        'bta-surface': '#0B0D17',
+        'bta-elevated': '#101321',
+        'bta-text-2': '#9299AA',
         'gray-border': '#36364e',
         'gray-muted': '#565982',
         'border': 'hsl(var(--border))',
@@ -76,6 +82,10 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
+        'rise-in': {
+          from: { opacity: 0, transform: 'translateY(8px)' },
+          to: { opacity: 1, transform: 'translateY(0)' },
+        },
         'accordion-down': {
           from: { height: 0 },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -94,6 +104,7 @@ module.exports = {
         },
       },
       animation: {
+        'rise-in': 'rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'collapsible-down': 'collapsible-down 0.2s ease-in-out',

@@ -69,6 +69,12 @@ export default defineNuxtConfig({
     },
   },
 
+  routeRules: {
+    '/registro': { redirect: { to: '/crear-cuenta', statusCode: 301 } },
+    '/olvide-contrasena': { redirect: { to: '/recuperar-contrasena', statusCode: 301 } },
+    '/reenviar-email': { redirect: { to: '/reenviar-confirmacion', statusCode: 301 } },
+  },
+
   experimental: {
     typedPages: true,
   },

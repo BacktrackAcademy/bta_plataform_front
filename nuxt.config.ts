@@ -71,6 +71,12 @@ export default defineNuxtConfig({
     },
   },
 
+  routeRules: {
+    // The public landing lives in its own app: the platform always starts at the login
+    // (authenticated users are bounced to the dashboard by the `guest` middleware).
+    '/': { redirect: '/login' },
+  },
+
   experimental: {
     typedPages: true,
   },

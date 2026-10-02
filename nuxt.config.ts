@@ -75,6 +75,9 @@ export default defineNuxtConfig({
     // The public landing lives in its own app: the platform always starts at the login
     // (authenticated users are bounced to the dashboard by the `guest` middleware).
     '/': { redirect: '/login' },
+    '/registro': { redirect: { to: '/crear-cuenta', statusCode: 301 } },
+    '/olvide-contrasena': { redirect: { to: '/recuperar-contrasena', statusCode: 301 } },
+    '/reenviar-email': { redirect: { to: '/reenviar-confirmacion', statusCode: 301 } },
   },
 
   experimental: {

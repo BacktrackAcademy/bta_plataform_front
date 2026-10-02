@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import AuthAlert from '@/components/auth/AuthAlert.vue'
+import AuthField from '@/components/auth/AuthField.vue'
+import { linkClass, primaryButtonClass } from '@/components/auth/authClasses'
+
 interface Props {
   buttonText: string
+  loading?: boolean
+  error?: string | null
+  errorCode?: string | null
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { loading: false, error: null, errorCode: null })
 const emit = defineEmits<{
   register: [userInfo: { email: string, password: string }]
   socialLogin: [provider: 'github' | 'linkedin']
 }>()
-
-const showPassword = ref(false)
 
 const userInfo = ref({
   email: '',
@@ -17,118 +22,96 @@ const userInfo = ref({
 })
 
 function handleSubmit() {
+  if (props.loading)
+    return
   emit('register', userInfo.value)
 }
 
 function handleSocialLogin(provider: 'github' | 'linkedin') {
+  if (props.loading)
+    return
   emit('socialLogin', provider)
 }
+
+const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-12 rounded-md border border-[#252936] font-mono text-sm text-white/75 transition-colors duration-200 hover:bg-white/[0.05] hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/60 disabled:opacity-50 disabled:pointer-events-none'
 </script>
 
 <template>
-  <div class="w-full max-w-xl min-w-max">
-    <form
-      class="flex flex-col justify-center items-center rounded-lg gap-4"
-      @submit.prevent="handleSubmit"
+  <form class="flex flex-col gap-7" @submit.prevent="handleSubmit">
+    <AuthAlert v-if="error" :code="errorCode" :message="error" />
+
+    <AuthField
+      id="email"
+      v-model="userInfo.email"
+      label="Correo electrónico"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="mail@example.com"
+      :disabled="loading"
+      :invalid="!!error"
+    />
+
+    <AuthField
+      id="password"
+      v-model="userInfo.password"
+      label="Contraseña"
+      type="password"
+      autocomplete="current-password"
+      placeholder="••••••••"
+      :disabled="loading"
+      :invalid="!!error"
     >
-      <div class="w-full">
-        <label for="email" class="block text-gray-800 font-bold mb-2">
-          Correo electrónico
-        </label>
-        <div class="flex items-center border-2 py-2 px-3 rounded-2xl w-full">
-          <Icon name="lucide:at-sign" class="h-5 w-5 text-gray-400" />
-          <input
-            id="email"
-            v-model="userInfo.email"
-            class="pl-2 outline-none border-none w-full text-secondary"
-            type="email"
-            placeholder="mail@example.com"
-            required
-          >
-        </div>
-      </div>
+      <template #label-extra>
+        <NuxtLink to="/recuperar-contrasena" :class="[linkClass, 'font-mono text-xs text-white/50 hover:text-bta-pink']">
+          ¿Olvidaste tu contraseña?
+        </NuxtLink>
+      </template>
+    </AuthField>
 
-      <div class="w-full">
-        <label for="password" class="block text-gray-800 font-bold mb-2">
-          Contraseña
-        </label>
-        <div class="flex items-center border-2 py-2 px-3 rounded-2xl w-full">
-          <div class="relative w-full items-center">
-            <div class="flex items-center">
-              <Icon name="lucide:lock" class="h-5 w-5 text-gray-400" />
-              <input
-                id="password"
-                v-model="userInfo.password"
-                class="pl-2 outline-none border-none w-full text-secondary"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="Ingresar contraseña"
-                required
-              >
-            </div>
-            <span
-              class="absolute end-0 inset-y-0 flex items-center justify-center px-2"
-              @click="showPassword = !showPassword"
-            >
-              <Icon
-                :name="showPassword ? 'ph:eye-bold' : 'ph:eye-closed-bold'"
-                class="size-6 text-muted-foreground"
-              />
-            </span>
-          </div>
-        </div>
-        <div class="mt-2 text-gray-500">
-          <div class="text-xs justify-between flex">
-            <RouterLink to="/registro" class="text-gray-500 hover:text-blue-500">
-              Registrarse
-            </RouterLink>
-            <RouterLink to="/reenviar-email" class="text-gray-500 hover:text-blue-500">
-              ¿No recibió mensaje de confirmación?
-            </RouterLink>
-          </div>
-          <div class="text-xs my-2">
-            <RouterLink to="/olvide-contrasena" class="text-gray-500 hover:text-blue-500">
-              ¿Olvidaste tu contraseña?
-            </RouterLink>
-          </div>
-        </div>
-      </div>
+    <button
+      type="submit"
+      :disabled="loading"
+      :aria-busy="loading"
+      :class="primaryButtonClass"
+    >
+      <span class="inline-flex items-center justify-center gap-2">
+        <Icon v-if="loading" name="lucide:loader-circle" class="size-5 animate-spin" />
+        {{ loading ? 'Verificando…' : buttonText }}
+      </span>
+    </button>
 
-      <button
-        type="submit"
-        class="block w-full mt-4 py-2 rounded-xl font-semibold mb-2 bg-black px-8 text-white cursor-pointer"
-      >
-        {{ buttonText }}
+    <div class="flex items-center gap-4" role="separator">
+      <span class="h-px flex-1 bg-[#252936]" />
+      <span class="font-mono text-xs uppercase tracking-[0.18em] text-white/35">o continuar con</span>
+      <span class="h-px flex-1 bg-[#252936]" />
+    </div>
+
+    <div class="flex gap-3">
+      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('github')">
+        <Icon name="mdi:github" class="size-5" />
+        GitHub
       </button>
+      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('linkedin')">
+        <Icon name="mdi:linkedin" class="size-5 text-[#3B9AE8]" />
+        LinkedIn
+      </button>
+    </div>
 
-      <div class="relative w-full">
-        <div class="absolute inset-0 flex items-center">
-          <span class="w-full border-t" />
-        </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-2 text-muted-foreground">
-            O continuar con
-          </span>
-        </div>
-      </div>
-
-      <div class="flex gap-4 w-full">
-        <button
-          type="button"
-          class="flex-1 flex items-center justify-center gap-2 py-2 border rounded-xl bg-gray-50 text-secondary hover:bg-gray-100"
-          @click="handleSocialLogin('github')"
-        >
-          <Icon name="mdi:github" class="size-5 text-black" />
-          GitHub
-        </button>
-        <button
-          type="button"
-          class="flex-1 flex items-center justify-center gap-2 py-2 border rounded-xl bg-gray-50 text-secondary hover:bg-gray-100"
-          @click="handleSocialLogin('linkedin')"
-        >
-          <Icon name="mdi:linkedin" class="size-5 text-[#0A66C2]" />
-          LinkedIn
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="flex flex-col items-center gap-2 font-mono text-[13px]">
+      <p class="text-white/55">
+        ¿No tienes cuenta?
+        <NuxtLink to="/crear-cuenta" :class="[linkClass, 'font-medium text-white hover:text-bta-pink']">
+          Crear cuenta
+        </NuxtLink>
+      </p>
+      <NuxtLink
+        to="/reenviar-confirmacion"
+        :class="[linkClass, 'text-xs text-white/40 hover:text-white/70']"
+      >
+        ¿No recibiste el correo de confirmación?
+      </NuxtLink>
+    </div>
+  </form>
 </template>
+

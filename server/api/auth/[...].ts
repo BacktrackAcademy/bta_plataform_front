@@ -9,6 +9,7 @@ export default NuxtAuthHandler({
   secret: 'secret',
   pages: {
     signIn: '/login',
+    error: '/login',
   },
   providers: [
     // @ts-expect-error You need to use .default here for it to work during SSR
@@ -16,8 +17,9 @@ export default NuxtAuthHandler({
       name: 'credentials',
       credentials: {},
       async authorize(credentials: { email: string, password: string }) {
+        let response: Response
         try {
-          const response = await fetch(`${process.env.NUXT_PUBLIC_API_BASE_URL}/tokens`, {
+          response = await fetch(`${process.env.NUXT_PUBLIC_API_BASE_URL}/tokens`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -25,12 +27,21 @@ export default NuxtAuthHandler({
             },
             body: JSON.stringify(credentials),
           })
+        }
+        catch (error) {
+          console.error('Authentication error:', error)
+          throw new Error('Server error')
+        }
 
-          if (!response.ok) {
-            console.error('Auth failed:', response.status, await response.text())
-            throw new Error('Invalid credentials')
-          }
+        if (response.status >= 500) {
+          console.error('Auth backend failure:', response.status)
+          throw new Error('Server error')
+        }
+        if (!response.ok) {
+          throw new Error('Invalid credentials')
+        }
 
+        try {
           const data = await response.json()
           return {
             id: data.user.id,

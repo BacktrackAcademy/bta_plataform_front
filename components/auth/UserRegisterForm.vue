@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import AuthAlert from '@/components/auth/AuthAlert.vue'
+import AuthField from '@/components/auth/AuthField.vue'
+import { primaryButtonClass } from '@/components/auth/authClasses'
+
 interface UserInfo {
   email: string
   password: string
@@ -7,138 +11,68 @@ interface UserInfo {
 
 interface Props {
   buttonText: string
-  hasName?: boolean
+  loading?: boolean
+  error?: string | null
+  errorCode?: string | null
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { loading: false, error: null, errorCode: null })
 
 const emit = defineEmits<{
   register: [userInfo: UserInfo]
 }>()
 
-const error = ref(false)
-const showPassword = ref(false)
-const showPasswordConfirmation = ref(false)
 const userInfo = ref<UserInfo>({
   email: '',
   password: '',
   password_confirmation: '',
 })
 
-async function handleSubmit() {
-  try {
-    emit('register', userInfo.value)
-  }
-  catch {
-    error.value = true
-  }
+function handleSubmit() {
+  if (props.loading)
+    return
+  emit('register', userInfo.value)
 }
 </script>
 
 <template>
-  <div class="w-full max-w-xl min-w-max">
-    <form
-      class="flex flex-col justify-center items-center rounded-lg gap-4"
-      @submit.prevent="handleSubmit"
-    >
-      <div class="w-full">
-        <label for="email" class="block text-gray-800 font-bold mb-2">
-          Correo electrónico
-        </label>
-        <div class="flex items-center border-2 py-2 px-3 rounded-2xl w-full">
-          <Icon name="lucide:at-sign" class="h-5 w-5 text-gray-400" />
-          <input
-            id="email"
-            v-model="userInfo.email"
-            class="pl-2 outline-none border-none w-full text-secondary"
-            type="email"
-            placeholder="mail@example.com"
-            required
-          >
-        </div>
-      </div>
+  <form class="flex flex-col gap-7" @submit.prevent="handleSubmit">
+    <AuthAlert v-if="error" :code="errorCode" :message="error" />
 
-      <div class="w-full">
-        <label for="password" class="block text-gray-800 font-bold mb-2">
-          Contraseña
-        </label>
-        <div class="flex items-center border-2 py-2 px-3 rounded-2xl w-full">
-          <div class="relative w-full items-center">
-            <div class="flex items-center">
-              <Icon name="lucide:lock" class="h-5 w-5 text-gray-400" />
-              <input
-                id="password"
-                v-model="userInfo.password"
-                class="pl-2 outline-none border-none w-full text-secondary"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="Ingresar contraseña"
-                required
-              >
-            </div>
-            <span
-              class="absolute end-0 inset-y-0 flex items-center justify-center px-2"
-              @click="showPassword = !showPassword"
-            >
-              <Icon
-                :name="showPassword ? 'ph:eye-bold' : 'ph:eye-closed-bold'"
-                class="size-6"
-              />
-            </span>
-          </div>
-        </div>
-      </div>
+    <AuthField
+      id="email"
+      v-model="userInfo.email"
+      label="Correo electrónico"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="mail@example.com"
+      :disabled="loading"
+    />
+    <AuthField
+      id="password"
+      v-model="userInfo.password"
+      label="Contraseña"
+      type="password"
+      autocomplete="new-password"
+      placeholder="mínimo 8 caracteres"
+      :disabled="loading"
+    />
+    <AuthField
+      id="password_confirmation"
+      v-model="userInfo.password_confirmation"
+      label="Repetir contraseña"
+      type="password"
+      autocomplete="new-password"
+      placeholder="••••••••"
+      :disabled="loading"
+    />
 
-      <div class="w-full">
-        <label for="password_confirmation" class="block text-gray-800 font-bold mb-2">
-          Reingresar contraseña
-        </label>
-        <div class="flex items-center border-2 py-2 px-3 rounded-2xl w-full">
-          <div class="relative w-full items-center">
-            <div class="flex items-center">
-              <Icon name="lucide:lock" class="h-5 w-5 text-gray-400" />
-              <input
-                id="password_confirmation"
-                v-model="userInfo.password_confirmation"
-                class="pl-2 outline-none border-none w-full text-secondary"
-                :type="showPasswordConfirmation ? 'text' : 'password'"
-                placeholder="Reingresar contraseña"
-                required
-              >
-            </div>
-            <span
-              class="absolute end-0 inset-y-0 flex items-center justify-center px-2"
-              @click="showPasswordConfirmation = !showPasswordConfirmation"
-            >
-              <Icon
-                :name="showPasswordConfirmation ? 'ph:eye-bold' : 'ph:eye-closed-bold'"
-                class="size-6"
-              />
-            </span>
-          </div>
-        </div>
-        <div class="mt-2">
-          <p class="px-8 text-center text-xs text-secondary">
-            ¿Ya tienes una Cuenta?
-            <RouterLink to="/login" class="hover:underline underline-offset-4 hover:text-blue-500">
-              Conectarse
-            </RouterLink>
-          </p>
-        </div>
-      </div>
-
-      <p
-        v-if="error"
-        class="text-red-500 text-sm"
-      >
-        Hubo un error al introducir el email o la contraseña.
-      </p>
-
-      <button
-        type="submit"
-        class="block w-full mt-4 py-2 rounded-xl font-semibold mb-2 bg-black px-8 text-white cursor-pointer"
-      >
-        {{ buttonText }}
-      </button>
-    </form>
-  </div>
+    <button type="submit" :disabled="loading" :aria-busy="loading" :class="primaryButtonClass">
+      <span class="inline-flex items-center justify-center gap-2">
+        <Icon v-if="loading" name="lucide:loader-circle" class="size-5 animate-spin" />
+        {{ loading ? 'Creando cuenta…' : buttonText }}
+      </span>
+    </button>
+  </form>
 </template>

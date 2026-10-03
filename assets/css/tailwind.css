@@ -2,107 +2,340 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   BACKTRACK ACADEMY — DESIGN TOKENS
+   --------------------------------------------------------------------------
+   Capa 1 · tokens semánticos (este archivo): valores por tema.
+   Capa 2 · tailwind.config.js: expone los tokens como utilidades
+            (bg-surface-2, text-foreground-muted, border-subtle…).
+   Capa 3 · componentes (.bt-*) y Vue: SOLO consumen tokens, nunca hex.
+
+   Todos los colores son canales HSL sin `hsl()` para permitir alpha:
+   `bg-primary/10`  →  hsl(var(--primary) / 0.1)
+
+   Temas:  .dark / [data-theme="dark"]   → implementado y verificado
+           :root / [data-theme="light"]  → borrador, ver bloque al final
+   ========================================================================== */
+
 @layer base {
+  /* ---------- Tokens independientes del tema ---------- */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 222.2 84% 4.9%;
-
+    /* Radius: pequeño y técnico (4–8px). Nada de píldoras ni cards redondas. */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
     --radius: 0.5rem;
+
+    /* Movimiento: rápido y funcional */
+    --duration-fast: 120ms;
+    --duration-base: 160ms;
+    --duration-slow: 200ms;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Tipografía de interfaz */
+    --font-display: 'Oswald', 'helvetica neue', Helvetica, Arial, sans-serif;
+    --font-ui: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Inconsolata', ui-monospace, monospace;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+  /* ---------- LIGHT (borrador, NO verificado ni activado) ----------
+     Va ANTES del bloque dark: ambos tienen la misma especificidad y el último gana.
+     Se activa con <html data-theme="light"> quitando la clase `dark`. Las superficies pasan a diferenciarse más por sombra que
+     por luminosidad. Antes de activarlo: revisar contrastes e imágenes. */
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --background: 230 25% 96%;
+    --surface-1: 0 0% 100%;
+    --surface-2: 0 0% 100%;
+    --surface-3: 230 25% 98%;
+    --surface-4: 230 25% 94%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --border-subtle: 230 20% 91%;
+    --border: 230 20% 86%;
+    --border-strong: 230 16% 70%;
+    --input: 230 14% 60%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --foreground: 235 45% 10%;
+    --foreground-secondary: 235 20% 28%;
+    --foreground-muted: 235 12% 38%;
+    --foreground-subtle: 235 10% 44%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --primary: 331 88% 44%;
+    --primary-hover: 331 88% 39%;
+    --primary-active: 331 88% 34%;
+    --primary-foreground: 0 0% 100%;
+    --primary-subtle: 331 80% 95%;
+    --primary-text: 331 88% 38%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --success: 152 65% 28%;
+    --warning: 35 92% 34%;
+    --danger: 0 72% 42%;
+    --info: 210 85% 38%;
+    --destructive: 0 72% 42%;
+    --destructive-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --focus-ring: 331 88% 44%;
+    --scrim: 235 55% 4%;
+    --brand-violet: 255 66% 33%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --card: var(--surface-2);
+    --card-foreground: var(--foreground);
+    --popover: var(--surface-3);
+    --popover-foreground: var(--foreground);
+    --muted: var(--surface-4);
+    --muted-foreground: var(--foreground-muted);
+    --accent: var(--surface-4);
+    --accent-foreground: var(--foreground);
+    --secondary: var(--surface-4);
+    --secondary-foreground: var(--foreground);
+    --ring: var(--focus-ring);
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 212.7 26.8% 83.9%;
+    --shadow-1: 0 1px 2px hsl(235 30% 20% / 0.08);
+    --shadow-2: 0 4px 12px -2px hsl(235 30% 20% / 0.12);
+    --shadow-3: 0 12px 32px -8px hsl(235 30% 20% / 0.18);
   }
-}
 
-@layer base {
+  /* ---------- DARK (tema principal) ----------
+     Escalera de superficies: cada nivel sube ~3–4 puntos de luminosidad.
+     L0 background   app shell / fondo de página
+     L1 surface-1    sidebar, topbar, contenedores grandes, inputs
+     L2 surface-2    cards, paneles
+     L3 surface-3    dropdowns, popovers, hover de cards, skeletons
+     L4 surface-4    hover / selected sobre superficies L1–L3 */
+  .dark,
+  [data-theme='dark'] {
+    color-scheme: dark;
+
+    --background: 235 45% 6.5%;
+    --surface-1: 235 40% 9.5%;
+    --surface-2: 235 36% 12.5%;
+    --surface-3: 235 32% 16%;
+    --surface-4: 235 30% 19.5%;
+
+    --border-subtle: 235 28% 17%;
+    --border: 235 26% 22%;
+    --border-strong: 235 22% 34%;
+    --input: 235 22% 38%; /* borde de campos: ~2.7:1 sobre surface-1 */
+
+    /* Texto — contraste sobre surface-2: 16.1 / 10.4 / 6.4 / 4.8 */
+    --foreground: 230 30% 96%;
+    --foreground-secondary: 230 20% 80%;
+    --foreground-muted: 232 14% 64%;
+    --foreground-subtle: 232 13% 59%; /* placeholders, metadata terciaria (AA sobre L0–L2) */
+
+    /* Marca: magenta. `primary` para superficies/CTA, `primary-text` para texto pequeño */
+    --primary: 331 88% 47%;
+    --primary-hover: 331 88% 52%;
+    --primary-active: 331 88% 42%;
+    --primary-foreground: 0 0% 100%;
+    --primary-subtle: 331 55% 18%; /* tinte sólido para fondos seleccionados */
+    --primary-text: 331 92% 64%; /* 5.6:1 sobre surface-2 */
+
+    --success: 152 60% 52%;
+    --warning: 40 92% 58%;
+    --danger: 0 84% 68%;
+    --info: 210 90% 68%;
+    --destructive: 0 70% 47%; /* relleno de botón destructivo (texto blanco) */
+    --destructive-foreground: 0 0% 100%;
+
+    --focus-ring: 331 88% 60%;
+    --scrim: 235 55% 4%; /* velos sobre imágenes */
+    --brand-violet: 255 66% 33%; /* segundo extremo del tinte de marca sobre imágenes/avatares */
+
+    /* Alias para shadcn-vue (los componentes de /ui consumen estos nombres) */
+    --card: var(--surface-2);
+    --card-foreground: var(--foreground);
+    --popover: var(--surface-3);
+    --popover-foreground: var(--foreground);
+    --muted: var(--surface-3);
+    --muted-foreground: var(--foreground-muted);
+    --accent: var(--surface-4);
+    --accent-foreground: var(--foreground);
+    --secondary: var(--surface-3);
+    --secondary-foreground: var(--foreground);
+    --ring: var(--focus-ring);
+
+    /* Elevación: sombras discretas, sin glow */
+    --shadow-1: 0 1px 2px hsl(235 60% 3% / 0.4);
+    --shadow-2: 0 4px 12px -2px hsl(235 60% 3% / 0.5);
+    --shadow-3: 0 12px 32px -8px hsl(235 60% 3% / 0.65);
+  }
+
   * {
     @apply border-border;
+  }
+  html {
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    background: hsl(var(--primary) / 0.35);
+    color: hsl(var(--foreground));
+  }
+
+  /* Scrollbars discretos (los contenedores con overflow son parte de la UI) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border-strong)) transparent;
+  }
+
+  /* Respeto a prefers-reduced-motion: sin transiciones ni animaciones decorativas */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
-/* Authenticated shell: shared surface system (cards, technical grid, microdata) */
+/* ==========================================================================
+   ESCALA TIPOGRÁFICA
+   Display/H1–H3: Oswald (identidad). Body/Small/Caption: IBM Plex Sans.
+   Metadata: Inconsolata, sólo para datos técnicos (duración, lecciones, ids).
+   ========================================================================== */
 @layer components {
-  .bt-surface {
-    @apply rounded-xl border border-white/[0.06] bg-bta-surface;
+  .t-display {
+    @apply font-oswald text-[2.5rem] font-semibold uppercase leading-[1.05] tracking-tight text-foreground sm:text-5xl;
   }
-  .bt-surface-hover {
-    @apply transition-[border-color,background-color,box-shadow] duration-200 hover:border-bta-pink/40 hover:bg-bta-elevated hover:shadow-[0_0_0_1px_rgba(236,16,117,0.12),0_16px_40px_-24px_rgba(236,16,117,0.45)];
+  .t-h1 {
+    @apply font-oswald text-3xl font-semibold leading-[1.1] text-foreground sm:text-4xl;
   }
+  .t-h2 {
+    @apply font-oswald text-2xl font-semibold leading-[1.15] text-foreground;
+  }
+  .t-h3 {
+    @apply font-oswald text-xl font-medium leading-[1.25] text-foreground;
+  }
+  .t-body {
+    @apply text-[15px] leading-relaxed text-foreground-secondary;
+  }
+  .t-small {
+    @apply text-sm leading-normal text-foreground-muted;
+  }
+  .t-caption {
+    @apply text-xs leading-snug text-foreground-muted;
+  }
+  .t-meta {
+    @apply font-mono text-[13px] leading-snug text-foreground-muted;
+  }
+  /* Eyebrow técnico: `// sección` — único uso decorativo del monospace */
+  .t-eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.14em] text-foreground-muted;
+  }
+}
+
+/* ==========================================================================
+   PRIMITIVAS DE SUPERFICIE E INTERACCIÓN
+   ========================================================================== */
+@layer components {
+  /* Foco visible: halo magenta contenido, sólo con teclado */
   .bt-focus {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bta-bg;
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
-  /* Section heading: spaced uppercase Oswald + pink "underscore" echoing the logo */
+
+  /* L2 · card/panel estático */
+  .bt-surface {
+    @apply rounded-lg border border-subtle bg-surface-2;
+  }
+  /* L2 → L3 · card interactiva: sube un nivel y el borde gana presencia */
+  .bt-card {
+    @apply bt-surface bt-focus relative overflow-hidden transition-[border-color,background-color,box-shadow] duration-base ease-out;
+  }
+  .bt-card-interactive {
+    @apply hover:border-border hover:bg-surface-3 hover:shadow-elev-1 focus-within:border-border;
+  }
+  /* L1 · contenedor grande / barra */
+  .bt-panel {
+    @apply rounded-lg border border-subtle bg-surface-1;
+  }
+
+  /* Cabecera de sección: Oswald + guion bajo magenta (eco del logo) */
   .bt-section-title {
-    @apply font-oswald text-2xl font-semibold uppercase leading-none tracking-normal text-white;
+    @apply font-oswald text-2xl font-semibold uppercase leading-none tracking-normal text-foreground;
   }
   .bt-section-title::after {
     content: '';
-    @apply ml-2 inline-block h-[3px] w-4 bg-bta-pink align-baseline;
+    @apply ml-2 inline-block h-[3px] w-4 bg-primary align-baseline;
   }
-  .bt-eyebrow {
-    @apply text-[13px] font-medium text-bta-text-2;
-  }
+
   .bt-tech-grid {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
+  }
+
+  /* ---------- Botones ---------- */
+  .bt-btn {
+    @apply bt-focus inline-flex h-10 select-none items-center justify-center gap-2 whitespace-nowrap rounded-md px-4 text-sm font-medium transition-colors duration-fast ease-out;
+    @apply disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45;
+  }
+  .bt-btn[aria-busy='true'] {
+    @apply pointer-events-none cursor-progress opacity-70;
+  }
+  .bt-btn-primary {
+    @apply bt-btn bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-active;
+  }
+  .bt-btn-secondary {
+    @apply bt-btn border border-border-strong bg-surface-3 text-foreground hover:bg-surface-4 active:bg-surface-3;
+  }
+  .bt-btn-ghost {
+    @apply bt-btn text-foreground-secondary hover:bg-surface-4 hover:text-foreground active:bg-surface-3;
+  }
+  .bt-btn-lg {
+    @apply h-12 px-6 text-[15px];
+  }
+  .bt-icon-btn {
+    @apply bt-focus inline-flex size-10 items-center justify-center rounded-md text-foreground-muted transition-colors duration-fast ease-out hover:bg-surface-4 hover:text-foreground disabled:pointer-events-none disabled:opacity-45;
+  }
+
+  /* ---------- Campos ---------- */
+  .bt-input {
+    @apply h-10 w-full rounded-md border border-input bg-surface-1 px-3 text-sm text-foreground transition-[border-color,box-shadow,background-color] duration-fast ease-out;
+    @apply placeholder:text-foreground-subtle hover:border-foreground-subtle;
+    @apply focus-visible:border-primary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20;
+  }
+
+  /* ---------- Chips de filtro / tabs en píldora cuadrada ---------- */
+  .bt-chip {
+    @apply bt-focus inline-flex h-8 shrink-0 items-center gap-2 rounded-md border border-subtle bg-surface-1 px-3 text-sm text-foreground-secondary transition-colors duration-fast ease-out;
+    @apply hover:border-border hover:bg-surface-3 hover:text-foreground;
+    @apply aria-pressed:border-primary/50 aria-pressed:bg-primary/10 aria-pressed:text-foreground;
+    @apply disabled:pointer-events-none disabled:opacity-45;
+  }
+
+  /* ---------- Badges ---------- */
+  .bt-badge {
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-subtle bg-surface-3 px-2 py-0.5 text-xs font-medium text-foreground-secondary;
+  }
+  .bt-badge-primary {
+    @apply border-primary/40 bg-primary/10 text-primary-text;
+  }
+  .bt-badge-success {
+    @apply border-success/30 bg-success/10 text-success;
+  }
+  .bt-badge-warning {
+    @apply border-warning/30 bg-warning/10 text-warning;
+  }
+  .bt-badge-danger {
+    @apply border-danger/30 bg-danger/10 text-danger;
+  }
+
+  /* Chip sobre imagen: legible sin importar la portada */
+  .bt-overlay-chip {
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-foreground/10 bg-scrim/70 px-2 py-1 text-xs font-medium text-foreground backdrop-blur-sm;
   }
 }

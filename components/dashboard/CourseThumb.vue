@@ -61,12 +61,12 @@ const code = computed(() => {
     </div>
     <template v-if="brand && status === 'loaded'">
       <div class="brand-tint pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-surface-2 to-transparent" aria-hidden="true" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 hidden h-1/2 bg-gradient-to-t from-surface-2 to-transparent dark:block" aria-hidden="true" />
     </template>
-    <!-- Blend: darkens bright/white images, grounds the image in the card and adds a crisp inner edge -->
+    <!-- Dark: la imagen se funde con la card. Light: velo suave abajo (para los chips) y borde fino; nunca se difumina a blanco -->
     <div
       v-if="status === 'loaded'"
-      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface-2/80 via-transparent to-scrim/30 ring-1 ring-inset ring-foreground/[0.07]"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/35 via-transparent to-scrim/10 ring-1 ring-inset ring-foreground/[0.07] dark:from-surface-2/80 dark:to-scrim/30"
       aria-hidden="true"
     />
     <slot />

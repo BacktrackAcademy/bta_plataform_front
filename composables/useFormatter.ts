@@ -40,6 +40,33 @@ export function useFormatter() {
     return 'hace unos segundos'
   }
 
+  // Fecha para notificaciones: relativa hasta una semana ("Hace 5 min", "Ayer"), luego absoluta ("12 sep 2021").
+  function notificationDate(date: string): string {
+    const past = new Date(date)
+    if (Number.isNaN(past.getTime()))
+      return ''
+    const now = new Date()
+    const minutes = Math.floor((now.getTime() - past.getTime()) / 60000)
+    if (minutes < 1)
+      return 'Ahora'
+    if (minutes < 60)
+      return `Hace ${minutes} min`
+    if (minutes < 60 * 24)
+      return `Hace ${Math.floor(minutes / 60)} h`
+    const startOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+    const days = Math.round((startOf(now) - startOf(past)) / 86400000)
+    if (days === 1)
+      return 'Ayer'
+    if (days < 7)
+      return `Hace ${days} días`
+    const text = past.toLocaleDateString('es', {
+      day: 'numeric',
+      month: 'short',
+      ...(past.getFullYear() === now.getFullYear() ? {} : { year: 'numeric' }),
+    })
+    return text.replace(/\./g, '').replace(/ de /g, ' ')
+  }
+
   // "HH:MM:SS" -> whole hours (rounded). Empty/invalid -> 0.
   function clockToHours(clock?: string | null): number {
     if (!clock)
@@ -62,5 +89,6 @@ export function useFormatter() {
     secondsToHM,
     convertToHours,
     timeAgo,
+    notificationDate,
   }
 }

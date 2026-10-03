@@ -37,7 +37,8 @@ const isNew = computed(() => {
 })
 const duration = computed(() => formatCourseDuration(props.course))
 const { onPointerMove } = useSpotlight()
-const hasProgress = computed(() => typeof props.course.percent === 'number')
+// Hide the bar at 0%: an empty track is just noise.
+const hasProgress = computed(() => typeof props.course.percent === 'number' && props.course.percent > 0)
 const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course.percent ?? 0))))
 </script>
 
@@ -84,7 +85,7 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
     </CourseThumb>
 
     <div class="flex flex-1 flex-col p-4">
-      <h3 class="line-clamp-2 min-h-[3.4rem] font-oswald text-2xl font-semibold leading-[1.15] text-white transition-colors duration-300 group-hover:text-white">
+      <h3 class="line-clamp-2 min-h-[3.4rem] font-oswald text-[1.4rem] font-normal leading-[1.25] tracking-[0.015em] text-white/95 transition-colors duration-300 group-hover:text-white">
         {{ course.titulo }}
       </h3>
 

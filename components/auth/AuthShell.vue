@@ -15,19 +15,19 @@ defineProps<{
     <section class="relative hidden md:flex lg:w-[58%] md:h-[260px] lg:h-auto items-end lg:items-center px-10 lg:px-24 pb-8 lg:pb-0 overflow-hidden">
       <AuthBackdrop />
       <div class="relative z-10 auth-rise w-full max-w-xl" aria-hidden="true">
-        <p class="flex items-center gap-2 font-mono text-[11px] text-white/50 mb-8">
+        <p class="flex items-center gap-2 font-mono text-[11px] text-foreground-subtle mb-8">
           <span class="relative flex size-2">
-            <span class="auth-ping absolute inline-flex size-full rounded-full bg-bta-pink opacity-60" />
-            <span class="relative inline-flex size-2 rounded-full bg-bta-pink" />
+            <span class="auth-ping absolute inline-flex size-full rounded-full bg-primary opacity-60" />
+            <span class="relative inline-flex size-2 rounded-full bg-primary" />
           </span>
           SYSTEM ONLINE
         </p>
         <AuthTerminal :variant="variant" class="hidden lg:block" />
         <div class="lg:hidden">
-          <p class="font-oswald font-bold uppercase text-5xl leading-[0.95] text-white">
+          <p class="font-oswald font-bold uppercase text-5xl leading-[0.95] text-foreground">
             Happy<br>Hacking
           </p>
-          <p class="mt-5 font-mono text-sm text-white/70">
+          <p class="mt-5 font-mono text-sm text-foreground-muted">
             Comienza tu carrera en Ciberseguridad
           </p>
         </div>
@@ -37,10 +37,10 @@ defineProps<{
     <section class="relative flex flex-1 items-center justify-center px-5 pt-28 pb-12 md:pt-12 lg:p-12 bg-[#070916] lg:border-l border-[#1C1B36]">
       <div class="auth-rise w-full max-w-[460px]">
         <header class="mb-10">
-          <h1 class="font-oswald font-bold uppercase tracking-wide text-4xl text-white">
+          <h1 class="font-oswald font-bold uppercase tracking-wide text-4xl text-foreground">
             {{ title }}
           </h1>
-          <p class="mt-3 font-mono text-sm text-white/55">
+          <p class="mt-3 font-mono text-sm text-foreground-muted">
             {{ subtitle }}
           </p>
         </header>

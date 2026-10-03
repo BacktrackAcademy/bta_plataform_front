@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-bta-dark-blue">
-    <nav class="text-white font-bold my-8 mx-auto max-w-[1200px]" aria-label="Breadcrumb">
+  <div class="bg-surface-1">
+    <nav class="text-foreground font-bold my-8 mx-auto max-w-[1200px]" aria-label="Breadcrumb">
       <ol class="list-none p-0 inline-flex">
         <li class="flex items-center">
           <NuxtLink to='/cursos'>Cursos</NuxtLink>
@@ -17,21 +17,21 @@
           </svg>
         </li>
         <li>
-          <p class="text-gray-500" aria-current="page">comentarios</p>
+          <p class="text-foreground-subtle" aria-current="page">comentarios</p>
         </li>
       </ol>
     </nav>
-    <section class="bg-bta-dark-blue pt-0">
+    <section class="bg-surface-1 pt-0">
         <!-- comentarios -->
         <div class="flex flex-wrap max-w-[1200px] mx-auto gap-5 py-7 px-2 relative" >
-          <article v-for="(opinion, i) in opinions" :key="opinion.i + i" class="bg-bta-blue w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-xl">
+          <article v-for="(opinion, i) in opinions" :key="opinion.i + i" class="bg-surface-2 w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-xl">
             <header class="flex mb-4">
               <figure class="inline-block h-11 w-11 mr-4">
                 <img :src="opinion.user.avatar_url_small" class="rounded-full" :alt="opinion.user.name" />
               </figure>
               <div class="flex flex-col">
-                <h3 class="text-gray-muted font-normal">{{opinion.user.name}}</h3>
-                <p class="font-medium mb-2 no-underline text-sky-400 inline-block ">{{opinion.user.username}}</p>
+                <h3 class="text-foreground-subtle font-normal">{{opinion.user.name}}</h3>
+                <p class="font-medium mb-2 no-underline text-info inline-block ">{{opinion.user.username}}</p>
                 <div class="flex">
                   <svg v-for="(star,i) in opinion.evaluation" :key="i" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
                     class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -52,19 +52,19 @@
             </header>
             <div class="flex">
               <div class="ml-3">
-                <p class="text-white">{{opinion.opinion}}</p>
+                <p class="text-foreground">{{opinion.opinion}}</p>
               </div>
             </div>
           </article>
         </div>
-        <!-- <article class="bg-bta-blue w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-xl">
+        <!-- <article class="bg-surface-2 w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-xl">
           <header class="flex mb-4">
             <figure class="inline-block h-11 w-11 mr-4">
               <img src="https://api.lorem.space/image/face?w=44&h=44&hash=rrlz2me2" class="rounded-full" alt="avatar" />
             </figure>
             <div class="flex flex-col">
-              <h3 class="text-gray-muted font-normal">Enzo Gianolli</h3>
-              <p class="font-medium mb-2 no-underline text-sky-400 inline-block ">@eoooo</p>
+              <h3 class="text-foreground-subtle font-normal">Enzo Gianolli</h3>
+              <p class="font-medium mb-2 no-underline text-info inline-block ">@eoooo</p>
               <div class="flex">
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
                   class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +99,7 @@
           </header>
           <div class="flex">
             <div class="ml-3">
-              <p class="text-white">muy bien explicado entendi casi todo solo tengo que repasar y poner todo en practica
+              <p class="text-foreground">muy bien explicado entendi casi todo solo tengo que repasar y poner todo en practica
                 poco a poco</p>
             </div>
           </div>

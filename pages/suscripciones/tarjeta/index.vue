@@ -103,7 +103,7 @@ async function submitPayment() {
     <div class="lg:h-full">
       <!-- Título -->
       <div class="w-full pt-7 pb-12">
-        <h3 class="text-4xl font-semibold text-white font-oswald uppercase">
+        <h3 class="text-4xl font-semibold text-foreground font-oswald uppercase">
           Suscripciones
         </h3>
       </div>
@@ -111,12 +111,12 @@ async function submitPayment() {
       <!-- Formulario -->
       <div class="flex gap-8">
         <div class="w-2/3">
-          <div class="bg-bta-dark-blue rounded-lg shadow-lg p-6 text-white">
+          <div class="bg-surface-1 rounded-lg shadow-lg p-6 text-foreground">
             <!-- Título -->
             <h2 class="text-2xl font-semibold font-oswald uppercase text-center">
               Resumen de tu Compra
             </h2>
-            <p class="text-gray-muted text-sm font-inconsolata text-center mt-2">
+            <p class="text-foreground-subtle text-sm font-inconsolata text-center mt-2">
               Estás a un paso de acceder a todo el contenido exclusivo.
             </p>
 
@@ -124,118 +124,118 @@ async function submitPayment() {
             <div class="mt-6 space-y-4">
               <div class="flex justify-between items-center">
                 <span class="text-lg font-semibold">Plan mensual</span>
-                <span class="text-bta-pink text-xl font-bold">100 USD</span>
+                <span class="text-primary-text text-xl font-bold">100 USD</span>
               </div>
-              <div class="border-t border-gray-600 pt-4">
-                <p class="text-gray-muted text-sm font-inconsolata">
+              <div class="border-t border-strong pt-4">
+                <p class="text-foreground-subtle text-sm font-inconsolata">
                   • Acceso por <strong>2 {{ 2 > 1 ? 'meses' : 'mes' }}</strong>
                 </p>
-                <p class="text-gray-muted text-sm font-inconsolata">
+                <p class="text-foreground-subtle text-sm font-inconsolata">
                   • 10 oportunidades de examen
                 </p>
-                <p class="text-gray-muted text-sm font-inconsolata">
+                <p class="text-foreground-subtle text-sm font-inconsolata">
                   • 2 especialida d{{ 2 > 1 ? 'es' : '' }} a elección
                 </p>
-                <p class="text-gray-muted text-sm font-inconsolata">
+                <p class="text-foreground-subtle text-sm font-inconsolata">
                   • 2 voucher{{ 2 > 1 ? 's' : '' }} de especialidad
                 </p>
-                <p class="text-gray-muted text-sm font-inconsolata">
+                <p class="text-foreground-subtle text-sm font-inconsolata">
                   • Certificados de aprobación incluidos
                 </p>
               </div>
             </div>
 
             <!-- Mensaje de pago seguro -->
-            <div class="mt-6 flex items-center space-x-2 text-green-400">
+            <div class="mt-6 flex items-center space-x-2 text-success">
               <Icon name="lucide:shield-check" class="size-5" />
               <span class="text-sm font-inconsolata">Pago 100% seguro con cifrado SSL</span>
             </div>
 
             <!-- Botón para continuar -->
             <button
-              class="mt-6 w-full py-3 bg-bta-pink text-white font-semibold rounded-lg hover:bg-bta-pink/90 transition-all font-inconsolata"
+              class="mt-6 w-full py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-all font-inconsolata"
               @click="goToPayment"
             >
               Continuar con el Pago
             </button>
           </div>
         </div>
-        <div class="bg-bta-dark-blue p-6 rounded-lg shadow-lg">
-          <h2 class="text-white font-oswald text-xl mb-4">
+        <div class="bg-surface-1 p-6 rounded-lg shadow-lg">
+          <h2 class="text-foreground font-oswald text-xl mb-4">
             Ingresa los datos de tu tarjeta
           </h2>
 
           <form class="space-y-4" @submit.prevent="submitPayment">
             <div>
-              <label class="text-gray-muted font-inconsolata text-sm">Número de tarjeta</label>
+              <label class="text-foreground-subtle font-inconsolata text-sm">Número de tarjeta</label>
               <div class="relative">
                 <input
                   v-model="cardNumber"
                   type="text"
                   placeholder="0000 0000 0000 0000"
                   maxlength="19"
-                  class="w-full p-2 text-white bg-bta-blue rounded-md border border-gray-600 focus:ring focus:ring-bta-pink tracking-widest"
+                  class="w-full p-2 text-foreground bg-surface-2 rounded-md border border-strong focus:ring focus:ring-primary tracking-widest"
                   @input="formatCardNumber"
                 >
 
                 <!-- Icono del tipo de tarjeta detectado -->
                 <div class="absolute right-3 top-2">
-                  <Icon v-if="cardType" :name="cardIcon" class="text-bta-pink size-6" />
+                  <Icon v-if="cardType" :name="cardIcon" class="text-primary-text size-6" />
                 </div>
               </div>
 
               <!-- Mensaje de validación -->
-              <p v-if="cardNumber && !isValidCard" class="text-red-500 text-sm font-inconsolata mt-1">
+              <p v-if="cardNumber && !isValidCard" class="text-danger text-sm font-inconsolata mt-1">
                 Número de tarjeta inválido
               </p>
             </div>
 
             <div>
-              <label class="text-gray-muted font-inconsolata text-sm">Nombre del titular</label>
+              <label class="text-foreground-subtle font-inconsolata text-sm">Nombre del titular</label>
               <input
                 v-model="cardHolderName"
                 type="text"
                 placeholder="Nombre en la tarjeta"
-                class="w-full p-2 text-white bg-bta-blue rounded-md border border-gray-600 focus:ring focus:ring-bta-pink"
+                class="w-full p-2 text-foreground bg-surface-2 rounded-md border border-strong focus:ring focus:ring-primary"
               >
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="text-gray-muted font-inconsolata text-sm">Mes de vencimiento</label>
+                <label class="text-foreground-subtle font-inconsolata text-sm">Mes de vencimiento</label>
                 <input
                   v-model="cardExpirationMonth"
                   type="text"
                   placeholder="MM"
-                  class="w-full p-2 text-white bg-bta-blue rounded-md border border-gray-600 focus:ring focus:ring-bta-pink"
+                  class="w-full p-2 text-foreground bg-surface-2 rounded-md border border-strong focus:ring focus:ring-primary"
                 >
               </div>
 
               <div>
-                <label class="text-gray-muted font-inconsolata text-sm">Año de vencimiento</label>
+                <label class="text-foreground-subtle font-inconsolata text-sm">Año de vencimiento</label>
                 <input
                   v-model="cardExpirationYear"
                   type="text"
                   placeholder="YYYY"
-                  class="w-full p-2 text-white bg-bta-blue rounded-md border border-gray-600 focus:ring focus:ring-bta-pink"
+                  class="w-full p-2 text-foreground bg-surface-2 rounded-md border border-strong focus:ring focus:ring-primary"
                 >
               </div>
             </div>
 
             <div>
-              <label class="text-gray-muted font-inconsolata text-sm">Código de seguridad (CVV)</label>
+              <label class="text-foreground-subtle font-inconsolata text-sm">Código de seguridad (CVV)</label>
               <input
                 v-model="securityCode"
                 type="text"
                 placeholder="•••"
-                class="w-full p-2 text-white bg-bta-blue rounded-md border border-gray-600 focus:ring focus:ring-bta-pink"
+                class="w-full p-2 text-foreground bg-surface-2 rounded-md border border-strong focus:ring focus:ring-primary"
               >
             </div>
 
             <!-- Botón -->
             <button
               type="submit"
-              class="w-full py-2 bg-bta-pink hover:bg-bta-pink/90 text-white font-semibold rounded-md transition-all"
+              class="w-full py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md transition-all"
             >
               Guardar tarjeta
             </button>

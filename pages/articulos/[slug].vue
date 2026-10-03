@@ -52,7 +52,7 @@ const isoDate = computed(() => {
 </script>
 
 <template>
-  <section class="bg-bta-dark-blue px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+  <section class="bg-surface-1 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
     <div class="max-w-3xl mx-auto py-16">
       <!-- Contenido principal -->
       <article v-if="status === 'success' && article" class="space-y-10 opacity-0 animate-fade-in">
@@ -72,17 +72,17 @@ const isoDate = computed(() => {
             </NuxtImg>
           </figure>
 
-          <h1 class="text-white text-3xl md:text-4xl lg:text-5xl font-semibold text-center font-oswald leading-tight drop-shadow-md">
+          <h1 class="text-foreground text-3xl md:text-4xl lg:text-5xl font-semibold text-center font-oswald leading-tight drop-shadow-md">
             {{ article.title }}
           </h1>
 
-          <div class="flex items-center justify-center space-x-4 text-gray-400 text-sm">
+          <div class="flex items-center justify-center space-x-4 text-foreground-muted text-sm">
             <div class="flex items-center space-x-2">
-              <span class="font-inconsolata text-gray-300">Por</span>
-              <span class="font-semibold text-white">{{ article.user.name || article.user.username }}</span>
+              <span class="font-inconsolata text-foreground-secondary">Por</span>
+              <span class="font-semibold text-foreground">{{ article.user.name || article.user.username }}</span>
             </div>
-            <span class="text-gray-500">•</span>
-            <time :datetime="isoDate" class="font-inconsolata text-gray-300">
+            <span class="text-foreground-subtle">•</span>
+            <time :datetime="isoDate" class="font-inconsolata text-foreground-secondary">
               {{ formattedDate }}
             </time>
           </div>
@@ -95,7 +95,7 @@ const isoDate = computed(() => {
 
       <!-- Estado de carga -->
       <div v-else-if="status === 'pending'" class="min-h-[50vh] flex items-center justify-center opacity-0 animate-fade-in">
-        <div class="text-white text-center space-y-6">
+        <div class="text-foreground text-center space-y-6">
           <div class="w-16 h-16 mx-auto border-4 border-white/80 border-t-transparent rounded-full animate-spin" />
           <p class="font-inconsolata text-lg">
             Cargando artículo...
@@ -105,13 +105,13 @@ const isoDate = computed(() => {
 
       <!-- Estado de error -->
       <div v-else-if="status === 'error'" class="min-h-[50vh] flex items-center justify-center">
-        <div class="text-white text-center space-y-6 bg-gray-800/50 p-8 rounded-lg shadow-lg">
+        <div class="text-foreground text-center space-y-6 bg-gray-800/50 p-8 rounded-lg shadow-lg">
           <p class="font-inconsolata text-xl">
             {{ error?.message || 'No se pudo cargar el artículo' }}
           </p>
           <NuxtLink
             to="/articulos"
-            class="inline-block px-8 py-3 bg-bta-pink text-white font-inconsolata rounded-md hover:bg-bta-pink/90 transition-all duration-200 transform hover:scale-105"
+            class="inline-block px-8 py-3 bg-primary text-primary-foreground font-inconsolata rounded-md hover:bg-primary/90 transition-all duration-200 transform hover:scale-105"
           >
             Volver a artículos
           </NuxtLink>
@@ -128,15 +128,15 @@ const isoDate = computed(() => {
 }
 
 .prose :deep(h2, h3, h4) {
-  @apply font-oswald mt-10 mb-6 text-white;
+  @apply font-oswald mt-10 mb-6 text-foreground;
 }
 
 .prose :deep(p) {
-  @apply text-gray-200 leading-relaxed;
+  @apply text-foreground leading-relaxed;
 }
 
 .prose :deep(blockquote) {
-  @apply border-l-4 border-bta-pink pl-4 italic text-gray-300;
+  @apply border-l-4 border-primary pl-4 italic text-foreground-secondary;
 }
 
 .prose :deep(ul, ol) {
@@ -144,7 +144,7 @@ const isoDate = computed(() => {
 }
 
 .prose :deep(li) {
-  @apply text-gray-200;
+  @apply text-foreground;
 }
 
 /* Animación personalizada para fade-in */

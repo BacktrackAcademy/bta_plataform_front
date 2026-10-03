@@ -110,21 +110,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div aria-hidden="true" class="term font-mono text-[13px] leading-6 text-white/60 min-h-[520px]">
+  <div aria-hidden="true" class="term font-mono text-[13px] leading-6 text-foreground-muted min-h-[520px]">
     <div v-for="(l, i) in shown" :key="i" class="whitespace-pre-wrap" :class="`l-${l.cls}`">
       <template v-if="l.prefix">
-        <span class="text-white/40">{{ PROMPT }}</span>
-        <span v-if="l.cls === 'p1'" class="text-bta-pink">{{ ' ' + MOD }}</span>
-        <span class="text-white/40">{{ " > " }}</span>
+        <span class="text-foreground-subtle">{{ PROMPT }}</span>
+        <span v-if="l.cls === 'p1'" class="text-primary-text">{{ ' ' + MOD }}</span>
+        <span class="text-foreground-subtle">{{ " > " }}</span>
       </template>
-      <span :class="{ 'text-white': l.prefix }">{{ l.text }}</span><span v-if="i === shown.length - 1 && !done" class="term-cursor" />
+      <span :class="{ 'text-foreground': l.prefix }">{{ l.text }}</span><span v-if="i === shown.length - 1 && !done" class="term-cursor" />
     </div>
 
     <div v-if="done" class="term-final mt-10">
-      <p class="font-oswald font-bold uppercase text-5xl xl:text-7xl leading-[0.95] text-white">
+      <p class="font-oswald font-bold uppercase text-5xl xl:text-7xl leading-[0.95] text-foreground">
         Happy<br>Hacking<span class="term-cursor term-cursor--lg" />
       </p>
-      <p class="mt-6 font-mono text-sm text-white/70">
+      <p class="mt-6 font-mono text-sm text-foreground-muted">
         Comienza tu carrera en Ciberseguridad
       </p>
     </div>
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .l-info { color: rgba(255, 255, 255, 0.55); }
-.l-ok { color: #ec1075; }
+.l-ok { color: hsl(var(--primary)); }
 .l-out { color: rgba(255, 255, 255, 0.5); }
 
 .term-cursor {
@@ -142,7 +142,7 @@ onBeforeUnmount(() => {
   height: 1.05em;
   margin-left: 2px;
   vertical-align: text-bottom;
-  background: #ec1075;
+  background: hsl(var(--primary));
   animation: cursor-blink 1.1s steps(1) infinite;
 }
 .term-cursor--lg {

@@ -22,7 +22,7 @@
       <rect
         id="Rectangle"
         class="animate-fast-pulse"
-        fill="#EC1075"
+        fill="hsl(var(--primary))"
         x="80.0056458"
         y="36.0039368"
         width="15.0024109"

@@ -33,7 +33,7 @@ function handleSocialLogin(provider: 'github' | 'linkedin') {
   emit('socialLogin', provider)
 }
 
-const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-[#2A2945] font-mono text-xs text-white/75 transition-colors duration-200 hover:bg-white/[0.05] hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/60 disabled:opacity-50 disabled:pointer-events-none'
+const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-[#2A2945] font-mono text-xs text-foreground-secondary transition-colors duration-200 hover:bg-foreground/[0.05] hover:border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none'
 </script>
 
 <template>
@@ -63,7 +63,7 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounde
       :invalid="!!error"
     >
       <template #label-extra>
-        <NuxtLink to="/recuperar-contrasena" :class="[linkClass, 'font-mono text-xs text-white/50 hover:text-bta-pink']">
+        <NuxtLink to="/recuperar-contrasena" :class="[linkClass, 'font-mono text-xs text-foreground-subtle hover:text-primary-text']">
           ¿Olvidaste tu contraseña?
         </NuxtLink>
       </template>
@@ -83,7 +83,7 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounde
 
     <div class="flex items-center gap-4" role="separator">
       <span class="h-px flex-1 bg-[#2A2945]" />
-      <span class="font-mono text-xs text-white/35">o continuar con</span>
+      <span class="font-mono text-xs text-foreground-subtle">o continuar con</span>
       <span class="h-px flex-1 bg-[#2A2945]" />
     </div>
 
@@ -99,15 +99,15 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounde
     </div>
 
     <div class="flex flex-col items-center gap-2 font-mono text-xs">
-      <p class="text-white/55">
+      <p class="text-foreground-muted">
         ¿No tienes cuenta?
-        <NuxtLink to="/crear-cuenta" :class="[linkClass, 'font-medium text-white hover:text-bta-pink']">
+        <NuxtLink to="/crear-cuenta" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
           Crear cuenta
         </NuxtLink>
       </p>
       <NuxtLink
         to="/reenviar-confirmacion"
-        :class="[linkClass, 'text-xs text-white/40 hover:text-white/70']"
+        :class="[linkClass, 'text-xs text-foreground-subtle hover:text-foreground-muted']"
       >
         ¿No recibiste el correo de confirmación?
       </NuxtLink>

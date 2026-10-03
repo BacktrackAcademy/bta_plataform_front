@@ -400,34 +400,34 @@ async function requestDeletion() {
 // ---- Presentación ------------------------------------------------------------------------
 const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('es-CL') : '—')
 const fmtPrice = (n: number | null) => (n == null ? '—' : `$${Number(n).toFixed(2).replace(/\.00$/, '')}`)
-const field = 'w-full rounded-md border border-white/10 bg-transparent px-3.5 py-2.5 font-sans text-base text-white placeholder:text-white/30 transition-colors hover:border-white/25 focus:border-bta-pink/70 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50'
-const labelCls = 'mb-2 block font-sans text-sm font-medium text-white/70'
-const sectionTitle = 'font-oswald text-2xl font-semibold leading-none tracking-tight text-white'
-const sectionLead = 'mt-2 font-sans text-sm text-white/50'
+const field = 'w-full rounded-md border border-border bg-transparent px-3.5 py-2.5 font-sans text-base text-foreground placeholder:text-foreground-subtle transition-colors hover:border-strong focus:border-primary/70 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50'
+const labelCls = 'mb-2 block font-sans text-sm font-medium text-foreground-muted'
+const sectionTitle = 'font-oswald text-2xl font-semibold leading-none tracking-tight text-foreground'
+const sectionLead = 'mt-2 font-sans text-sm text-foreground-subtle'
 const choice = 'flex cursor-pointer items-center gap-2 rounded-md border px-3.5 py-2 font-sans text-sm transition-colors'
-const choiceOn = 'border-white/40 bg-white/[0.05] text-white'
-const choiceOff = 'border-white/10 text-white/60 hover:border-white/25 hover:text-white'
-const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-white hover:bg-bta-pink/90 disabled:opacity-40'
+const choiceOn = 'border-strong bg-foreground/[0.05] text-foreground'
+const choiceOff = 'border-border text-foreground-muted hover:border-strong hover:text-foreground'
+const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-40'
 </script>
 
 <template>
   <div class="mx-auto w-full max-w-[1200px] px-5 py-6 pb-32 sm:px-8 lg:px-10 lg:py-8">
-    <NuxtLink :to="publicPath" class="bt-focus inline-flex items-center gap-1.5 rounded font-sans text-sm text-white/50 transition-colors hover:text-white">
+    <NuxtLink :to="publicPath" class="bt-focus inline-flex items-center gap-1.5 rounded font-sans text-sm text-foreground-subtle transition-colors hover:text-foreground">
       <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" /> Volver al perfil
     </NuxtLink>
-    <h1 class="mt-4 font-oswald text-3xl font-semibold leading-none tracking-tight text-white sm:text-4xl">
+    <h1 class="mt-4 font-oswald text-3xl font-semibold leading-none tracking-tight text-foreground sm:text-4xl">
       Configuración
     </h1>
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
       <!-- Navegación de secciones -->
       <nav aria-label="Secciones de configuración" class="-mx-4 overflow-x-auto px-4 lg:sticky lg:top-24 lg:mx-0 lg:self-start lg:overflow-visible lg:px-0">
-        <ul class="flex gap-1 lg:flex-col lg:gap-0 lg:border-l lg:border-white/[0.08]">
+        <ul class="flex gap-1 lg:flex-col lg:gap-0 lg:border-l lg:border-subtle">
           <li v-for="s in sections" :key="s.key" class="shrink-0">
             <button
               type="button"
               class="bt-focus -ml-px block w-full whitespace-nowrap rounded-md px-3 py-2 text-left font-sans text-sm transition-colors lg:rounded-none lg:border-l-2 lg:py-2.5"
-              :class="active === s.key ? 'bg-white/[0.06] text-white lg:border-bta-pink lg:bg-transparent' : 'text-white/50 hover:text-white lg:border-transparent'"
+              :class="active === s.key ? 'bg-foreground/[0.06] text-foreground lg:border-primary lg:bg-transparent' : 'text-foreground-subtle hover:text-foreground lg:border-transparent'"
               :aria-current="active === s.key ? 'page' : undefined"
               @click="go(s.key)"
             >
@@ -447,18 +447,18 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
             <p :class="sectionLead">
               Cómo apareces en Backtrack Academy.
             </p>
-            <p v-if="locked" class="mt-6 font-sans text-sm text-amber-200">
+            <p v-if="locked" class="mt-6 font-sans text-sm text-warning">
               Tu cuenta está verificada: algunos datos no se pueden editar.
             </p>
 
             <div class="mt-8 grid gap-6 sm:grid-cols-2">
               <div class="sm:col-span-2">
                 <label for="username" :class="labelCls">Nombre de usuario</label>
-                <div class="flex items-center rounded-md border border-white/10 bg-transparent transition-colors hover:border-white/25 focus-within:border-bta-pink/70">
-                  <span class="pl-3.5 font-inconsolata text-lg text-bta-pink" aria-hidden="true">@</span>
-                  <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2.5 font-inconsolata text-lg text-white focus:outline-none disabled:opacity-50" type="text" maxlength="40" autocomplete="username" :disabled="locked" :aria-invalid="!usernameValid" aria-describedby="username-hint">
+                <div class="flex items-center rounded-md border border-border bg-transparent transition-colors hover:border-strong focus-within:border-primary/70">
+                  <span class="pl-3.5 font-inconsolata text-lg text-primary-text" aria-hidden="true">@</span>
+                  <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2.5 font-inconsolata text-lg text-foreground focus:outline-none disabled:opacity-50" type="text" maxlength="40" autocomplete="username" :disabled="locked" :aria-invalid="!usernameValid" aria-describedby="username-hint">
                 </div>
-                <p id="username-hint" class="mt-2 font-sans text-sm" :class="usernameValid ? 'text-white/50' : 'text-red-400'">
+                <p id="username-hint" class="mt-2 font-sans text-sm" :class="usernameValid ? 'text-foreground-subtle' : 'text-danger'">
                   <template v-if="!usernameValid">
                     De 3 a 40 caracteres: letras, números, guion o guion bajo.
                   </template>
@@ -469,7 +469,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                     Es la dirección de tu perfil.
                   </template>
                 </p>
-                <p v-for="m in errors.username" :key="m" class="mt-1 font-sans text-sm text-red-400" role="alert">
+                <p v-for="m in errors.username" :key="m" class="mt-1 font-sans text-sm text-danger" role="alert">
                   {{ m }}
                 </p>
               </div>
@@ -491,7 +491,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               <div>
                 <label for="email" :class="labelCls">Correo electrónico</label>
                 <input id="email" :value="settings?.email" class="font-inconsolata text-lg" :class="[field]" type="email" readonly disabled aria-describedby="email-hint">
-                <p id="email-hint" class="mt-2 font-sans text-sm text-white/50">
+                <p id="email-hint" class="mt-2 font-sans text-sm text-foreground-subtle">
                   Para cambiarlo, escríbenos a contacto@backtrackacademy.com.
                 </p>
               </div>
@@ -518,7 +518,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                 </legend>
                 <div class="flex flex-wrap gap-2">
                   <label v-for="t in settings?.user_types" :key="t" :class="[choice, form.user_type === t ? choiceOn : choiceOff, locked ? 'cursor-not-allowed opacity-50' : '']">
-                    <input v-model="form.user_type" type="radio" name="user_type" :value="t" :disabled="locked" class="accent-[#EC1075]">
+                    <input v-model="form.user_type" type="radio" name="user_type" :value="t" :disabled="locked" class="accent-[hsl(var(--primary))]">
                     {{ userTypeLabels[t] || t }}
                   </label>
                 </div>
@@ -527,7 +527,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               <div class="sm:col-span-2">
                 <label for="aboutme" :class="labelCls">Acerca de mí</label>
                 <textarea id="aboutme" v-model="form.aboutme" :class="field" rows="5" :maxlength="BIO_MAX" placeholder="Qué haces y en qué te especializas." />
-                <p class="mt-1 text-right font-sans text-xs tabular-nums text-white/40">
+                <p class="mt-1 text-right font-sans text-xs tabular-nums text-foreground-subtle">
                   {{ form.aboutme.length }}/{{ BIO_MAX }}
                 </p>
               </div>
@@ -535,7 +535,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
           </section>
 
           <!-- PRIVACIDAD -->
-          <section id="privacidad" class="scroll-mt-24 border-t border-white/[0.06] pt-12" aria-labelledby="privacidad-title">
+          <section id="privacidad" class="scroll-mt-24 border-t border-subtle pt-12" aria-labelledby="privacidad-title">
             <h2 id="privacidad-title" :class="sectionTitle">
               Privacidad
             </h2>
@@ -557,21 +557,21 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                 label="Aparecer en Google y otros buscadores"
                 :description="form.public_profile ? 'Tu perfil público puede aparecer en buscadores como Google.' : 'Activa primero tu perfil público.'"
               />
-              <p v-if="form.public_profile && form.allow_search && thinProfile" class="font-sans text-sm text-amber-300" role="status">
+              <p v-if="form.public_profile && form.allow_search && thinProfile" class="font-sans text-sm text-warning" role="status">
                 Para que Google lo indexe, agrega una bio (40+ caracteres) o un titular.
               </p>
             </div>
 
-            <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6">
+            <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-subtle pt-6">
               <div class="min-w-0">
-                <p class="font-sans text-sm text-white/50">
+                <p class="font-sans text-sm text-foreground-subtle">
                   {{ me?.public_profile ? 'Tu perfil público:' : 'Vista previa (solo tú):' }}
                 </p>
-                <p class="truncate font-sans text-sm text-white">
+                <p class="truncate font-sans text-sm text-foreground">
                   {{ publicLabel }}
                 </p>
               </div>
-              <Button as-child variant="outline" size="sm" class="bt-focus border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white">
+              <Button as-child variant="outline" size="sm" class="bt-focus border-border bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground">
                 <NuxtLink :to="publicPath">
                   Ver perfil <Icon name="lucide:arrow-up-right" />
                 </NuxtLink>
@@ -580,7 +580,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
           </section>
 
           <!-- ZONA DE PELIGRO -->
-          <section class="border-t border-white/[0.06] pt-12" aria-labelledby="danger-title">
+          <section class="border-t border-subtle pt-12" aria-labelledby="danger-title">
             <h2 id="danger-title" :class="sectionTitle">
               Eliminar cuenta
             </h2>
@@ -589,40 +589,40 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
             </p>
             <!-- Cuentas con contenido o rol editorial: no se pueden autoeliminar -->
             <div v-if="settings && !settings.can_delete_account" class="mt-5 space-y-4">
-              <p class="font-sans text-sm text-white/70">
+              <p class="font-sans text-sm text-foreground-muted">
                 {{ settings.delete_blocked_reason }}
                 Al eliminar una cuenta se borra su información, y los cursos y artículos asociados quedarían sin autor.
               </p>
               <template v-if="requestStatus !== 'sent'">
                 <label for="deletion-message" :class="labelCls">Mensaje para el equipo (opcional)</label>
                 <textarea id="deletion-message" v-model="requestMessage" :class="field" rows="3" maxlength="1000" />
-                <p v-if="requestStatus === 'error'" class="font-sans text-sm text-red-400" role="alert">
+                <p v-if="requestStatus === 'error'" class="font-sans text-sm text-danger" role="alert">
                   No pudimos enviar la solicitud. Escríbenos a contacto@backtrackacademy.com.
                 </p>
-                <Button type="button" variant="outline" class="bt-focus border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white" :disabled="requestStatus === 'sending'" @click="requestDeletion">
+                <Button type="button" variant="outline" class="bt-focus border-strong bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground" :disabled="requestStatus === 'sending'" @click="requestDeletion">
                   {{ requestStatus === 'sending' ? 'Enviando…' : 'Solicitar eliminación' }}
                 </Button>
               </template>
-              <p v-else class="font-sans text-sm text-emerald-400" role="status">
+              <p v-else class="font-sans text-sm text-success" role="status">
                 Solicitud enviada. El equipo te contactará a tu correo.
               </p>
             </div>
 
             <template v-else>
-              <Button v-if="!deleteOpen" type="button" variant="outline" class="bt-focus mt-5 border-red-400/30 bg-transparent text-red-300 hover:bg-red-500/10 hover:text-red-200" @click="deleteOpen = true">
+              <Button v-if="!deleteOpen" type="button" variant="outline" class="bt-focus mt-5 border-danger/30 bg-transparent text-danger hover:bg-danger/10 hover:text-danger" @click="deleteOpen = true">
                 Eliminar mi cuenta
               </Button>
               <div v-else class="mt-4 space-y-3">
-                <label for="delete-confirm" class="block font-sans text-sm text-white">Escribe tu nombre de usuario (<span class="font-inconsolata text-red-300">{{ savedUsername }}</span>) para confirmar</label>
+                <label for="delete-confirm" class="block font-sans text-sm text-foreground">Escribe tu nombre de usuario (<span class="font-inconsolata text-danger">{{ savedUsername }}</span>) para confirmar</label>
                 <input id="delete-confirm" v-model="deleteConfirm" class="font-inconsolata text-lg" :class="[field]" type="text" autocomplete="off">
-                <p v-if="deleteError" class="font-sans text-sm text-red-400" role="alert">
+                <p v-if="deleteError" class="font-sans text-sm text-danger" role="alert">
                   {{ deleteError }}
                 </p>
                 <div class="flex gap-2">
-                  <Button type="button" class="bt-focus bg-red-500 text-white hover:bg-red-500/85" :disabled="deleteBusy || deleteConfirm.toLowerCase() !== savedUsername.toLowerCase()" @click="deleteAccount">
+                  <Button type="button" class="bt-focus bg-destructive text-destructive-foreground hover:bg-destructive/90" :disabled="deleteBusy || deleteConfirm.toLowerCase() !== savedUsername.toLowerCase()" @click="deleteAccount">
                     {{ deleteBusy ? 'Eliminando…' : 'Eliminar definitivamente' }}
                   </Button>
-                  <Button type="button" variant="ghost" class="bt-focus text-white/50 hover:bg-white/10 hover:text-white" @click="deleteOpen = false; deleteConfirm = ''">
+                  <Button type="button" variant="ghost" class="bt-focus text-foreground-subtle hover:bg-foreground/10 hover:text-foreground" @click="deleteOpen = false; deleteConfirm = ''">
                     Cancelar
                   </Button>
                 </div>
@@ -647,7 +647,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               </legend>
               <div class="flex flex-wrap gap-2">
                 <label v-for="t in settings?.education_types" :key="t" :class="[choice, form.education_type === t ? choiceOn : choiceOff]">
-                  <input v-model="form.education_type" type="radio" name="education_type" :value="t" class="accent-[#EC1075]">
+                  <input v-model="form.education_type" type="radio" name="education_type" :value="t" class="accent-[hsl(var(--primary))]">
                   {{ educationTypeLabels[t] || t }}
                 </label>
               </div>
@@ -655,17 +655,17 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
 
             <div class="mt-6">
               <label for="skill" :class="labelCls">Habilidades</label>
-              <div class="flex flex-wrap gap-2 rounded-md border border-white/10 bg-transparent p-2 transition-colors hover:border-white/25 focus-within:border-bta-pink/70">
-                <span v-for="(s, i) in form.skills" :key="s" class="inline-flex items-center gap-1 rounded border border-white/10 bg-white/[0.05] py-0.5 pl-2 pr-1 font-sans text-sm text-white">
+              <div class="flex flex-wrap gap-2 rounded-md border border-border bg-transparent p-2 transition-colors hover:border-strong focus-within:border-primary/70">
+                <span v-for="(s, i) in form.skills" :key="s" class="inline-flex items-center gap-1 rounded border border-border bg-foreground/[0.05] py-0.5 pl-2 pr-1 font-sans text-sm text-foreground">
                   {{ s }}
-                  <button type="button" class="bt-focus rounded p-0.5 text-white/50 hover:text-bta-pink" :aria-label="`Quitar ${s}`" @click="removeSkill(i)">
+                  <button type="button" class="bt-focus rounded p-0.5 text-foreground-subtle hover:text-primary-text" :aria-label="`Quitar ${s}`" @click="removeSkill(i)">
                     <Icon name="lucide:x" class="size-3" />
                   </button>
                 </span>
                 <input
                   id="skill"
                   v-model="skillDraft"
-                  class="min-w-[8rem] flex-1 bg-transparent px-1 py-1 font-sans text-sm text-white placeholder:text-white/50 focus:outline-none"
+                  class="min-w-[8rem] flex-1 bg-transparent px-1 py-1 font-sans text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none"
                   type="text"
                   maxlength="30"
                   :disabled="form.skills.length >= SPECIALTY_MAX"
@@ -676,7 +676,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                   @blur="addSkill"
                 >
               </div>
-              <p class="mt-2 font-sans text-sm text-white/50">
+              <p class="mt-2 font-sans text-sm text-foreground-subtle">
                 Enter para agregar · hasta {{ SPECIALTY_MAX }}. Se muestran en tu perfil como especialidades.
               </p>
             </div>
@@ -689,12 +689,12 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
 
             <!-- Universidad -->
             <div v-else-if="form.education_type === 'university'" class="mt-8 space-y-4">
-              <article v-for="(row, i) in visibleEducations" :key="row.id ?? `new-${i}`" class="border-t border-white/[0.06] pt-6">
+              <article v-for="(row, i) in visibleEducations" :key="row.id ?? `new-${i}`" class="border-t border-subtle pt-6">
                 <header class="flex items-center justify-between">
-                  <h3 class="font-sans text-base font-semibold text-white">
+                  <h3 class="font-sans text-base font-semibold text-foreground">
                     Educación {{ i + 1 }}
                   </h3>
-                  <button type="button" class="bt-focus rounded px-2 py-1 font-sans text-sm text-red-300 transition-colors hover:bg-red-500/10" @click="removeEducation(row)">
+                  <button type="button" class="bt-focus rounded px-2 py-1 font-sans text-sm text-danger transition-colors hover:bg-danger/10" @click="removeEducation(row)">
                     Eliminar
                   </button>
                 </header>
@@ -757,10 +757,10 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                   </fieldset>
                 </div>
               </article>
-              <p v-if="!visibleEducations.length" class="rounded-lg border border-dashed border-white/10 p-5 text-center font-inconsolata text-sm text-white/50">
+              <p v-if="!visibleEducations.length" class="rounded-lg border border-dashed border-border p-5 text-center font-inconsolata text-sm text-foreground-subtle">
                 Aún no agregas estudios universitarios.
               </p>
-              <Button type="button" variant="outline" class="bt-focus border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" @click="addEducation">
+              <Button type="button" variant="outline" class="bt-focus border-border bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground" @click="addEducation">
                 <Icon name="lucide:plus" /> Agregar educación
               </Button>
             </div>
@@ -781,17 +781,17 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               <div class="space-y-2">
                 <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="sr-only" aria-label="Subir foto de perfil" @change="onAvatarChange">
                 <div class="flex flex-wrap gap-2">
-                  <Button type="button" variant="outline" size="sm" class="bt-focus border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="fileInput?.click()">
+                  <Button type="button" variant="outline" size="sm" class="bt-focus border-border bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground" :disabled="avatarBusy" @click="fileInput?.click()">
                     <Icon name="lucide:upload" /> {{ avatarUrl ? 'Cambiar foto' : 'Subir foto' }}
                   </Button>
-                  <Button v-if="avatarUrl" type="button" variant="ghost" size="sm" class="bt-focus text-white/50 hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="removeAvatar">
+                  <Button v-if="avatarUrl" type="button" variant="ghost" size="sm" class="bt-focus text-foreground-subtle hover:bg-foreground/10 hover:text-foreground" :disabled="avatarBusy" @click="removeAvatar">
                     Quitar
                   </Button>
                 </div>
-                <p class="font-sans text-sm text-white/50">
+                <p class="font-sans text-sm text-foreground-subtle">
                   JPG, PNG, WEBP o GIF · máx. 3 MB
                 </p>
-                <p v-if="avatarError" class="font-sans text-sm text-red-400" role="alert">
+                <p v-if="avatarError" class="font-sans text-sm text-danger" role="alert">
                   {{ avatarError }}
                 </p>
               </div>
@@ -810,9 +810,9 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
             <div class="mt-8 space-y-6">
               <div v-for="net in [{ key: 'facebook_url', label: 'Facebook', icon: 'lucide:facebook' }, { key: 'twitter_url', label: 'X (Twitter)', icon: 'lucide:twitter' }, { key: 'linkedin_url', label: 'LinkedIn', icon: 'lucide:linkedin' }] as const" :key="net.key">
                 <label :for="net.key" :class="labelCls">{{ net.label }}</label>
-                <div class="flex items-center rounded-md border border-white/10 bg-transparent transition-colors hover:border-white/25 focus-within:border-bta-pink/70">
-                  <span class="flex items-center border-r border-white/10 px-3.5 py-3 text-white/50"><Icon :name="net.icon" class="size-4" aria-hidden="true" /></span>
-                  <input :id="net.key" v-model="form[net.key]" class="w-full bg-transparent px-3 py-2.5 font-inconsolata text-lg text-white placeholder:text-white/30 focus:outline-none" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
+                <div class="flex items-center rounded-md border border-border bg-transparent transition-colors hover:border-strong focus-within:border-primary/70">
+                  <span class="flex items-center border-r border-border px-3.5 py-3 text-foreground-subtle"><Icon :name="net.icon" class="size-4" aria-hidden="true" /></span>
+                  <input :id="net.key" v-model="form[net.key]" class="w-full bg-transparent px-3 py-2.5 font-inconsolata text-lg text-foreground placeholder:text-foreground-subtle focus:outline-none" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
                 </div>
               </div>
             </div>
@@ -881,9 +881,9 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               Tus suscripciones y compras.
             </p>
             <div v-if="settings?.payments.length" class="mt-8 overflow-x-auto">
-              <table class="w-full text-left font-sans text-sm text-white">
+              <table class="w-full text-left font-sans text-sm text-foreground">
                 <thead>
-                  <tr class="border-b border-white/10 font-inconsolata text-[11px] uppercase tracking-[0.16em] text-white/50">
+                  <tr class="border-b border-border font-inconsolata text-[11px] uppercase tracking-[0.16em] text-foreground-subtle">
                     <th class="py-3 pr-4 font-normal">
                       Fecha de pago
                     </th>
@@ -902,7 +902,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="p in settings.payments" :key="p.id" class="border-b border-white/[0.06]">
+                  <tr v-for="p in settings.payments" :key="p.id" class="border-b border-subtle">
                     <td class="py-3.5 pr-4 tabular-nums">
                       {{ fmtDate(p.paid_at) }}
                     </td>
@@ -910,7 +910,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                       {{ fmtDate(p.expires_at) }}
                     </td>
                     <td class="py-3.5 pr-4">
-                      <span class="rounded-full border px-2 py-0.5 font-sans text-sm" :class="p.recurring ? 'border-emerald-400/30 text-emerald-300' : 'border-white/10 text-white/50'">{{ p.recurring ? 'Activado' : 'Desactivado' }}</span>
+                      <span class="rounded-full border px-2 py-0.5 font-sans text-sm" :class="p.recurring ? 'border-success/30 text-success' : 'border-border text-foreground-subtle'">{{ p.recurring ? 'Activado' : 'Desactivado' }}</span>
                     </td>
                     <td class="py-3.5 pr-4">
                       {{ p.name || '—' }}
@@ -922,8 +922,8 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
                 </tbody>
               </table>
             </div>
-            <div v-else class="mt-8 border-t border-white/[0.06] py-12 text-center">
-              <p class="font-sans text-base text-white/70">
+            <div v-else class="mt-8 border-t border-subtle py-12 text-center">
+              <p class="font-sans text-base text-foreground-muted">
                 No tienes detalles de pago
               </p>
               <Button as-child :class="`mt-4 ${primaryBtn}`">
@@ -944,7 +944,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
             <p :class="sectionLead">
               Elige qué quieres recibir.
             </p>
-            <div v-for="group in notificationGroups" :key="group.title" class="mt-8 border-t border-white/[0.06] pt-8 first:border-0 first:pt-0">
+            <div v-for="group in notificationGroups" :key="group.title" class="mt-8 border-t border-subtle pt-8 first:border-0 first:pt-0">
               <h3 :class="labelCls">
                 {{ group.title }}
               </h3>
@@ -961,7 +961,7 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               </div>
             </div>
             <div class="mt-10 flex items-center justify-end gap-4">
-              <p class="font-sans text-sm" :class="notifStatus === 'error' ? 'text-red-400' : 'text-emerald-400'" role="status">
+              <p class="font-sans text-sm" :class="notifStatus === 'error' ? 'text-danger' : 'text-success'" role="status">
                 {{ notifStatus === 'saved' ? 'Preferencias guardadas' : notifStatus === 'error' ? 'No pudimos guardar' : '' }}
               </p>
               <Button type="button" :class="primaryBtn" :disabled="notifStatus === 'saving'" @click="saveNotifications">
@@ -984,29 +984,29 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
               <div>
                 <label for="current_password" :class="labelCls">Contraseña actual</label>
                 <input id="current_password" v-model="pw.current_password" :class="field" type="password" autocomplete="current-password">
-                <p v-for="m in pwErrors.current_password" :key="m" class="mt-1 font-sans text-sm text-red-400" role="alert">
+                <p v-for="m in pwErrors.current_password" :key="m" class="mt-1 font-sans text-sm text-danger" role="alert">
                   {{ m }}
                 </p>
               </div>
               <div>
                 <label for="new_password" :class="labelCls">Nueva contraseña</label>
                 <input id="new_password" v-model="pw.password" :class="field" type="password" autocomplete="new-password">
-                <p v-for="m in pwErrors.password" :key="m" class="mt-1 font-sans text-sm text-red-400" role="alert">
+                <p v-for="m in pwErrors.password" :key="m" class="mt-1 font-sans text-sm text-danger" role="alert">
                   {{ m }}
                 </p>
               </div>
               <div>
                 <label for="password_confirmation" :class="labelCls">Repite la nueva contraseña</label>
                 <input id="password_confirmation" v-model="pw.password_confirmation" :class="field" type="password" autocomplete="new-password">
-                <p v-for="m in pwErrors.password_confirmation" :key="m" class="mt-1 font-sans text-sm text-red-400" role="alert">
+                <p v-for="m in pwErrors.password_confirmation" :key="m" class="mt-1 font-sans text-sm text-danger" role="alert">
                   {{ m }}
                 </p>
               </div>
-              <p v-for="m in pwErrors.base" :key="m" class="font-sans text-sm text-red-400" role="alert">
+              <p v-for="m in pwErrors.base" :key="m" class="font-sans text-sm text-danger" role="alert">
                 {{ m }}
               </p>
               <div class="flex items-center justify-end gap-4">
-                <p v-if="pwDone" class="font-sans text-sm text-emerald-400" role="status">
+                <p v-if="pwDone" class="font-sans text-sm text-success" role="status">
                   Contraseña actualizada
                 </p>
                 <Button type="button" :class="primaryBtn" :disabled="pwBusy || !pw.current_password || !pw.password" @click="savePassword">
@@ -1017,19 +1017,19 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
           </section>
         </template>
 
-        <p v-for="m in errors.base" :key="m" class="font-sans text-sm text-red-400" role="alert">
+        <p v-for="m in errors.base" :key="m" class="font-sans text-sm text-danger" role="alert">
           {{ m }}
         </p>
 
         <template v-for="(msgs, key) in errors" :key="key">
-          <p v-for="m in (key === 'base' || key === 'username' ? [] : msgs)" :key="m" class="font-sans text-sm text-red-400" role="alert">
+          <p v-for="m in (key === 'base' || key === 'username' ? [] : msgs)" :key="m" class="font-sans text-sm text-danger" role="alert">
             {{ key }}: {{ m }}
           </p>
         </template>
 
-        <div v-if="activeSection.save" class="fixed inset-x-0 bottom-[68px] z-30 border-t border-white/[0.06] bg-bta-bg/95 px-4 py-3 backdrop-blur md:bottom-0 md:left-[64px] lg:left-[232px]">
+        <div v-if="activeSection.save" class="fixed inset-x-0 bottom-[68px] z-30 border-t border-subtle bg-background/95 px-4 py-3 backdrop-blur md:bottom-0 md:left-[64px] lg:left-[232px]">
           <div class="mx-auto flex max-w-[1200px] items-center justify-end gap-4 lg:px-6">
-            <p class="font-sans text-sm" :class="saved && !dirty ? 'text-emerald-400' : 'text-white/50'" role="status">
+            <p class="font-sans text-sm" :class="saved && !dirty ? 'text-success' : 'text-foreground-subtle'" role="status">
               {{ saved && !dirty ? 'Cambios guardados' : dirty ? 'Cambios sin guardar' : '' }}
             </p>
             <Button type="submit" :class="primaryBtn" :disabled="saving || !dirty">

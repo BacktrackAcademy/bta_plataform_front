@@ -5,17 +5,17 @@
       class="fixed z-50 top-0 h-screen w-screen flex justify-center items-center"
     >
       <div
-        class="hidden flex-col items-center justify-center bg-bta-bg text-white w-screen h-screen md:flex"
+        class="hidden flex-col items-center justify-center bg-background text-foreground w-screen h-screen md:flex"
       >
         <div id="stars" class="self-start z-30"></div>
         <div id="stars2" class="self-start z-40"></div>
         <div id="stars3" class="self-start z-20"></div>
-        <h1 class="font-mono text-white z-50 text-6xl">
+        <h1 class="font-mono text-foreground z-50 text-6xl">
           {{ error.statusCode }} - Ooops... are you lost?
         </h1>
         <nuxt-link
           to="/"
-          class="space cursor-pointer z-50 flex-col justify-center items-center flex pt-4 px-8 rounded-md text-purple-800 transform duration-150 ease-in hover:text-white hover:scale-105"
+          class="space cursor-pointer z-50 flex-col justify-center items-center flex pt-4 px-8 rounded-md text-purple-800 transform duration-150 ease-in hover:text-foreground hover:scale-105"
         >
         <!-- Image -->
           <img src="https://www.pngmart.com/files/15/Floating-Astronaut-PNG-Free-Download.png" alt="" />

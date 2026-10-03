@@ -22,9 +22,9 @@ if (data.value) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-bta-bg text-white">
+  <div class="min-h-screen bg-background text-foreground">
     <div class="container mx-auto px-4 py-8">
-      <NuxtLink to="/dashboard" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors mb-8">
+      <NuxtLink to="/dashboard" class="inline-flex items-center text-primary-text hover:text-primary-text/80 transition-colors mb-8">
         <Icon name="lucide:arrow-left" class="size-4 mr-2" />
         Regresar a cursos
       </NuxtLink>
@@ -37,15 +37,15 @@ if (data.value) {
           </h1>
           <div class="flex items-center gap-4 mb-6">
             <div class="flex">
-              <Star v-for="(star, index) in 4" :key="index" name="lucide:star" class="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <Star v-for="(star, index) in 4" :key="index" name="lucide:star" class="w-5 h-5 fill-yellow-400 text-warning" />
             </div>
-            <span class="text-blue-400">{{ course?.count_evaluation }} Opiniones</span>
-            <Badge variant="secondary" class="bg-blue-900 hover:bg-blue-800 text-blue-100">
+            <span class="text-primary-text">{{ course?.count_evaluation }} Opiniones</span>
+            <Badge variant="secondary" class="">
               {{ course?.level_name }}
             </Badge>
           </div>
-          <div class="text-gray-300 mb-8">
-            <h2 class="text-xl font-semibold text-white mb-2">
+          <div class="text-foreground-secondary mb-8">
+            <h2 class="text-xl font-semibold text-foreground mb-2">
               Instructor: {{ teacher?.name }} {{ teacher?.lastname }}
             </h2>
             <p class="leading-relaxed">
@@ -55,20 +55,20 @@ if (data.value) {
           <!-- Course Content -->
           <div class="space-y-8">
             <div v-for="(module, idx) in syllabus" :key="idx">
-              <h3 class="text-xl font-semibold text-white mb-4">
+              <h3 class="text-xl font-semibold text-foreground mb-4">
                 {{ module.titulo }}
               </h3>
               <div class="space-y-3">
                 <NuxtLink v-for="lesson in module.videos" :key="lesson.id" :to="`/curso/leccion/${lesson.slug}`">
-                  <Card class="bg-bta-surface border-white/[0.06] hover:bg-bta-elevated transition-colors cursor-pointer">
+                  <Card class="bg-surface-2 border-subtle hover:bg-surface-3 transition-colors cursor-pointer">
                     <CardContent class="flex items-center justify-between p-4">
                       <div class="flex items-center gap-3">
-                        <!-- <div class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white">
+                        <!-- <div class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-foreground">
                           {{ lesson }}
                         </div> -->
-                        <span class="text-gray-100">{{ lesson.titlevideo }}</span>
+                        <span class="text-foreground">{{ lesson.titlevideo }}</span>
                       </div>
-                      <div class="flex items-center text-gray-400">
+                      <div class="flex items-center text-foreground-muted">
                         <Icon name="lucide:clock" class="w-4 h-4 mr-2" />
                         <span>{{ lesson.total }}</span>
                         <Icon name="lucide:chevron-right" class="w-4 h-4 ml-2" />
@@ -82,20 +82,20 @@ if (data.value) {
         </div>
         <!-- Pricing Card -->
         <div class="lg:sticky lg:top-20 h-fit">
-          <Card class="bg-bta-surface border-white/[0.06]">
+          <Card class="bg-surface-2 border-subtle">
             <CardContent class="p-6">
               <div class="text-center mb-6">
-                <div class="text-gray-300 mb-2">
+                <div class="text-foreground-secondary mb-2">
                   Consíguelo
                 </div>
-                <div class="text-4xl font-bold text-white">
+                <div class="text-4xl font-bold text-foreground">
                   {{ course?.price }} USD
                 </div>
               </div>
-              <Button class="w-full uppercase bg-pink-600 hover:bg-pink-700 text-white mb-4">
+              <Button class="w-full uppercase mb-4">
                 Comprar suscripción mensual
               </Button>
-              <p class="text-sm text-center text-gray-300">
+              <p class="text-sm text-center text-foreground-secondary">
                 Puedes comprar el curso por: {{ course?.price }} USD
               </p>
             </CardContent>

@@ -71,7 +71,7 @@ async function handleRegister(registrationInfo: RegistrationInfo) {
         code="ACCOUNT_CREATED"
         message="Cuenta creada. Revisa tu correo y confirma tu cuenta para poder iniciar sesión."
       />
-      <NuxtLink to="/login" :class="[linkClass, 'font-mono text-sm text-white/70 hover:text-bta-pink']">
+      <NuxtLink to="/login" :class="[linkClass, 'font-mono text-sm text-foreground-muted hover:text-primary-text']">
         &gt; Ir a iniciar sesión
       </NuxtLink>
     </div>
@@ -84,13 +84,13 @@ async function handleRegister(registrationInfo: RegistrationInfo) {
         @register="handleRegister"
       />
       <div class="mt-8 flex flex-col items-center gap-2 font-mono text-[13px]">
-        <p class="text-white/55">
+        <p class="text-foreground-muted">
           ¿Ya tienes cuenta?
-          <NuxtLink to="/login" :class="[linkClass, 'font-medium text-white hover:text-bta-pink']">
+          <NuxtLink to="/login" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
             Iniciar sesión
           </NuxtLink>
         </p>
-        <NuxtLink to="/reenviar-confirmacion" :class="[linkClass, 'text-xs text-white/40 hover:text-white/70']">
+        <NuxtLink to="/reenviar-confirmacion" :class="[linkClass, 'text-xs text-foreground-subtle hover:text-foreground-muted']">
           ¿No recibiste el correo de confirmación?
         </NuxtLink>
       </div>

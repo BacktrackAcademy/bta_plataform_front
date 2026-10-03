@@ -34,7 +34,7 @@ const links = [[0, 1], [1, 2], [2, 3], [1, 4], [4, 5], [2, 5], [5, 6], [3, 7], [
         class="auth-node"
         :cx="n.x" :cy="n.y" :r="n.r"
         :style="{ animationDelay: `${n.d}s` }"
-        :fill="i === 2 ? '#EC1075' : 'rgba(255,255,255,0.5)'"
+        :fill="i === 2 ? 'hsl(var(--primary))' : 'rgba(255,255,255,0.5)'"
       />
     </svg>
 
@@ -53,13 +53,13 @@ const links = [[0, 1], [1, 2], [2, 3], [1, 4], [4, 5], [2, 5], [5, 6], [3, 7], [
   animation: grid-drift 90s linear infinite;
 }
 .auth-glow {
-  background: radial-gradient(circle, rgba(236, 16, 117, 0.16), transparent 65%);
+  background: radial-gradient(circle, hsl(var(--primary)/0.16), transparent 65%);
   filter: blur(40px);
   animation: glow-drift 18s ease-in-out infinite alternate;
 }
 .auth-scan {
   left: 0;
-  background: linear-gradient(to bottom, transparent, rgba(236, 16, 117, 0.35), transparent);
+  background: linear-gradient(to bottom, transparent, hsl(var(--primary)/0.35), transparent);
   animation: scan 16s linear infinite;
 }
 .auth-node {

@@ -8,7 +8,7 @@ export default {
   props: {
     customClass: {
       type: String,
-      default: 'text-bta-pink',
+      default: 'text-primary-text',
     },
   },
 }

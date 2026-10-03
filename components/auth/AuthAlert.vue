@@ -6,12 +6,12 @@ withDefaults(defineProps<{ variant?: 'error' | 'success', code?: string | null, 
   <div
     :role="variant === 'error' ? 'alert' : 'status'"
     class="auth-alert border-l-2 px-4 py-3 font-mono text-[13px] leading-6"
-    :class="variant === 'error' ? 'border-red-500 bg-red-500/[0.07]' : 'border-bta-pink bg-bta-pink/[0.07]'"
+    :class="variant === 'error' ? 'border-danger bg-danger/[0.07]' : 'border-primary bg-primary/[0.07]'"
   >
-    <p :class="variant === 'error' ? 'text-red-400' : 'text-bta-pink'">
-      <span>{{ variant === 'error' ? '[!]' : '[+]' }}</span> {{ code || (variant === 'error' ? 'ERROR' : 'OK') }}<span class="auth-alert-cursor" :class="variant === 'error' ? 'bg-red-400' : 'bg-bta-pink'" aria-hidden="true" />
+    <p :class="variant === 'error' ? 'text-danger' : 'text-primary-text'">
+      <span>{{ variant === 'error' ? '[!]' : '[+]' }}</span> {{ code || (variant === 'error' ? 'ERROR' : 'OK') }}<span class="auth-alert-cursor" :class="variant === 'error' ? 'bg-danger' : 'bg-primary'" aria-hidden="true" />
     </p>
-    <p class="text-white/70">
+    <p class="text-foreground-muted">
       {{ message }}
     </p>
   </div>

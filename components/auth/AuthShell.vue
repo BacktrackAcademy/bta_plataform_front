@@ -15,7 +15,7 @@ defineProps<{
     <section class="relative hidden md:flex lg:w-[58%] md:h-[260px] lg:h-auto items-end lg:items-center px-10 lg:px-24 pb-8 lg:pb-0 overflow-hidden">
       <AuthBackdrop />
       <div class="relative z-10 auth-rise w-full max-w-xl" aria-hidden="true">
-        <p class="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-white/50 mb-8">
+        <p class="flex items-center gap-2 font-mono text-[11px] text-white/50 mb-8">
           <span class="relative flex size-2">
             <span class="auth-ping absolute inline-flex size-full rounded-full bg-bta-pink opacity-60" />
             <span class="relative inline-flex size-2 rounded-full bg-bta-pink" />
@@ -27,7 +27,7 @@ defineProps<{
           <p class="font-oswald font-bold uppercase text-5xl leading-[0.95] text-white">
             Happy<br>Hacking
           </p>
-          <p class="mt-5 font-mono text-sm uppercase tracking-[0.22em] text-white/70">
+          <p class="mt-5 font-mono text-sm text-white/70">
             Comienza tu carrera en Ciberseguridad
           </p>
         </div>

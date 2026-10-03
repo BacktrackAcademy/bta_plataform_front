@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
       <p class="font-oswald font-bold uppercase text-5xl xl:text-7xl leading-[0.95] text-white">
         Happy<br>Hacking<span class="term-cursor term-cursor--lg" />
       </p>
-      <p class="mt-6 font-mono text-sm uppercase tracking-[0.22em] text-white/70">
+      <p class="mt-6 font-mono text-sm text-white/70">
         Comienza tu carrera en Ciberseguridad
       </p>
     </div>

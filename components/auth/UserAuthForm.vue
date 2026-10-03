@@ -33,7 +33,7 @@ function handleSocialLogin(provider: 'github' | 'linkedin') {
   emit('socialLogin', provider)
 }
 
-const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-12 rounded-md border border-[#252936] font-mono text-sm text-white/75 transition-colors duration-200 hover:bg-white/[0.05] hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/60 disabled:opacity-50 disabled:pointer-events-none'
+const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-[#252936] font-mono text-xs text-white/75 transition-colors duration-200 hover:bg-white/[0.05] hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/60 disabled:opacity-50 disabled:pointer-events-none'
 </script>
 
 <template>
@@ -83,7 +83,7 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-12 rounde
 
     <div class="flex items-center gap-4" role="separator">
       <span class="h-px flex-1 bg-[#252936]" />
-      <span class="font-mono text-xs uppercase tracking-[0.18em] text-white/35">o continuar con</span>
+      <span class="font-mono text-xs text-white/35">o continuar con</span>
       <span class="h-px flex-1 bg-[#252936]" />
     </div>
 
@@ -98,7 +98,7 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-12 rounde
       </button>
     </div>
 
-    <div class="flex flex-col items-center gap-2 font-mono text-[13px]">
+    <div class="flex flex-col items-center gap-2 font-mono text-xs">
       <p class="text-white/55">
         ¿No tienes cuenta?
         <NuxtLink to="/crear-cuenta" :class="[linkClass, 'font-medium text-white hover:text-bta-pink']">

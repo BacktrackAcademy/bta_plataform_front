@@ -131,8 +131,8 @@ const stats = computed(() => {
     s.courses_taught ? { key: 'courses', label: 'Cursos', value: s.courses_taught } : null,
     s.articles ? { key: 'articles', label: 'Artículos', value: s.articles } : null,
     s.questions ? { key: 'questions', label: 'Preguntas', value: s.questions } : null,
-    { key: 'followers', label: 'Seguidores', value: followers.value, to: loggedIn.value ? `/@${p.value.username}/seguidores` : null },
-    { key: 'following', label: 'Siguiendo', value: s.following, to: loggedIn.value ? `/@${p.value.username}/siguiendo` : null },
+    { key: 'followers', label: 'Seguidores', value: followers.value, to: `/@${p.value.username}/seguidores` },
+    { key: 'following', label: 'Siguiendo', value: s.following, to: `/@${p.value.username}/siguiendo` },
   ].filter(Boolean) as { key: string, label: string, value: string | number, to?: string | null }[]
 })
 
@@ -164,18 +164,18 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
       <!-- Cabecera -->
       <header class="overflow-hidden rounded-lg border border-subtle bg-surface-2 shadow-elev-2">
         <!-- Portada -->
-        <div class="relative h-28 overflow-hidden sm:h-40" aria-hidden="true">
+        <div class="relative h-32 overflow-hidden sm:h-44" aria-hidden="true">
           <div class="absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,hsl(var(--primary)/0.38),transparent_55%),radial-gradient(90%_120%_at_100%_100%,hsl(var(--brand-violet)/0.35),transparent_60%)]" />
           <div class="bt-tech-grid absolute inset-0 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
           <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
         </div>
 
-        <div class="relative px-5 pb-6 sm:px-8">
-          <div class="-mt-14 flex flex-col items-center gap-4 sm:-mt-[4.5rem] sm:flex-row sm:items-end sm:gap-6">
+        <div class="relative px-5 pb-8 sm:px-8">
+          <div class="-mt-14 flex flex-col items-center gap-5 sm:-mt-16 sm:flex-row sm:items-start sm:gap-7">
             <ProfileAvatar :src="p.avatar_url" :name="p.full_name" size="lg" class="shrink-0 shadow-elev-2" />
 
-            <div class="min-w-0 flex-1 text-center sm:pb-1 sm:text-left">
-              <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
+            <div class="min-w-0 flex-1 text-center sm:pt-[5.75rem] sm:text-left">
+              <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-start">
                 <h1 class="break-words font-oswald text-3xl font-semibold leading-none tracking-tight text-foreground [text-wrap:balance] sm:text-[2.6rem]">
                   {{ p.full_name }}
                 </h1>
@@ -186,12 +186,23 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                   <Icon name="lucide:badge-check" class="size-3.5" aria-hidden="true" />{{ p.role_label }}
                 </span>
               </div>
-              <p class="mt-2 break-all text-sm text-primary-text">
-                @{{ p.username }}
+              <div class="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
+                <template v-if="p.headline">
+                  <p class="font-sans text-base font-semibold leading-tight text-foreground">
+                    {{ p.headline }}
+                  </p>
+                  <span class="text-foreground-muted/60" aria-hidden="true">·</span>
+                </template>
+                <p class="break-all text-base leading-tight text-primary-text">
+                  @{{ p.username }}
+                </p>
+              </div>
+              <p v-if="p.aboutme" class="mt-3 max-w-2xl whitespace-pre-line font-sans text-[15px] leading-snug tracking-[-0.01em] text-foreground-muted sm:text-base sm:leading-6">
+                {{ p.aboutme }}
               </p>
             </div>
 
-            <div class="flex shrink-0 flex-wrap items-center justify-center gap-2 sm:pb-1">
+            <div class="flex shrink-0 flex-wrap items-center justify-center gap-2 sm:pt-[5.5rem]">
               <Button v-if="p.is_owner" as-child class="bt-focus rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90">
                 <NuxtLink to="/perfil/editar">
                   <Icon name="lucide:pencil" class="mr-2 size-4" /> Editar perfil
@@ -217,15 +228,6 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                 {{ copied ? 'Enlace copiado' : 'Compartir' }}
               </Button>
             </div>
-          </div>
-
-          <div v-if="p.headline || p.aboutme" class="mt-6 max-w-3xl text-center sm:text-left">
-            <p v-if="p.headline" class="font-sans text-xl font-semibold leading-snug tracking-tight text-foreground">
-              {{ p.headline }}
-            </p>
-            <p v-if="p.aboutme" class="mt-2 whitespace-pre-line font-sans text-base leading-7 text-foreground-muted">
-              {{ p.aboutme }}
-            </p>
           </div>
         </div>
 

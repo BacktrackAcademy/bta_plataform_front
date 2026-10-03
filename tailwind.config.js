@@ -23,6 +23,7 @@ module.exports = {
       fontFamily: {
         oswald: ['Oswald', 'helvetica neue', 'Helvetica', 'Arial', 'sans-serif'],
         inconsolata: ['Inconsolata', 'monospace'],
+        sans: ['IBM Plex Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       scale: {
         40: '0.4',

@@ -220,10 +220,10 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
           </div>
 
           <div v-if="p.headline || p.aboutme" class="mt-6 max-w-3xl text-center sm:text-left">
-            <p v-if="p.headline" class="font-sans text-lg font-semibold leading-snug text-white">
+            <p v-if="p.headline" class="font-sans text-xl font-semibold leading-snug tracking-tight text-white">
               {{ p.headline }}
             </p>
-            <p v-if="p.aboutme" class="mt-2 whitespace-pre-line font-sans text-[15px] leading-7 text-bta-text-2">
+            <p v-if="p.aboutme" class="mt-2 whitespace-pre-line font-sans text-base leading-7 text-white/70">
               {{ p.aboutme }}
             </p>
           </div>
@@ -236,7 +236,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
               <dd class="font-oswald text-2xl font-semibold leading-none tabular-nums" :class="s.key === 'ranking' ? 'text-bta-pink' : 'text-white'">
                 {{ s.value }}
               </dd>
-              <dt class="mt-1.5 font-inconsolata text-[11px] uppercase tracking-[0.16em] text-gray-muted transition-colors group-hover:text-white">
+              <dt class="mt-1.5 font-inconsolata text-xs uppercase tracking-[0.14em] text-bta-text-2 transition-colors group-hover:text-white">
                 {{ s.label }}
               </dt>
             </component>
@@ -254,11 +254,11 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                   <Icon name="lucide:award" class="size-5 text-bta-pink" aria-hidden="true" />
                 </span>
                 <div class="min-w-0">
-                  <NuxtLink v-if="c.slug" :to="`/cursos/${c.slug}`" class="bt-focus line-clamp-2 rounded font-sans text-[15px] font-semibold leading-snug text-white hover:text-bta-pink">
+                  <NuxtLink v-if="c.slug" :to="`/cursos/${c.slug}`" class="bt-focus line-clamp-2 rounded font-sans text-base font-semibold leading-snug text-white hover:text-bta-pink">
                     {{ c.title }}
                   </NuxtLink>
-                  <span v-else class="line-clamp-2 font-sans text-[15px] font-semibold leading-snug text-white">{{ c.title }}</span>
-                  <p class="mt-0.5 font-inconsolata text-xs text-gray-muted">
+                  <span v-else class="line-clamp-2 font-sans text-base font-semibold leading-snug text-white">{{ c.title }}</span>
+                  <p class="mt-0.5 font-inconsolata text-[13px] text-bta-text-2">
                     <span class="text-emerald-400">●</span> Aprobado · {{ fmtDate(c.date) }}
                   </p>
                 </div>
@@ -270,8 +270,8 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
             <ul class="bt-surface divide-y divide-white/[0.06] overflow-hidden">
               <li v-for="art in a.articles" :key="art.slug">
                 <NuxtLink :to="`/articulos/${art.slug}`" class="bt-focus group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-white/[0.03]">
-                  <span class="min-w-0 truncate font-sans text-[15px] font-medium text-white transition-colors group-hover:text-bta-pink">{{ art.title }}</span>
-                  <span class="flex shrink-0 items-center gap-2 font-inconsolata text-xs text-gray-muted">
+                  <span class="min-w-0 truncate font-sans text-base font-medium text-white transition-colors group-hover:text-bta-pink">{{ art.title }}</span>
+                  <span class="flex shrink-0 items-center gap-2 font-inconsolata text-[13px] text-bta-text-2">
                     <span v-if="art.category" class="hidden rounded border border-white/10 px-1.5 py-0.5 sm:inline">{{ art.category }}</span>{{ fmtDate(art.published_at) }}
                   </span>
                 </NuxtLink>
@@ -283,8 +283,8 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
             <ul class="bt-surface divide-y divide-white/[0.06] overflow-hidden">
               <li v-for="q in a.questions" :key="q.slug">
                 <NuxtLink :to="`/debates/${q.slug}`" class="bt-focus group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-white/[0.03]">
-                  <span class="min-w-0 truncate font-sans text-[15px] font-medium text-white transition-colors group-hover:text-bta-pink">{{ q.title }}</span>
-                  <span class="flex shrink-0 items-center gap-1.5 font-inconsolata text-xs text-gray-muted">
+                  <span class="min-w-0 truncate font-sans text-base font-medium text-white transition-colors group-hover:text-bta-pink">{{ q.title }}</span>
+                  <span class="flex shrink-0 items-center gap-1.5 font-inconsolata text-[13px] text-bta-text-2">
                     <Icon name="lucide:message-square" class="size-3.5" aria-hidden="true" />{{ q.answers }}<span class="hidden sm:inline">{{ q.answers === 1 ? 'respuesta' : 'respuestas' }}</span>
                   </span>
                 </NuxtLink>
@@ -295,7 +295,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
           <ProfileSection v-if="a.courses.length" id="cursos" title="Cursos impartidos" :count="p.stats.courses_taught" :shown="a.courses.length">
             <ul class="grid gap-3 sm:grid-cols-2">
               <li v-for="c in a.courses" :key="c.slug">
-                <NuxtLink :to="`/cursos/${c.slug}`" class="bt-surface bt-surface-hover bt-focus block truncate p-4 font-sans text-[15px] font-semibold text-white">
+                <NuxtLink :to="`/cursos/${c.slug}`" class="bt-surface bt-surface-hover bt-focus block truncate p-4 font-sans text-base font-semibold text-white">
                   {{ c.title }}
                 </NuxtLink>
               </li>
@@ -310,7 +310,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
         <aside class="min-w-0 space-y-8 lg:sticky lg:top-24 lg:self-start">
           <ProfileSection v-if="p.specialties.length" id="especialidades" title="Especialidades">
             <ul class="flex flex-wrap gap-2">
-              <li v-for="s in p.specialties" :key="s" class="rounded-md border border-bta-pink/20 bg-bta-pink/[0.07] px-2.5 py-1 font-inconsolata text-xs text-white">
+              <li v-for="s in p.specialties" :key="s" class="rounded-md border border-bta-pink/20 bg-bta-pink/[0.07] px-2.5 py-1 font-inconsolata text-[13px] text-white">
                 {{ s }}
               </li>
             </ul>
@@ -328,7 +328,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
             </ul>
           </ProfileSection>
 
-          <p v-if="memberSince" class="font-inconsolata text-xs text-gray-muted">
+          <p v-if="memberSince" class="font-inconsolata text-[13px] text-bta-text-2">
             <span class="text-bta-pink/70">//</span> Miembro desde {{ memberSince }}
           </p>
         </aside>

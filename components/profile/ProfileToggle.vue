@@ -9,8 +9,8 @@ const model = defineModel<boolean>({ default: false })
 <template>
   <div class="flex items-start justify-between gap-4" :class="disabled ? 'opacity-50' : ''">
     <div class="min-w-0">
-      <label :id="`${id}-label`" :for="id" class="block text-sm font-medium text-white">{{ label }}</label>
-      <p :id="`${id}-desc`" class="mt-1 font-inconsolata text-xs leading-relaxed text-bta-text-2">
+      <label :id="`${id}-label`" :for="id" class="block font-sans text-[15px] font-medium text-white">{{ label }}</label>
+      <p :id="`${id}-desc`" class="mt-1 font-sans text-sm leading-relaxed text-white/60">
         {{ description }}
       </p>
     </div>

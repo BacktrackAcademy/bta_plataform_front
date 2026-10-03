@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { CoursesResponse } from '~/interfaces/courses.response'
 import CourseCard from '@/components/courses/CourseCard.vue'
+import { refDebounced } from '@vueuse/core'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 
 definePageMeta({
   layout: 'custom',
@@ -9,48 +11,54 @@ definePageMeta({
 })
 
 const searchQuery = ref('')
+const debouncedQuery = refDebounced(searchQuery, 350)
 const selectedTeachers = ref<string[]>([])
 const levelSelected = ref<string[]>([])
 const categorySelected = ref<string[]>([])
 
-const perPage = ref(6)
+const perPage = 9
 
-const { data: teachers, status: _teachersStatus } = useAPI('/teacher')
-const { data: levels, status: _levelsStatus } = useAPI('/level')
-const { data: categories, status: _categoriesStatus } = useAPI('/category')
+const { data: teachers } = useAPI('/teacher')
+const { data: levels } = useAPI('/level')
+const { data: categories } = useAPI('/category')
 
 const courses = ref<CoursesResponse>({
   courses: [],
-  pagination: {
-    current_page: 1,
-    per_page: 10,
-    total_entries: 0,
-    total_pages: 0,
-  },
+  pagination: { current_page: 1, per_page: perPage, total_entries: 0, total_pages: 0 },
 })
 
 const currentPage = ref(1)
 const hasMore = ref(true)
 const isLoading = ref(false)
-const scrollContainer = ref<HTMLElement | null>(null)
+const sentinel = ref<HTMLElement | null>(null)
+// Bumped on every new search so stale responses (filters changed mid-request) are discarded.
+let requestId = 0
+
+const hasFilters = computed(() => !!(debouncedQuery.value || selectedTeachers.value.length || levelSelected.value.length || categorySelected.value.length))
+const activeFilterCount = computed(() => selectedTeachers.value.length + levelSelected.value.length + categorySelected.value.length + (debouncedQuery.value ? 1 : 0))
+const total = computed(() => courses.value.pagination.total_entries)
 
 async function loadMoreCourses() {
   if (isLoading.value || !hasMore.value)
     return
 
+  const id = requestId
   isLoading.value = true
 
   try {
     const { data: coursesData } = await useAPI<CoursesResponse>('/courses', {
       params: {
         'page': currentPage.value,
-        'per_page': perPage.value,
-        'query': searchQuery.value,
+        'per_page': perPage,
+        'query': debouncedQuery.value,
         'users_ids[]': selectedTeachers.value,
         'category_ids[]': categorySelected.value,
         'level_ids[]': levelSelected.value,
       },
     })
+
+    if (id !== requestId)
+      return
 
     if (coursesData.value) {
       courses.value = {
@@ -62,99 +70,69 @@ async function loadMoreCourses() {
       hasMore.value = current_page < total_pages
       currentPage.value++
     }
+    else {
+      hasMore.value = false
+    }
   }
   catch (err) {
     console.error('Error cargando cursos:', err)
+    hasMore.value = false
   }
   finally {
-    isLoading.value = false
+    if (id === requestId)
+      isLoading.value = false
   }
 }
 
-async function handleSearch() {
-  if (isLoading.value)
-    return
-
+async function resetAndSearch() {
+  requestId++
+  isLoading.value = false
   courses.value = {
     courses: [],
-    pagination: {
-      current_page: 1,
-      per_page: perPage.value,
-      total_entries: 0,
-      total_pages: 0,
-    },
+    pagination: { current_page: 1, per_page: perPage, total_entries: 0, total_pages: 0 },
   }
   currentPage.value = 1
   hasMore.value = true
-
-  // Scroll al inicio
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollTop = 0
-  }
-
   await loadMoreCourses()
 }
 
-function handleScroll(event: Event) {
-  if (!hasMore.value || isLoading.value)
-    return
-
-  const container = event.target as HTMLElement
-  const { scrollTop, scrollHeight, clientHeight } = container
-
-  if (scrollTop + clientHeight >= scrollHeight - 100) {
-    loadMoreCourses()
-  }
+function clearFilters() {
+  searchQuery.value = ''
+  selectedTeachers.value = []
+  levelSelected.value = []
+  categorySelected.value = []
 }
 
-// Usar watch para reaccionar a cambios en los filtros
-watch([searchQuery, selectedTeachers, levelSelected, categorySelected], () => {
-  handleSearch()
-})
+watch([debouncedQuery, selectedTeachers, levelSelected, categorySelected], resetAndSearch)
 
+// Infinite scroll: load the next page when the end of the list nears the viewport. The scroll container
+// is the layout's <main>, so listen in the capture phase (scroll events don't bubble) instead of
+// using an IntersectionObserver, whose rootMargin doesn't extend past an overflow-clipped ancestor.
+function nearEnd() {
+  return !!sentinel.value && sentinel.value.getBoundingClientRect().top < window.innerHeight + 400
+}
+function loadIfNearEnd() {
+  if (nearEnd())
+    loadMoreCourses()
+}
 onMounted(() => {
   loadMoreCourses()
-  if (scrollContainer.value) {
-    scrollContainer.value.addEventListener('scroll', handleScroll)
-  }
+  window.addEventListener('scroll', loadIfNearEnd, { capture: true, passive: true })
 })
+onUnmounted(() => window.removeEventListener('scroll', loadIfNearEnd, { capture: true }))
 
-onUnmounted(() => {
-  if (scrollContainer.value) {
-    scrollContainer.value.removeEventListener('scroll', handleScroll)
-  }
-})
-
-function handleTeacherClick(teacherId: string) {
-  if (!teacherId) {
-    console.warn('El ID del profesor es inválido:', teacherId)
+// A page can finish loading while the end of the list is still near the viewport (tall screens).
+watch(isLoading, async (loading) => {
+  if (loading || !hasMore.value)
     return
-  }
+  await nextTick()
+  loadIfNearEnd()
+})
 
-  const isTeacherSelected = selectedTeachers.value.includes(teacherId)
-
-  if (isTeacherSelected) {
-    selectedTeachers.value = selectedTeachers.value.filter(id => id !== teacherId)
-  }
-  else {
-    selectedTeachers.value = [...selectedTeachers.value, teacherId]
-  }
-
-  applyFilters()
-}
-
-function applyFilters() {
-  // Aquí puedes agregar cualquier lógica adicional necesaria después de cambiar los filtros
-  // Por ejemplo, disparar una nueva búsqueda o actualizar la interfaz
-  handleSearch()
-}
-
-function handleCategorySelected(newSelected: string[]) {
-  categorySelected.value = newSelected
-}
-
-function handleLevelSelected(newSelected: string[]) {
-  levelSelected.value = newSelected
+function toggleLevel(value: string) {
+  levelSelected.value = levelSelected.value.includes(value)
+    ? levelSelected.value.filter(v => v !== value)
+    : [...levelSelected.value, value]
 }
 
 interface Option {
@@ -213,114 +191,130 @@ useSeoMeta({
 </script>
 
 <template>
-  <div
-    ref="scrollContainer"
-    class="w-full py-8 px-16 h-[calc(100vh-64px)] overflow-y-auto"
-  >
-    <div class="lg:h-full">
-      <h1 class="text-white text-3xl font-oswald mb-6 uppercase font-semibold">
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+    <header class="mb-6">
+      <h1 class="bt-section-title !text-3xl">
         Cursos de hacking ético
       </h1>
-      <div class="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-6 ">
-        <!-- Sección de cursos -->
-        <div
-          v-if="isLoading && !courses.courses.length"
-          class="w-full flex-1 min-h-[calc(100vh-200px)] grid place-items-center"
+      <p class="mt-2 font-inconsolata text-sm text-gray-muted">
+        <span class="text-bta-pink">$</span> ls cursos/
+        <span v-if="total" class="text-white/70">→ {{ total }} {{ total === 1 ? 'curso' : 'cursos' }}{{ hasFilters ? ' encontrados' : '' }}</span>
+      </p>
+    </header>
+
+    <!-- Filters -->
+    <section class="bt-surface mb-8 space-y-4 !rounded-2xl !border-transparent p-4 shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)] sm:p-5" aria-label="Filtros">
+      <div class="grid gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <label class="relative block">
+          <span class="sr-only">Buscar cursos</span>
+          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-inconsolata text-bta-pink" aria-hidden="true">&gt;</span>
+          <Input
+            v-model="searchQuery"
+            class="h-11 border-white/10 bg-bta-bg pl-8 font-inconsolata text-white placeholder:text-gray-muted"
+            placeholder="buscar cursos…"
+          />
+        </label>
+        <MultiSelect
+          class-name="font-inconsolata !min-h-11 !border-white/10 !bg-bta-bg"
+          :options="formattedCategories"
+          :selected="categorySelected"
+          placeholder="Categorías"
+          search-placeholder="Buscar categorías..."
+          @change="categorySelected = $event"
+        />
+        <MultiSelect
+          class-name="font-inconsolata !min-h-11 !border-white/10 !bg-bta-bg"
+          :options="formattedTeachers"
+          :selected="selectedTeachers"
+          placeholder="Profesores"
+          search-placeholder="Buscar profesores..."
+          @change="selectedTeachers = $event"
+        />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="mr-1 font-inconsolata text-xs uppercase tracking-wider text-gray-muted">Nivel</span>
+        <button
+          v-for="level in formattedLevels"
+          :key="level.value"
+          type="button"
+          :aria-pressed="levelSelected.includes(level.value)"
+          class="bt-focus border px-3 py-1.5 font-inconsolata text-sm transition-colors duration-200"
+          :class="levelSelected.includes(level.value)
+            ? 'border-bta-pink bg-bta-pink text-white'
+            : 'border-white/10 text-bta-text-2 hover:border-bta-pink/50 hover:text-white'"
+          @click="toggleLevel(level.value)"
         >
-          <div class="text-center">
-            <Icon name="mingcute:loading-fill" class="text-bta-pink animate-spin size-6" />
-            <p class="text-inconsolata">
-              Cargando cursos...
-            </p>
-          </div>
-        </div>
-        <div
-          v-else-if="!isLoading && courses.courses.length === 0 && (searchQuery || selectedTeachers.length || levelSelected.length || categorySelected.length)"
-          class="w-full flex-1 min-h-[calc(100vh-200px)] grid place-items-center"
+          {{ level.label }}
+        </button>
+
+        <button
+          v-if="activeFilterCount"
+          type="button"
+          class="bt-focus ml-auto inline-flex items-center gap-1.5 font-inconsolata text-sm text-bta-pink transition-opacity hover:opacity-80"
+          @click="clearFilters"
         >
-          <div class="text-center">
-            <p>No se encontraron cursos que coincidan con los filtros</p>
-          </div>
-        </div>
+          <Icon name="lucide:x" class="size-3.5" />
+          Limpiar filtros ({{ activeFilterCount }})
+        </button>
+      </div>
+    </section>
 
-        <div v-else class="flex-1 grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-4 mb-80">
-          <div v-for="course in courses.courses" :key="course.id" class="flex">
-            <CourseCard :course="course" />
-          </div>
-
-          <!-- Indicador de carga al final -->
-          <div v-if="isLoading" class="col-span-full py-4 text-center">
-            <Icon name="mingcute:loading-fill" class="text-bta-pink animate-spin size-6" />
-            <p>Cargando más cursos...</p>
-          </div>
-        </div>
-
-        <!-- Filtros -->
-        <div class="h-[200px]">
-          <div class="space-y-4 max-w-[290px] w-full sticky top-10">
-            <div class="relative flex-1">
-              <label class="text-sm font-medium mb-2 font-oswald block">Cursos</label>
-              <Input
-                v-model="searchQuery"
-                class="placeholder:font-inconsolata"
-                placeholder="Buscar cursos..."
-              />
-            </div>
-
-            <div>
-              <label class="text-sm font-medium mb-2 font-oswald block">Categorías</label>
-              <MultiSelect
-                class-name="font-inconsolata"
-                :options="formattedCategories || []"
-                :selected="categorySelected"
-                placeholder="Categorías"
-                search-placeholder="Buscar categorías..."
-                @change="handleCategorySelected"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium mb-2 font-oswald block">Niveles</label>
-              <MultiSelect
-                class-name="font-inconsolata"
-                :options="formattedLevels || []"
-                :selected="levelSelected"
-                placeholder="Niveles"
-                search-placeholder="Buscar niveles..."
-                @change="handleLevelSelected"
-              />
-            </div>
-
-            <!-- Profesores -->
-            <div class="space-y-2">
-              <h3 class="text-sm font-medium mb-2 font-oswald">
-                Profesores
-              </h3>
-              <div class="space-y-1 font-inconsolata">
-                {{ selectedTeachers.value }}
-                <button
-                  v-for="teacher in formattedTeachers"
-                  :key="teacher.value"
-                  class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors" :class="[
-                    selectedTeachers.includes(teacher.value)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-secondary',
-                  ]"
-                  @click="handleTeacherClick(teacher.value)"
-                >
-                  {{ teacher.label }}
-                </button>
-              </div>
-            </div>
-
-            <Button
-              class="rounded-md bg-bta-pink px-8 py-2 text-primary hover:bg-bta-pink/90"
-              @click="handleSearch"
-            >
-              Buscar
-            </Button>
-          </div>
-        </div>
+    <!-- Results -->
+    <div
+      v-if="!isLoading && !courses.courses.length"
+      class="grid place-items-center py-20"
+    >
+      <div class="max-w-md border border-white/[0.08] bg-black/30 p-6 font-inconsolata text-sm">
+        <p class="text-white">
+          <span class="text-bta-pink">$</span> grep -ri "{{ debouncedQuery || 'filtros' }}" cursos/
+        </p>
+        <p class="mt-2 text-gray-muted">
+          0 resultados. Prueba con otros términos o quita algún filtro.
+        </p>
+        <button v-if="hasFilters" type="button" class="bt-focus mt-4 text-bta-pink hover:underline" @click="clearFilters">
+          &gt; limpiar filtros
+        </button>
       </div>
     </div>
+
+    <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-6">
+      <div v-for="course in courses.courses" :key="course.id" class="flex">
+        <CourseCard :course="course" />
+      </div>
+      <template v-if="isLoading">
+        <div v-for="n in (courses.courses.length ? 3 : perPage)" :key="`sk${n}`" class="bt-surface overflow-hidden !rounded-2xl !border-transparent">
+          <Skeleton class="aspect-video w-full rounded-none" />
+          <div class="space-y-3 p-4">
+            <Skeleton class="h-6 w-4/5" />
+            <Skeleton class="h-4 w-1/2" />
+            <Skeleton class="h-0.5 w-8" />
+            <Skeleton class="h-10 w-full" />
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div ref="sentinel" class="h-px" aria-hidden="true" />
+    <p v-if="!hasMore && courses.courses.length" class="py-10 text-center font-inconsolata text-sm text-gray-muted">
+      <span class="text-bta-pink">$</span> fin de la lista<span class="term-cursor ml-1" aria-hidden="true" />
+    </p>
   </div>
 </template>
+
+<style>
+.term-cursor {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.95rem;
+  background: #ec1075;
+  vertical-align: text-bottom;
+  animation: term-blink 1.1s steps(1) infinite;
+}
+@keyframes term-blink {
+  50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .term-cursor { animation: none; }
+}
+</style>

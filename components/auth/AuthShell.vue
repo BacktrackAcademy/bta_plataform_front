@@ -11,11 +11,11 @@ defineProps<{
 </script>
 
 <template>
-  <main class="min-h-screen flex flex-col lg:flex-row bg-[#05060B]">
+  <main class="min-h-screen flex flex-col lg:flex-row bg-[#0E0F22]">
     <section class="relative hidden md:flex lg:w-[58%] md:h-[260px] lg:h-auto items-end lg:items-center px-10 lg:px-24 pb-8 lg:pb-0 overflow-hidden">
       <AuthBackdrop />
       <div class="relative z-10 auth-rise w-full max-w-xl" aria-hidden="true">
-        <p class="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-white/50 mb-8">
+        <p class="flex items-center gap-2 font-mono text-[11px] text-white/50 mb-8">
           <span class="relative flex size-2">
             <span class="auth-ping absolute inline-flex size-full rounded-full bg-bta-pink opacity-60" />
             <span class="relative inline-flex size-2 rounded-full bg-bta-pink" />
@@ -27,14 +27,14 @@ defineProps<{
           <p class="font-oswald font-bold uppercase text-5xl leading-[0.95] text-white">
             Happy<br>Hacking
           </p>
-          <p class="mt-5 font-mono text-sm uppercase tracking-[0.22em] text-white/70">
+          <p class="mt-5 font-mono text-sm text-white/70">
             Comienza tu carrera en Ciberseguridad
           </p>
         </div>
       </div>
     </section>
 
-    <section class="relative flex flex-1 items-center justify-center px-5 pt-28 pb-12 md:pt-12 lg:p-12 bg-[#080A10] lg:border-l border-[#171A24]">
+    <section class="relative flex flex-1 items-center justify-center px-5 pt-28 pb-12 md:pt-12 lg:p-12 bg-[#070916] lg:border-l border-[#1C1B36]">
       <div class="auth-rise w-full max-w-[460px]">
         <header class="mb-10">
           <h1 class="font-oswald font-bold uppercase tracking-wide text-4xl text-white">

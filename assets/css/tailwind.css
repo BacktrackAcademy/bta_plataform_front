@@ -76,3 +76,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Authenticated shell: shared surface system (cards, technical grid, microdata) */
+@layer components {
+  .bt-surface {
+    @apply rounded-xl border border-white/[0.06] bg-bta-surface;
+  }
+  .bt-surface-hover {
+    @apply transition-[border-color,background-color,box-shadow] duration-200 hover:border-bta-pink/40 hover:bg-bta-elevated hover:shadow-[0_0_0_1px_rgba(236,16,117,0.12),0_16px_40px_-24px_rgba(236,16,117,0.45)];
+  }
+  .bt-focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bta-bg;
+  }
+  /* Section heading: spaced uppercase Oswald + pink "underscore" echoing the logo */
+  .bt-section-title {
+    @apply font-oswald text-2xl font-semibold uppercase leading-none tracking-normal text-white;
+  }
+  .bt-section-title::after {
+    content: '';
+    @apply ml-2 inline-block h-[3px] w-4 bg-bta-pink align-baseline;
+  }
+  .bt-eyebrow {
+    @apply text-[13px] font-medium text-bta-text-2;
+  }
+  .bt-tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}

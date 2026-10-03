@@ -12,6 +12,7 @@ import {
   PaginationPrev,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
+import ArticleCard from '~/components/articles/ArticleCard.vue'
 
 definePageMeta({
   layout: 'custom',
@@ -60,7 +61,7 @@ useSeoMeta({
       <template v-else>
         <div class="flex">
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 py-5">
-            <CardArticle v-for="article in articles?.data" :key="article.id" :article="article" />
+            <ArticleCard v-for="article in articles?.data" :key="article.id" :article="article" />
           </div>
           <div class="h-[200px]" />
         </div>

@@ -40,7 +40,26 @@ export function useFormatter() {
     return 'hace unos segundos'
   }
 
+  // "HH:MM:SS" -> whole hours (rounded). Empty/invalid -> 0.
+  function clockToHours(clock?: string | null): number {
+    if (!clock)
+      return 0
+    const [h = '0', m = '0'] = clock.split(':')
+    return Math.round((Number.parseInt(h) || 0) + (Number.parseInt(m) || 0) / 60)
+  }
+
+  // Seconds -> "2h 15m" / "40m"
+  function secondsToHM(seconds: number): string {
+    if (!seconds || seconds <= 0)
+      return '0m'
+    const h = Math.floor(seconds / 3600)
+    const m = Math.round((seconds % 3600) / 60)
+    return [h ? `${h}h` : '', m || !h ? `${m}m` : ''].filter(Boolean).join(' ')
+  }
+
   return {
+    clockToHours,
+    secondsToHM,
     convertToHours,
     timeAgo,
   }

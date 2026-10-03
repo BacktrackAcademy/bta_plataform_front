@@ -21,15 +21,15 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
 <template>
   <div>
     <div class="flex items-center justify-between">
-      <label :for="id" class="block font-mono text-xs uppercase tracking-[0.18em] text-white/50">{{ label }}</label>
+      <label :for="id" class="block font-mono text-[11px] text-white/45">{{ label }}</label>
       <slot name="label-extra" />
     </div>
-    <div class="group flex items-center gap-3 h-14 border-b border-[#2a2f3f] transition-colors duration-300 hover:border-white/30 focus-within:border-bta-pink focus-within:shadow-[0_1px_0_0_rgba(236,16,117,0.6)]">
-      <span class="term-prompt font-mono text-lg text-bta-pink select-none" aria-hidden="true">&gt;</span>
+    <div class="group flex items-center gap-3 h-11 border-b border-[#2D2C4A] transition-colors duration-300 hover:border-white/30 focus-within:border-bta-pink focus-within:shadow-[0_1px_0_0_rgba(236,16,117,0.6)]">
+      <span class="term-prompt font-mono text-sm text-bta-pink select-none" aria-hidden="true">&gt;</span>
       <input
         :id="id"
         v-model="model"
-        class="term-input flex-1 min-w-0 h-full bg-transparent font-mono text-lg text-white caret-bta-pink placeholder:text-white/25 outline-none disabled:opacity-60"
+        class="term-input flex-1 min-w-0 h-full bg-transparent font-mono text-sm text-white caret-bta-pink placeholder:text-white/25 outline-none disabled:opacity-60"
         :type="inputType"
         :name="id"
         :inputmode="inputmode"
@@ -49,7 +49,7 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
         :aria-pressed="reveal"
         @click="reveal = !reveal"
       >
-        <Icon :name="reveal ? 'lucide:eye' : 'lucide:eye-off'" class="size-5" />
+        <Icon :name="reveal ? 'lucide:eye' : 'lucide:eye-off'" class="size-4" />
       </button>
     </div>
   </div>
@@ -62,8 +62,8 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
 .term-input:-webkit-autofill:focus {
   -webkit-text-fill-color: #fff;
   caret-color: #ec1075;
-  -webkit-box-shadow: 0 0 0 1000px #080a10 inset;
-  box-shadow: 0 0 0 1000px #080a10 inset;
+  -webkit-box-shadow: 0 0 0 1000px #070916 inset;
+  box-shadow: 0 0 0 1000px #070916 inset;
   transition: background-color 9999s ease-out 0s;
 }
 .term-input {

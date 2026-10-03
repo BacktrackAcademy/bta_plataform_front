@@ -22,7 +22,7 @@ if (data.value) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#0a0b0f] text-white">
+  <div class="min-h-screen bg-bta-bg text-white">
     <div class="container mx-auto px-4 py-8">
       <NuxtLink to="/dashboard" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors mb-8">
         <Icon name="lucide:arrow-left" class="size-4 mr-2" />
@@ -60,7 +60,7 @@ if (data.value) {
               </h3>
               <div class="space-y-3">
                 <NuxtLink v-for="lesson in module.videos" :key="lesson.id" :to="`/curso/leccion/${lesson.slug}`">
-                  <Card class="bg-[#1a1b23] border-[#2a2b33] hover:bg-[#22232f] transition-colors cursor-pointer">
+                  <Card class="bg-bta-surface border-white/[0.06] hover:bg-bta-elevated transition-colors cursor-pointer">
                     <CardContent class="flex items-center justify-between p-4">
                       <div class="flex items-center gap-3">
                         <!-- <div class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white">
@@ -82,7 +82,7 @@ if (data.value) {
         </div>
         <!-- Pricing Card -->
         <div class="lg:sticky lg:top-20 h-fit">
-          <Card class="bg-[#1a1b23] border-[#2a2b33]">
+          <Card class="bg-bta-surface border-white/[0.06]">
             <CardContent class="p-6">
               <div class="text-center mb-6">
                 <div class="text-gray-300 mb-2">

@@ -15,6 +15,24 @@ interface Subscription {
 }
 
 const { data: subscriptions, status: subscriptionStatus } = useAPI<Subscription[]>('/subscriptions')
+const { data: eligibility } = useAPI<PaypalEligibility>('/paypal/eligibility')
+const { loading, error, subscribe, migrate } = usePaypalSubscription()
+
+const busyPlan = ref<number | null>(null)
+
+const hasActiveRest = computed(() =>
+  ['active', 'suspended'].includes(eligibility.value?.rest_subscription?.status ?? ''))
+const canBuy = computed(() => eligibility.value?.flow === 'rest' && !hasActiveRest.value)
+
+async function onSubscribe(planId: number) {
+  busyPlan.value = planId
+  await subscribe(planId)
+  busyPlan.value = null
+}
+
+function formatDate(value: string | null | undefined) {
+  return value ? new Date(value).toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' }) : ''
+}
 </script>
 
 <template>
@@ -27,6 +45,46 @@ const { data: subscriptions, status: subscriptionStatus } = useAPI<Subscription[
         </h2>
         <p class="text-gray-muted text-lg font-inconsolata mt-2">
           Accede a los mejores cursos de seguridad informática con el plan que mejor se adapte a ti.
+        </p>
+      </div>
+
+      <!-- Estado de la cuenta / errores -->
+      <div class="max-w-3xl mx-auto mb-8 space-y-3 font-inconsolata text-sm">
+        <p v-if="hasActiveRest" class="rounded-lg border border-green-500/40 bg-green-500/10 p-4 text-green-400">
+          Ya tienes una suscripción activa. Puedes gestionarla desde tu perfil.
+        </p>
+        <div
+          v-else-if="eligibility?.legacy_subscription"
+          class="rounded-lg border border-gray-600 bg-bta-dark-blue p-4 text-white"
+        >
+          <p>
+            Tienes un pago recurrente activo con PayPal
+            <span v-if="eligibility.legacy_subscription.next_billing_at">
+              (próxima renovación: {{ formatDate(eligibility.legacy_subscription.next_billing_at) }})
+            </span>.
+          </p>
+          <template v-if="eligibility.legacy_subscription.can_migrate">
+            <p class="mt-2 text-gray-muted">
+              Puedes pasar a la nueva suscripción sin pagar dos veces: el primer cobro nuevo ocurre en tu fecha de renovación
+              y solo cancelamos el pago anterior cuando PayPal confirma la nueva.
+            </p>
+            <button
+              class="mt-3 py-2 px-4 bg-bta-pink hover:bg-bta-pink/90 text-white font-semibold rounded-lg disabled:opacity-50"
+              :disabled="loading"
+              @click="migrate()"
+            >
+              {{ loading ? 'Redirigiendo a PayPal…' : 'Migrar mi suscripción' }}
+            </button>
+          </template>
+        </div>
+        <p
+          v-else-if="eligibility && !eligibility.rest_enabled"
+          class="rounded-lg border border-gray-600 bg-bta-dark-blue p-4 text-gray-muted"
+        >
+          El pago con PayPal aún no está disponible para tu cuenta.
+        </p>
+        <p v-if="error" class="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-red-400" role="alert">
+          {{ error }}
         </p>
       </div>
 
@@ -108,17 +166,17 @@ const { data: subscriptions, status: subscriptionStatus } = useAPI<Subscription[
           </ul>
 
           <!-- Botón -->
-          <NuxtLink to="/suscripciones/tarjeta" class="block w-full">
-            <button
-              class="mt-6 w-full py-3 text-white font-semibold rounded-lg transition-all font-inconsolata"
-              :class="{
-                'bg-bta-pink hover:bg-bta-pink/90': subscription.recommended === 1,
-                'bg-bta-blue hover:bg-bta-blue/90': subscription.recommended === 0,
-              }"
-            >
-              Suscribirme
-            </button>
-          </NuxtLink>
+          <button
+            class="mt-6 w-full py-3 text-white font-semibold rounded-lg transition-all font-inconsolata disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="{
+              'bg-bta-pink hover:bg-bta-pink/90': subscription.recommended === 1,
+              'bg-bta-blue hover:bg-bta-blue/90': subscription.recommended === 0,
+            }"
+            :disabled="!canBuy || loading"
+            @click="onSubscribe(subscription.id)"
+          >
+            {{ busyPlan === subscription.id ? 'Redirigiendo a PayPal…' : 'Suscribirme con PayPal' }}
+          </button>
         </div>
       </div>
 

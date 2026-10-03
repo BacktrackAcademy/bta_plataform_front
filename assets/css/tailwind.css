@@ -78,6 +78,8 @@
 
     --focus-ring: 331 88% 44%;
     --scrim: 235 55% 4%;
+    --on-scrim: 230 30% 96%; /* texto sobre velos/imágenes: siempre claro */
+    --primary-on-scrim: 331 92% 70%;
     --brand-violet: 255 66% 33%;
 
     --card: var(--surface-2);
@@ -142,6 +144,8 @@
 
     --focus-ring: 331 88% 60%;
     --scrim: 235 55% 4%; /* velos sobre imágenes */
+    --on-scrim: 230 30% 96%;
+    --primary-on-scrim: 331 92% 70%;
     --brand-violet: 255 66% 33%; /* segundo extremo del tinte de marca sobre imágenes/avatares */
 
     /* Alias para shadcn-vue (los componentes de /ui consumen estos nombres) */
@@ -336,6 +340,6 @@
 
   /* Chip sobre imagen: legible sin importar la portada */
   .bt-overlay-chip {
-    @apply inline-flex items-center gap-1.5 rounded-sm border border-foreground/10 bg-scrim/70 px-2 py-1 text-xs font-medium text-foreground backdrop-blur-sm;
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-on-scrim/15 bg-scrim/70 px-2 py-1 text-xs font-medium text-on-scrim backdrop-blur-sm;
   }
 }

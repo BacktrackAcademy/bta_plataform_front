@@ -53,13 +53,13 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
             v-for="n in 4"
             :key="n"
             class="w-[3px] rounded-[1px]"
-            :class="n <= levelRank ? 'bg-primary' : 'bg-foreground/25'"
+            :class="n <= levelRank ? 'bg-primary' : 'bg-on-scrim/30'"
             :style="{ height: `${n * 3 + 3}px` }"
           />
         </span>
         {{ course.level_name }}
       </span>
-      <span v-if="isNew" class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider text-primary-text">
+      <span v-if="isNew" class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider text-on-scrim-primary">
         Nuevo
       </span>
       <span v-if="duration" class="bt-overlay-chip absolute bottom-3 left-3 font-mono">

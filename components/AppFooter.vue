@@ -53,7 +53,7 @@ function toTop() {
 
 <template>
   <footer v-if="compact" class="mt-10 border-t border-subtle bg-surface-1">
-    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-4 font-inconsolata text-xs text-foreground-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-4 font-mono text-xs text-foreground-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
       <p>© {{ year }} Backtrack Academy · Santiago, Chile</p>
       <nav aria-label="Pie de página" class="flex flex-wrap items-center gap-x-5 gap-y-1">
         <a :href="landingUrl('/privacy_policy')" class="bt-focus rounded transition-colors hover:text-foreground">Privacidad</a>
@@ -78,7 +78,7 @@ function toTop() {
         <!-- Brand / terminal -->
         <div>
           <NuxtLink to="/dashboard" class="bt-focus inline-block rounded" aria-label="Backtrack Academy — Inicio">
-            <img class="w-36" src="~/assets/logo.svg" alt="Backtrack Academy">
+            <CommonBrandLogo class="w-36" />
           </NuxtLink>
           <p class="t-body mt-5 max-w-sm">
             Cursos prácticos de ciberseguridad ofensiva y defensiva, en español.
@@ -133,7 +133,7 @@ function toTop() {
             <h3 class="font-oswald text-lg font-medium uppercase tracking-wider text-foreground">
               {{ col.title }}
             </h3>
-            <p class="mb-4 mt-0.5 font-inconsolata text-xs text-foreground-subtle">
+            <p class="mb-4 mt-0.5 font-mono text-xs text-foreground-subtle">
               <span class="text-primary-text/80">$</span> {{ col.cmd }}
             </p>
             <ul class="space-y-2.5 text-[15px]">
@@ -154,7 +154,7 @@ function toTop() {
       </div>
 
       <!-- Bottom bar -->
-      <div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-subtle pt-6 font-inconsolata text-sm text-foreground-subtle sm:flex-row sm:items-center">
+      <div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-subtle pt-6 text-sm text-foreground-subtle sm:flex-row sm:items-center">
         <p>
           © {{ year }} Backtrack Academy · Santiago, Chile · Todos los derechos reservados.
         </p>

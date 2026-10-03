@@ -36,7 +36,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
     >
       <div class="hidden h-16 shrink-0 items-center justify-center border-b border-subtle md:flex lg:justify-start lg:px-6">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm" aria-label="Backtrack Academy — Inicio">
-          <img class="hidden w-[104px] lg:block" src="~/assets/logo.svg" alt="Backtrack Academy">
+          <CommonBrandLogo class="hidden w-[104px] lg:block" />
           <span class="font-oswald text-lg font-bold tracking-widest text-foreground lg:hidden">BT<span class="text-primary-text">_</span></span>
         </NuxtLink>
       </div>
@@ -89,7 +89,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
       <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-subtle bg-background/85 px-4 backdrop-blur sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">
-          <img class="w-28" src="~/assets/logo.svg" alt="Backtrack Academy">
+          <CommonBrandLogo class="w-28" />
         </NuxtLink>
         <p class="hidden min-w-0 items-center truncate font-mono text-sm text-foreground-secondary md:flex" aria-live="polite">
           <span class="text-primary-text">~/</span><span class="truncate">{{ sectionPath }}</span><span class="term-cursor ml-1" aria-hidden="true" />
@@ -113,6 +113,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
             Vuélvete Pro
           </NuxtLink>
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
+          <CommonThemeToggle />
           <ProfileMenu />
         </div>
       </header>

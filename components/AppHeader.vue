@@ -32,7 +32,7 @@ function toggleBurgerMenu() {
       <div class="container flex gap-6 items-center h-20">
         <div @click.prevent="closeBurgerMenu">
           <NuxtLink to="/">
-            <img class="w-32" src="~/assets/logo.svg" alt="logo">
+            <CommonBrandLogo class="w-32" />
           </NuxtLink>
         </div>
         <div
@@ -54,6 +54,7 @@ function toggleBurgerMenu() {
           >
             Vuélvete Pro!
           </NuxtLink>
+          <CommonThemeToggle />
           <NuxtLink to="/login" class="nav__link">
             <span v-if="status.toLowerCase() === 'authenticated'">
               Dashboard

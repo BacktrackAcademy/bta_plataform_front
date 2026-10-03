@@ -71,6 +71,10 @@ module.exports = {
         'danger': token('danger'),
         'info': token('info'),
         'scrim': token('scrim'),
+        'on-scrim': {
+          DEFAULT: token('on-scrim'),
+          primary: token('primary-on-scrim'),
+        },
         // ---- Compatibilidad shadcn-vue (components/ui) ----
         'secondary': { DEFAULT: token('secondary'), foreground: token('secondary-foreground') },
         'destructive': { DEFAULT: token('destructive'), foreground: token('destructive-foreground') },

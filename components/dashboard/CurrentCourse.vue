@@ -29,7 +29,7 @@ const remaining = computed(() => {
       <div class="relative aspect-video md:aspect-auto md:min-h-[260px] md:w-[44%] md:shrink-0">
         <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand class="absolute inset-0 !aspect-auto size-full" />
         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface-2/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-surface-2" />
-        <p class="bt-overlay-chip absolute left-4 top-4 font-mono uppercase tracking-wider text-primary-text">
+        <p class="bt-overlay-chip absolute left-4 top-4 font-mono uppercase tracking-wider text-on-scrim-primary">
           <span class="size-1.5 rounded-full bg-primary" aria-hidden="true" />
           En curso
         </p>

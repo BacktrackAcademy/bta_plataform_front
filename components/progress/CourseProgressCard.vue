@@ -27,7 +27,7 @@ const label = computed(() => LABEL[status.value])
     <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand>
       <p
         class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider"
-        :class="status === 'in_progress' || status === 'certified' ? 'text-primary-text' : 'text-foreground-muted'"
+        :class="status === 'in_progress' || status === 'certified' ? 'text-on-scrim-primary' : 'text-on-scrim/70'"
       >
         <Icon :name="label.icon" class="size-3" aria-hidden="true" />
         {{ label.text }}

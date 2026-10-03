@@ -15,6 +15,14 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/eslint',
   ],
+  // Tema día/noche: `classSuffix: ''` aplica `dark` / `light` directamente en <html> (Tailwind darkMode: class).
+  // Por defecto oscuro; el visitante puede cambiarlo y se recuerda en localStorage.
+  colorMode: {
+    classSuffix: '',
+    preference: 'dark',
+    fallback: 'dark',
+    storageKey: 'bta-theme',
+  },
   auth: {
     isEnabled: true,
     originEnvKey: 'NUXT_AUTH_ORIGIN',

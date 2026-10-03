@@ -35,7 +35,7 @@ const dateLabel = computed(() => published.value?.toLocaleDateString('es-CL', { 
       <span v-if="article.category?.name" class="bt-overlay-chip absolute left-3 top-3 max-w-[70%] truncate font-mono">
         {{ article.category.name }}
       </span>
-      <span v-if="isNew" class="bt-overlay-chip absolute right-3 top-3 font-mono uppercase tracking-wider text-primary-text">
+      <span v-if="isNew" class="bt-overlay-chip absolute right-3 top-3 font-mono uppercase tracking-wider text-on-scrim-primary">
         Nuevo
       </span>
     </CourseThumb>

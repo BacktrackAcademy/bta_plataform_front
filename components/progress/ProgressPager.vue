@@ -28,7 +28,7 @@ const btn = 'bt-focus inline-flex h-9 items-center justify-center rounded-md bor
       <Icon name="lucide:arrow-left" class="size-3.5" aria-hidden="true" /> PREV
     </button>
     <template v-for="(n, i) in pages" :key="i">
-      <span v-if="n === null" class="px-1 font-inconsolata text-foreground-subtle" aria-hidden="true">…</span>
+      <span v-if="n === null" class="px-1 text-foreground-subtle" aria-hidden="true">…</span>
       <button
         v-else
         type="button"

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { CoursesHistory, CoursesProgressResponse, DashboardCourse, Degree, LatestArticlesResponse, LatestCoursesResponse } from '~/interfaces/dashboard'
-import ContinueCourseCard from '~/components/dashboard/ContinueCourseCard.vue'
 import CurrentCourse from '~/components/dashboard/CurrentCourse.vue'
 import DashboardHeader from '~/components/dashboard/DashboardHeader.vue'
 import LatestArticleCard from '~/components/dashboard/LatestArticleCard.vue'
-import LatestCourseCard from '~/components/dashboard/LatestCourseCard.vue'
+import CourseCard from '~/components/courses/CourseCard.vue'
 import LearningPathCard from '~/components/dashboard/LearningPathCard.vue'
 import ProgressOverview from '~/components/dashboard/ProgressOverview.vue'
 import { Skeleton } from '~/components/ui/skeleton'
@@ -127,7 +126,7 @@ useSeoMeta({
               </div>
             </div>
           </template>
-          <ContinueCourseCard
+          <CourseCard
             v-for="(course, i) in others"
             v-else
             :key="course.id"
@@ -178,7 +177,7 @@ useSeoMeta({
               </div>
             </div>
           </template>
-          <LatestCourseCard v-for="course in latestCourses?.courses" v-else :key="course.id" :course="course" />
+          <CourseCard v-for="course in latestCourses?.courses" v-else :key="course.id" :course="course" />
         </div>
       </section>
 

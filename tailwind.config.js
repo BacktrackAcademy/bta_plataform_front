@@ -34,10 +34,10 @@ module.exports = {
         'bta-dark-blue': '#070916', // header
         'bta-section': '#141224', //
         // Dashboard / authenticated shell surfaces
-        'bta-bg': '#05060B',
-        'bta-side': '#070914',
-        'bta-surface': '#0B0D17',
-        'bta-elevated': '#101321',
+        'bta-bg': '#0E0F22',
+        'bta-side': '#080A1A',
+        'bta-surface': '#070916',
+        'bta-elevated': '#0C0E24',
         'bta-text-2': '#9299AA',
         'gray-border': '#36364e',
         'gray-muted': '#565982',

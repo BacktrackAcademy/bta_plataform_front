@@ -116,6 +116,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[
 
       <main class="min-w-0 flex-1 md:overflow-y-auto">
         <slot />
+        <AppFooter />
       </main>
     </div>
   </div>

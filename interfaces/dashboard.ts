@@ -51,7 +51,11 @@ export interface LatestCourse {
   level_name?: string
   price?: number | null
   number_videos?: number
-  teacher?: { name: string, lastname: string }
+  shortdes?: string
+  pageviews?: number
+  created_at?: string
+  total_duration_text?: string
+  teacher?: { name: string, lastname: string, avatar_url?: string }
 }
 
 export interface LatestCoursesResponse {

@@ -8,32 +8,61 @@ definePageMeta({
 })
 
 interface Teacher {
-  id: number
-  name: string
-  avatar?: string
+  name?: string
+  lastname?: string
+  headline?: string
+  avatar_url?: string
 }
 
-interface SyllabusItem {
-  id: number
-  title: string
-  description: string
+interface Video {
+  slug: string
+  titlevideo: string
+  total: string
+  is_free?: boolean
+}
+
+interface Theme {
+  titulo: string
+  lessons: number
+  videos: Video[]
 }
 
 interface Course {
   id: number
+  slug: string
   titulo: string
   descripcion: string
-  wallpaper_thumb: string
+  wallpaper_thumb?: string
+  image_thumb?: string
   metatag: string
-  stars_evaluation: number
-  teacher: Teacher
-  syllabus: SyllabusItem[]
+  price?: number | null
+  level_name?: string
+  stars_evaluation?: number
+  count_evaluation?: number
+  students?: number
+  number_videos?: number
+  total_duration_text?: string
+  teacher?: Teacher
+  syllabus?: Theme[]
 }
 
 const route = useRoute()
 const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 
-// const starsBlank = computed(() => 5 - (course.value?.stars_evaluation || 0))
+const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.stars_evaluation ?? 0))))
+const isFree = computed(() => !course.value?.price)
+const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
+const teacherName = computed(() => [course.value?.teacher?.name, course.value?.teacher?.lastname].filter(Boolean).join(' '))
+const levels = ['Básicos', 'Intermedios', 'Avanzados', 'Experto']
+const levelIndex = computed(() => {
+  const i = levels.indexOf(course.value?.level_name ?? '')
+  return i === -1 ? 0 : i
+})
+const totalLessons = computed(() => course.value?.number_videos ?? course.value?.syllabus?.reduce((n, t) => n + (t.lessons || t.videos?.length || 0), 0) ?? 0)
+const pad = (n: number) => String(n).padStart(2, '0')
+function canWatch(video: Video) {
+  return video.is_free || isFree.value
+}
 
 // SEO Metadata
 // useSeoMeta({
@@ -49,215 +78,180 @@ const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 </script>
 
 <template>
-  <div>
-    <div class="bg-bta-dark-blue">
-      <!-- Hero base -->
-      <div
-        class="flex gap-32 py-8 bg-bta-dark-blue min-h-[400px] mx-auto p-5 text-white rounded max-w-[1280px] w-full"
+  <div v-if="course" class="bg-bta-bg">
+    <!-- HERO -->
+    <section class="relative isolate overflow-hidden border-b border-white/[0.06]">
+      <img
+        v-if="heroImage"
+        :src="heroImage"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 -z-20 size-full scale-110 object-cover opacity-30 blur-sm"
       >
-        <div class="w-2/3">
-          <h1 class="font-oswald font-bold text-4xl lg:text-5xl mb-8 uppercase">
-            {{ course.titulo }}
-          </h1>
-          <div class="extra-info flex items-center flex-wrap gap-3">
-            <NuxtLink :to="`/curso/${course.slug}/comentarios/`" class="group">
-              <div class="mr-2 flex items-center">
-                <div v-for="(i) in course.stars_evaluation" :key="`${i}starEvaluation`">
-                  <svg
-                    aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                    class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512"
-                  >
-                    <path
-                      fill="#fddd5b"
-                      d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z"
-                    />
-                  </svg>
-                </div>
-                <div v-for="(i) in stars_blank" :key="`${i}starBlank`">
-                  <svg
-                    aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                    class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z"
-                    />
-                  </svg>
-                </div>
-                <div class="sm:mx-4">
-                  <p class="text-cyan-300 group-hover:underline underline-offset-2 font-inconsolata">
-                    {{ course.count_evaluation }} Opiniones
-                  </p>
-                </div>
-              </div>
-            </NuxtLink>
-            <div class="flex items-center justify-center border border-gray-muted rounded-lg mr-2 px-3 py-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 23 21">
-                <g id="Rectángulo_1" data-name="Rectángulo 1" transform="translate(0 12)" fill="#EC1075">
-                  <rect width="5" height="9" stroke="none" />
-                  <rect x="0.5" y="0.5" width="4" height="8" fill="none" />
-                </g>
-                <g
-                  id="Rectángulo_2" data-name="Rectángulo 2" transform="translate(6 8)" fill="#EC1075"
-                  :fill-opacity="course.level_name == 'Intermedios' || course.level_name == 'Avanzados' || course.level_name == 'Experto' ? 'none' : '0.2'"
-                >
-                  <rect width="5" height="13" stroke="none" />
-                  <rect x="0.5" y="0.5" width="4" height="12" fill="none" />
-                </g>
-                <g
-                  id="Rectángulo_3" data-name="Rectángulo 3" transform="translate(12 4)" fill="#EC1075"
-                  :fill-opacity="course.level_name == 'Avanzados' || course.level_name == 'Experto' ? 'none' : '0.2'"
-                >
-                  <rect width="5" height="17" stroke="none" />
-                  <rect x="0.5" y="0.5" width="4" height="16" fill="none" />
-                </g>
-                <g
-                  id="Rectángulo_4" data-name="Rectángulo 4" transform="translate(18)" fill="#EC1075"
-                  :fill-opacity="course.level_name == 'Experto' ? 'none' : '0.2'"
-                >
-                  <rect width="5" height="21" stroke="none" />
-                  <rect x="0.5" y="0.5" width="4" height="20" fill="none" />
-                </g>
-              </svg>
-              <p class="font-medium uppercase ml-2 text-xs xl:text-base font-inconsolata">
-                {{ course.level_name }}
-              </p>
-            </div>
-          </div>
-          <!-- <p>{{ teacher.name }}</p> -->
-          <p class="mt-4 text-base font-inconsolata mb-3">
-            {{ course.descripcion }}
-          </p>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-b from-bta-bg/60 via-bta-bg/85 to-bta-bg" />
+      <div class="bt-tech-grid absolute inset-0 -z-10 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+      <div class="pointer-events-none absolute -left-24 top-0 -z-10 h-72 w-72 rounded-full bg-bta-pink/15 blur-3xl" />
+
+      <div class="mx-auto max-w-6xl px-4 pb-12 pt-10 sm:px-6 lg:px-10 lg:pt-14">
+        <nav aria-label="Ruta" class="mb-6 font-inconsolata text-sm text-white/50">
+          <NuxtLink to="/cursos" class="transition-colors hover:text-bta-pink">~/cursos</NuxtLink>
+          <span class="mx-1 text-bta-pink">/</span>
+          <span class="text-white/80">{{ course.slug }}</span>
+        </nav>
+
+        <div class="flex flex-wrap items-center gap-2 font-inconsolata text-sm">
+          <span v-if="course.level_name" class="bg-bta-pink px-3 py-1 text-white">{{ course.level_name }}</span>
+          <span class="inline-flex items-center gap-2 px-3 py-1 text-white/70" :title="`Nivel ${levelIndex + 1} de 4`">
+            <span class="flex items-end gap-0.5" aria-hidden="true">
+              <span v-for="n in 4" :key="n" class="w-1 rounded-sm" :class="n <= levelIndex + 1 ? 'bg-bta-pink' : 'bg-white/15'" :style="{ height: `${n * 4 + 2}px` }" />
+            </span>
+            Nivel {{ levelIndex + 1 }}/4
+          </span>
         </div>
-        <div class="w-1/3">
-          <p class="font-inconsolata text-sm">
-            Consíguelo
-          </p>
-          <p v-if="course.price" class="font-oswald text-4xl font-medium mb-3">
-            {{ course.price }} USD
-          </p>
-          <p v-else class="font-oswald text-4xl font-medium mb-3">
-            GRATIS
-          </p>
-          <Button to="/" class="bg-bta-pink text-white font-inconsolata">
-            Comprar suscripción mensual
-          </Button>
-          <p v-if="course.price" class="font-inconsolata text-white text-sm pt-3">
-            Puedes comprar el curso por: {{ course.price }} USD
-          </p>
-          <p v-else class="font-inconsolata text-white text-sm pt-3">
-            ¡Es absolutamente gratis!
-          </p>
+
+        <h1 class="mt-4 max-w-3xl font-oswald text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white sm:text-5xl lg:text-6xl">
+          {{ course.titulo }}
+        </h1>
+
+        <p class="mt-5 max-w-2xl font-inconsolata text-lg leading-relaxed text-bta-text-2">
+          {{ course.descripcion }}
+        </p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 font-inconsolata text-sm">
+          <NuxtLink :to="`/curso/${course.slug}/opiniones`" class="group flex items-center gap-2">
+            <span class="flex" role="img" :aria-label="`${stars} de 5 estrellas`">
+              <Icon v-for="n in 5" :key="n" name="lucide:star" class="size-4" :class="n <= stars ? 'fill-[#fddd5b] text-[#fddd5b]' : 'text-white/20'" />
+            </span>
+            <span class="text-cyan-300 underline-offset-2 group-hover:underline">{{ course.count_evaluation ?? 0 }} opiniones</span>
+          </NuxtLink>
+          <span v-if="course.students" class="inline-flex items-center gap-1.5 text-white/70">
+            <Icon name="lucide:users" class="size-4 text-bta-pink" /> {{ course.students }} estudiantes
+          </span>
         </div>
-      </div>
-    </div>
 
-    <!-- Temario -->
-    <section class="bg-bta-section">
-      <div class="px-4">
-        <h2 class="font-oswald font-bold text-white text-4xl my-14 mx-auto max-w-5xl">
-          Temario
-        </h2>
-        <div v-for="(theme, i) in course.syllabus" :key="i + 1000" class="bg-bta-section mx-auto max-w-5xl">
-          <h3 class="font-oswald text-white text-3xl font-bold my-4">
-            {{ theme.titulo }}
-          </h3>
-          <p class="flex gap-2 font-inconsolata text-gray-muted my-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-            </svg>
-            {{ theme.lessons }} lecciones
-          </p>
-
-          <div
-            v-for="(video, i) in theme.videos" :key="i + 2000"
-            class="flex gap-2 items-center hover:bg-bta-dark-blue rounded-lg relative"
-          >
-            <div v-if="video.is_free || course.price == null || course.price == 0" class="text-white w-full">
-              <NuxtLink :to="`/video/${video.slug}`">
-                <div class="flex flex-row items-center gap-2 p-6 font-inconsolata">
-                  <!-- play icon -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2"
-                  >
-                    <path
-                      stroke-linecap="round" stroke-linejoin="round"
-                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                    />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <p class="text-white">
-                      {{ video.titlevideo }}
-                    </p>
-                  </div>
-                  <div class="flex items-center gap-3 ml-auto flex-shrink-0 w-20">
-                    <div class="text-bta-pink">
-                      <!-- clock icon -->
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <p class="text-white">
-                      {{ video.total }}
-                    </p>
-                  </div>
-                </div>
-              </NuxtLink>
-            </div>
-
-            <div v-else class="text-white w-full">
-              <NuxtLink :to="`/curso/${course.slug}`">
-                <div class="flex flex-row items-center gap-2 p-6">
-                  <!-- Lock icon -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fill-rule="evenodd"
-                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <div class="">
-                    <p class="text-white font-inconsolata">
-                      {{ video.titlevideo }}
-                    </p>
-                  </div>
-                  <div class="flex items-center gap-3 ml-auto flex-shrink-0 w-20">
-                    <div class="text-bta-pink">
-                      <!-- clock icon -->
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <p class="text-white">
-                      {{ video.total }}
-                    </p>
-                  </div>
-                </div>
-              </NuxtLink>
-            </div>
+        <div v-if="teacherName" class="mt-8 inline-flex items-center gap-3 rounded-lg border border-white/[0.08] bg-black/30 py-2 pl-2 pr-5 backdrop-blur">
+          <img v-if="course.teacher?.avatar_url" :src="course.teacher.avatar_url" :alt="teacherName" class="size-11 rounded-full object-cover ring-2 ring-bta-pink/60">
+          <div>
+            <p class="font-inconsolata text-xs text-white/40">
+              <span class="text-bta-pink">$</span> whoami --instructor
+            </p>
+            <p class="font-oswald text-lg leading-tight text-white">
+              {{ teacherName }}
+            </p>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- BODY -->
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-10">
+      <!-- Temario -->
+      <section aria-labelledby="temario">
+        <div class="mb-8 flex items-end justify-between gap-4">
+          <h2 id="temario" class="font-oswald text-3xl font-bold uppercase tracking-wide text-white">
+            Temario
+          </h2>
+          <p class="font-inconsolata text-sm text-white/50">
+            {{ course.syllabus?.length ?? 0 }} módulos · {{ totalLessons }} lecciones
+          </p>
+        </div>
+
+        <div class="space-y-5">
+          <article
+            v-for="(theme, ti) in course.syllabus"
+            :key="ti"
+            class="bt-surface overflow-hidden !rounded-2xl !border-transparent shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)]"
+          >
+            <header class="flex items-center gap-4 border-b border-white/[0.06] px-5 py-4">
+              <span class="font-oswald text-3xl font-bold leading-none text-bta-pink/90">{{ pad(ti + 1) }}</span>
+              <div class="min-w-0 flex-1">
+                <h3 class="font-oswald text-xl font-semibold leading-snug text-white">
+                  {{ theme.titulo }}
+                </h3>
+                <p class="font-inconsolata text-sm text-white/50">
+                  {{ theme.lessons ?? theme.videos?.length }} lecciones
+                </p>
+              </div>
+            </header>
+
+            <ul>
+              <li v-for="(video, vi) in theme.videos" :key="vi" class="border-b border-white/[0.04] last:border-b-0">
+                <NuxtLink
+                  v-if="canWatch(video)"
+                  :to="`/video/${video.slug}`"
+                  class="group flex items-center gap-3 px-5 py-3.5 font-inconsolata transition-colors hover:bg-bta-pink/[0.07]"
+                >
+                  <Icon name="lucide:play-circle" class="size-5 shrink-0 text-bta-pink" />
+                  <span class="min-w-0 flex-1 text-white transition-colors group-hover:text-bta-pink">{{ video.titlevideo }}</span>
+                  <span v-if="!isFree" class="hidden bg-bta-pink/15 px-2 py-0.5 text-xs text-bta-pink sm:inline">GRATIS</span>
+                  <span class="flex shrink-0 items-center gap-1.5 text-sm text-white/60">
+                    <Icon name="lucide:clock" class="size-3.5" />{{ video.total }}
+                  </span>
+                </NuxtLink>
+                <NuxtLink
+                  v-else
+                  :to="`/suscripciones`"
+                  class="group flex items-center gap-3 px-5 py-3.5 font-inconsolata transition-colors hover:bg-white/[0.03]"
+                >
+                  <Icon name="lucide:lock" class="size-5 shrink-0 text-white/30" />
+                  <span class="min-w-0 flex-1 text-white/60">{{ video.titlevideo }}</span>
+                  <span class="flex shrink-0 items-center gap-1.5 text-sm text-white/40">
+                    <Icon name="lucide:clock" class="size-3.5" />{{ video.total }}
+                  </span>
+                </NuxtLink>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Purchase card -->
+      <aside class="lg:order-last">
+        <div class="bt-surface !rounded-2xl !border-bta-pink/30 p-6 shadow-[0_0_40px_-18px_rgba(236,16,117,0.7)] lg:sticky lg:top-6">
+          <p class="font-inconsolata text-sm text-white/50">
+            <span class="text-bta-pink">$</span> consíguelo
+          </p>
+          <p class="mt-1 font-oswald text-5xl font-semibold text-white">
+            <template v-if="isFree">
+              GRATIS
+            </template>
+            <template v-else>
+              {{ course.price }} <span class="text-2xl text-white/60">USD</span>
+            </template>
+          </p>
+
+          <NuxtLink
+            to="/suscripciones"
+            class="bt-focus mt-5 flex h-12 items-center justify-center gap-2 bg-bta-pink font-oswald text-lg uppercase tracking-wider text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-10px_rgba(236,16,117,0.9)]"
+          >
+            <Icon name="lucide:zap" class="size-4" />
+            Comprar suscripción mensual
+          </NuxtLink>
+          <p class="mt-3 text-center font-inconsolata text-sm text-white/60">
+            <template v-if="!isFree">
+              O compra solo este curso por {{ course.price }} USD
+            </template>
+            <template v-else>
+              ¡Es absolutamente gratis!
+            </template>
+          </p>
+
+          <ul class="mt-6 space-y-3 border-t border-white/[0.06] pt-5 font-inconsolata text-sm text-white/80">
+            <li v-if="totalLessons" class="flex items-center gap-3">
+              <Icon name="lucide:video" class="size-4 text-bta-pink" /> {{ totalLessons }} lecciones en video
+            </li>
+            <li v-if="course.total_duration_text" class="flex items-center gap-3">
+              <Icon name="lucide:clock" class="size-4 text-bta-pink" /> {{ course.total_duration_text }} de contenido
+            </li>
+            <li class="flex items-center gap-3">
+              <Icon name="lucide:infinity" class="size-4 text-bta-pink" /> Acceso a tu propio ritmo
+            </li>
+            <li class="flex items-center gap-3">
+              <Icon name="lucide:award" class="size-4 text-bta-pink" /> Certificado verificable
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
   </div>
 </template>
-
-<style>
-
-</style>

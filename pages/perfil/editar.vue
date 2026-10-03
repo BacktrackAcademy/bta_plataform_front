@@ -375,8 +375,10 @@ async function deleteAccount() {
     await api('/user', { method: 'DELETE', body: { confirm: deleteConfirm.value } })
     await signOut({ callbackUrl: '/login' })
   }
-  catch {
-    deleteError.value = 'No pudimos eliminar la cuenta. Revisa el nombre de usuario.'
+  catch (e: any) {
+    deleteError.value = e?.data?.requires_request
+      ? `${e.data.error} Escríbenos a ${e.data.contact}.`
+      : 'No pudimos eliminar la cuenta. Revisa el nombre de usuario.'
   }
   finally {
     deleteBusy.value = false

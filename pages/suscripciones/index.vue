@@ -38,20 +38,20 @@ function formatDate(value: string | null | undefined) {
 </script>
 
 <template>
-  <section class="min-h-screen bg-surface-2 py-12">
+  <section class="min-h-screen py-12">
     <div class="container mx-auto px-4 md:px-10 xl:px-20">
       <!-- Título -->
       <div class="text-center mb-12">
-        <h2 class="text-4xl font-semibold text-foreground font-oswald uppercase">
+        <h2 class="t-h1 uppercase">
           Elige tu plan
         </h2>
-        <p class="text-foreground-subtle text-lg font-inconsolata mt-2">
+        <p class="t-body mt-2">
           Accede a los mejores cursos de seguridad informática con el plan que mejor se adapte a ti.
         </p>
       </div>
 
       <!-- Estado de la cuenta / errores -->
-      <div class="max-w-3xl mx-auto mb-8 space-y-3 font-inconsolata text-sm">
+      <div class="max-w-3xl mx-auto mb-8 space-y-3 text-sm">
         <p v-if="paymentInReview" class="rounded-lg border border-warning/40 bg-warning/10 p-4 text-warning">
           Tu suscripción está registrada, pero PayPal está revisando el pago. Tu acceso Premium se activa automáticamente
           cuando lo confirme; no necesitas pagar de nuevo.
@@ -61,7 +61,7 @@ function formatDate(value: string | null | undefined) {
         </p>
         <div
           v-else-if="eligibility?.legacy_subscription"
-          class="rounded-lg border border-strong bg-surface-1 p-4 text-foreground"
+          class="rounded-lg border border-border bg-surface-1 p-4 text-foreground"
         >
           <p>
             Tienes un pago recurrente activo con PayPal
@@ -75,7 +75,7 @@ function formatDate(value: string | null | undefined) {
               y solo cancelamos el pago anterior cuando PayPal confirma la nueva.
             </p>
             <button
-              class="mt-3 py-2 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg disabled:opacity-50"
+              class="bt-btn-primary mt-3"
               :disabled="loading"
               @click="migrate()"
             >
@@ -85,7 +85,7 @@ function formatDate(value: string | null | undefined) {
         </div>
         <p
           v-else-if="eligibility && !eligibility.rest_enabled"
-          class="rounded-lg border border-strong bg-surface-1 p-4 text-foreground-subtle"
+          class="rounded-lg border border-border bg-surface-1 p-4 text-foreground-subtle"
         >
           El pago con PayPal aún no está disponible para tu cuenta.
         </p>
@@ -99,10 +99,10 @@ function formatDate(value: string | null | undefined) {
         <div
           v-for="(subscription, i) in subscriptions"
           :key="i"
-          class="bg-surface-1 border p-6 rounded-lg shadow-lg flex flex-col items-center"
+          class="bt-surface flex flex-col items-center border p-6 shadow-elev-1"
           :class="{
             'border-primary': subscription.recommended === 1,
-            'border-strong': subscription.recommended === 0,
+            'border-subtle': subscription.recommended === 0,
           }"
         >
           <!-- Plan Name -->
@@ -112,7 +112,7 @@ function formatDate(value: string | null | undefined) {
           >
             {{ subscription.name }}
           </h3>
-          <p class="text-foreground-subtle text-lg font-inconsolata">
+          <p class="t-body">
             {{ subscription.quantity }} {{ subscription.quantity > 1 ? 'meses' : 'mes' }} de acceso
           </p>
           <span
@@ -123,7 +123,7 @@ function formatDate(value: string | null | undefined) {
           </span>
 
           <!-- Beneficios -->
-          <ul class="mt-6 space-y-3 text-foreground font-inconsolata text-sm">
+          <ul class="mt-6 space-y-3 text-foreground text-sm">
             <li class="flex items-center">
               <Icon name="lucide:check" class="text-primary-text mr-2" /> Acceso a todos los cursos
             </li>
@@ -173,10 +173,10 @@ function formatDate(value: string | null | undefined) {
 
           <!-- Botón -->
           <button
-            class="mt-6 w-full py-3 text-foreground font-semibold rounded-lg transition-all font-inconsolata disabled:opacity-50 disabled:cursor-not-allowed"
+            class="mt-6 w-full bt-btn-lg"
             :class="{
-              'bg-primary hover:bg-primary/90': subscription.recommended === 1,
-              'bg-surface-2 hover:bg-surface-2/90': subscription.recommended === 0,
+              'bt-btn-primary': subscription.recommended === 1,
+              'bt-btn-secondary': subscription.recommended === 0,
             }"
             :disabled="!canBuy || loading"
             @click="onSubscribe(subscription.id)"
@@ -187,7 +187,7 @@ function formatDate(value: string | null | undefined) {
       </div>
 
       <!-- Nota Importante -->
-      <p class="text-center text-sm text-foreground-subtle mt-8 font-inconsolata">
+      <p class="text-center text-sm text-foreground-subtle mt-8">
         IMPORTANTE: Si tu pago recurrente está activado, las suscripciones no tienen derecho a reembolso.
         Cualquier duda, contáctanos en <span class="text-primary-text">contacto@backtrackacademy.com</span>.
       </p>

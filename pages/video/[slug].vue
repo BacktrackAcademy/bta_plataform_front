@@ -154,7 +154,7 @@ function addPercentage(percentage: number) {
                   alt=""
                   class="w-6 h-6 rounded-full mr-1"
                 >
-                <p class="text-foreground-subtle font-inconsolata">
+                <p class="text-foreground-muted">
                   {{ teacher?.name }} {{ teacher?.lastname }}
                 </p>
               </div>
@@ -164,7 +164,7 @@ function addPercentage(percentage: number) {
               <NuxtLink
                 v-if="video?.prev"
                 :to="`/video/${video.prev.slug}`"
-                class="flex items-center bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-2 w-[144px] rounded-[8px] mr-2"
+                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
               >
                 <ArrowToRight class="mr-3 rotate-180" />
                 <span
@@ -178,7 +178,7 @@ function addPercentage(percentage: number) {
               <NuxtLink
                 v-if="video?.next"
                 :to="`/video/${video.next.slug}`"
-                class="flex items-center bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-2 w-[144px] rounded-[8px] mr-2"
+                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
               >
                 <span
                   class="uppercase text-left text-sm font-bold w-[137px] text-ellipsis whitespace-nowrap overflow-hidden"
@@ -191,7 +191,7 @@ function addPercentage(percentage: number) {
             </div>
           </div>
 
-          <div class="text-foreground font-inconsolata">
+          <div class="text-foreground">
             <h3 class="text-xl text-foreground leading-9 my-4 font-oswald">
               Resumen del curso
             </h3>
@@ -228,7 +228,7 @@ function addPercentage(percentage: number) {
             :data="data"
             index="name"
             :categories="['total', 'predicted']"
-            :colors="['#141224', 'hsl(var(--primary))']"
+            :colors="['hsl(var(--surface-4))', 'hsl(var(--primary))']"
             :y-formatter="(tick) => {
               if (typeof tick === 'number') {
                 const minutes = Math.floor(tick / 60);
@@ -244,17 +244,17 @@ function addPercentage(percentage: number) {
       <div class="lg:w-[30%]">
         <!-- badge -->
         <div class="text-foreground text-center my-8">
-          <p class="font-inconsolata">
+          <p class="">
             Has estudiado
           </p>
           <p class="font-oswald font-medium text-6xl mb-3">
             {{ video?.course_advance }} %
           </p>
-          <p class="font-inconsolata">
+          <p class="">
             del curso <span class="text-foreground">{{ course?.titulo }}</span>
           </p>
           <br>
-          <p class="font-inconsolata">
+          <p class="">
             Tienes 0 oportunidades
           </p>
         </div>
@@ -268,13 +268,13 @@ function addPercentage(percentage: number) {
             :key="theme.titulo + i"
             class="mb-3"
           >
-            <h3 class="text-foreground-subtle font-inconsolata py-2">
+            <h3 class="t-eyebrow py-2">
               {{ theme.titulo }}
             </h3>
             <div v-for="(video, i) in theme.videos" :key="video.slug + i">
               <NuxtLink
                 v-if="video.is_free"
-                class="flex gap-x-3 p-2 rounded hover:bg-surface-2"
+                class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2"
                 :to="`/video/${video.slug}`"
               >
                 <span>
@@ -299,10 +299,10 @@ function addPercentage(percentage: number) {
                   </svg>
                 </span>
                 <div>
-                  <span class="text-foreground font-inconsolata">{{ video.titlevideo }}</span>
+                  <span class="text-foreground">{{ video.titlevideo }}</span>
                 </div>
               </NuxtLink>
-              <div v-else class="flex gap-x-3 p-2 rounded hover:bg-surface-2">
+              <div v-else class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2">
                 <span>
                   <!-- Lock icon -->
                   <svg
@@ -319,7 +319,7 @@ function addPercentage(percentage: number) {
                   </svg>
                 </span>
                 <div>
-                  <span class="text-foreground font-inconsolata">
+                  <span class="text-foreground">
                     {{ video.titlevideo }}
                   </span>
                 </div>

@@ -57,7 +57,7 @@ async function handleLogout() {
             <span class="block truncate font-oswald text-lg font-semibold leading-tight text-foreground">
               {{ fullName }}
             </span>
-            <span class="block truncate font-inconsolata text-xs text-foreground-muted">
+            <span class="block truncate font-mono text-xs text-foreground-muted">
               {{ user?.email }}
             </span>
           </span>

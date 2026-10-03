@@ -14,18 +14,18 @@ defineEmits<{ (e: 'page', page: number): void }>()
 
 <template>
   <div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
-    <NuxtLink :to="`/@${username}`" class="bt-focus inline-flex items-center gap-2 rounded font-inconsolata text-sm text-foreground-muted transition-colors hover:text-foreground">
+    <NuxtLink :to="`/@${username}`" class="bt-focus inline-flex items-center gap-2 rounded text-sm text-foreground-muted transition-colors hover:text-foreground">
       <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" /> @{{ username }}
     </NuxtLink>
     <div class="mt-4 flex items-center gap-3">
       <h1 class="font-oswald text-3xl font-semibold leading-none tracking-tight text-foreground sm:text-4xl">
         {{ title }}
       </h1>
-      <span v-if="pageData" class="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-inconsolata text-xs font-bold tabular-nums text-primary-text">{{ pageData.total_items }}</span>
+      <span v-if="pageData" class="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-primary-text">{{ pageData.total_items }}</span>
     </div>
     <span class="mt-4 block h-px bg-gradient-to-r from-primary/60 via-foreground/10 to-transparent" aria-hidden="true" />
 
-    <p v-if="pageData && !pageData.data.length" class="bt-surface mt-6 p-6 text-center font-inconsolata text-sm text-foreground-muted">
+    <p v-if="pageData && !pageData.data.length" class="bt-surface mt-6 p-6 text-center text-sm text-foreground-muted">
       <span class="text-primary-text">$</span> {{ empty }}
     </p>
 
@@ -36,7 +36,7 @@ defineEmits<{ (e: 'page', page: number): void }>()
           <p class="truncate font-sans text-[15px] font-semibold text-foreground">
             {{ person.full_name }}
           </p>
-          <p class="truncate font-inconsolata text-xs text-foreground-muted">
+          <p class="truncate font-mono text-xs text-foreground-muted">
             <NuxtLink v-if="person.profile_public" :to="`/@${person.username}`" class="bt-focus rounded text-primary-text hover:underline">
               @{{ person.username }}
             </NuxtLink>
@@ -47,7 +47,7 @@ defineEmits<{ (e: 'page', page: number): void }>()
         <NuxtLink
           v-if="person.profile_public"
           :to="`/@${person.username}`"
-          class="bt-focus shrink-0 rounded-lg border border-border px-3 py-1.5 font-inconsolata text-xs text-foreground-muted transition-colors hover:border-primary/50 hover:text-foreground"
+          class="bt-focus shrink-0 rounded-lg border border-border px-3 py-1.5 font-mono text-xs text-foreground-muted transition-colors hover:border-primary/50 hover:text-foreground"
           :aria-label="`Ver perfil de ${person.full_name}`"
         >
           Ver perfil
@@ -55,7 +55,7 @@ defineEmits<{ (e: 'page', page: number): void }>()
       </li>
     </ul>
 
-    <nav v-if="pageData && pageData.total_pages > 1" class="mt-6 flex items-center justify-between font-inconsolata text-sm" aria-label="Paginación">
+    <nav v-if="pageData && pageData.total_pages > 1" class="mt-6 flex items-center justify-between text-sm" aria-label="Paginación">
       <button class="bt-focus rounded-lg border border-border px-3 py-1.5 text-foreground-muted transition-colors hover:border-strong hover:text-foreground disabled:opacity-40" :disabled="pageData.current_page <= 1" @click="$emit('page', pageData.current_page - 1)">
         ← Anterior
       </button>

@@ -18,18 +18,16 @@ withDefaults(defineProps<{ variant?: 'error' | 'success', code?: string | null, 
 </template>
 
 <style scoped>
-.auth-alert { animation: alert-in 0.35s ease-out both; }
+.auth-alert { animation: alert-in var(--duration-slow) ease-out both; }
 .auth-alert-cursor {
   display: inline-block;
   width: 0.5em;
   height: 1em;
   margin-left: 4px;
   vertical-align: text-bottom;
-  animation: alert-blink 1.1s steps(1) infinite;
 }
 @keyframes alert-in { from { opacity: 0; transform: translateX(-6px); } }
-@keyframes alert-blink { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .auth-alert, .auth-alert-cursor { animation: none; }
+  .auth-alert { animation: none; }
 }
 </style>

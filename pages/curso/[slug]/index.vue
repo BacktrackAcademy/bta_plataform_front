@@ -93,17 +93,16 @@ function canWatch(video: Video) {
       >
       <div class="absolute inset-0 -z-10 bg-gradient-to-b from-background/60 via-background/85 to-background" />
       <div class="bt-tech-grid absolute inset-0 -z-10 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
-      <div class="pointer-events-none absolute -left-24 top-0 -z-10 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
-
+      
       <div class="mx-auto max-w-6xl px-4 pb-12 pt-10 sm:px-6 lg:px-10 lg:pt-14">
-        <nav aria-label="Ruta" class="mb-6 font-inconsolata text-sm text-foreground-subtle">
+        <nav aria-label="Ruta" class="mb-6 font-mono text-sm text-foreground-muted">
           <NuxtLink to="/cursos" class="transition-colors hover:text-primary-text">~/cursos</NuxtLink>
           <span class="mx-1 text-primary-text">/</span>
           <span class="text-foreground-secondary">{{ course.slug }}</span>
         </nav>
 
-        <div class="flex flex-wrap items-center gap-2 font-inconsolata text-sm">
-          <span v-if="course.level_name" class="bg-primary px-3 py-1 text-primary-foreground">{{ course.level_name }}</span>
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+          <span v-if="course.level_name" class="bt-badge bt-badge-primary px-3 py-1 text-sm">{{ course.level_name }}</span>
           <span class="inline-flex items-center gap-2 px-3 py-1 text-foreground-muted" :title="`Nivel ${levelIndex + 1} de 4`">
             <span class="flex items-end gap-0.5" aria-hidden="true">
               <span v-for="n in 4" :key="n" class="w-1 rounded-sm" :class="n <= levelIndex + 1 ? 'bg-primary' : 'bg-foreground/15'" :style="{ height: `${n * 4 + 2}px` }" />
@@ -112,18 +111,18 @@ function canWatch(video: Video) {
           </span>
         </div>
 
-        <h1 class="mt-4 max-w-3xl font-oswald text-4xl font-bold uppercase leading-[1.05] tracking-wide text-foreground sm:text-5xl lg:text-6xl">
+        <h1 class="t-display mt-4 max-w-3xl !text-4xl sm:!text-5xl lg:!text-6xl">
           {{ course.titulo }}
         </h1>
 
-        <p class="mt-5 max-w-2xl font-inconsolata text-lg leading-relaxed text-foreground-muted">
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-foreground-secondary">
           {{ course.descripcion }}
         </p>
 
-        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 font-inconsolata text-sm">
+        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
           <NuxtLink :to="`/curso/${course.slug}/opiniones`" class="group flex items-center gap-2">
             <span class="flex" role="img" :aria-label="`${stars} de 5 estrellas`">
-              <Icon v-for="n in 5" :key="n" name="lucide:star" class="size-4" :class="n <= stars ? 'fill-[#fddd5b] text-[#fddd5b]' : 'text-foreground/20'" />
+              <Icon v-for="n in 5" :key="n" name="lucide:star" class="size-4" :class="n <= stars ? 'fill-warning text-warning' : 'text-foreground/20'" />
             </span>
             <span class="text-primary-text underline-offset-2 group-hover:underline">{{ course.count_evaluation ?? 0 }} opiniones</span>
           </NuxtLink>
@@ -135,7 +134,7 @@ function canWatch(video: Video) {
         <div v-if="teacherName" class="mt-8 inline-flex items-center gap-3 rounded-lg border border-subtle bg-scrim/30 py-2 pl-2 pr-5 backdrop-blur">
           <TeacherAvatar :src="course.teacher?.avatar_url" :name="teacherName" class="!size-11 text-base" />
           <div>
-            <p class="font-inconsolata text-xs text-foreground-subtle">
+            <p class="font-mono text-xs text-foreground-muted">
               <span class="text-primary-text">$</span> whoami --instructor
             </p>
             <p class="font-oswald text-lg leading-tight text-foreground">
@@ -151,10 +150,10 @@ function canWatch(video: Video) {
       <!-- Temario -->
       <section aria-labelledby="temario">
         <div class="mb-8 flex items-end justify-between gap-4">
-          <h2 id="temario" class="font-oswald text-3xl font-bold uppercase tracking-wide text-foreground">
+          <h2 id="temario" class="bt-section-title">
             Temario
           </h2>
-          <p class="font-inconsolata text-sm text-foreground-subtle">
+          <p class="t-meta">
             {{ course.syllabus?.length ?? 0 }} módulos · {{ totalLessons }} lecciones
           </p>
         </div>
@@ -171,7 +170,7 @@ function canWatch(video: Video) {
                 <h3 class="font-oswald text-xl font-semibold leading-snug text-foreground">
                   {{ theme.titulo }}
                 </h3>
-                <p class="font-inconsolata text-sm text-foreground-subtle">
+                <p class="t-meta">
                   {{ theme.lessons ?? theme.videos?.length }} lecciones
                 </p>
               </div>
@@ -182,23 +181,23 @@ function canWatch(video: Video) {
                 <NuxtLink
                   v-if="canWatch(video)"
                   :to="`/video/${video.slug}`"
-                  class="group flex items-center gap-3 px-5 py-3.5 font-inconsolata transition-colors hover:bg-primary/[0.07]"
+                  class="group flex items-center gap-3 px-5 py-3.5 text-[15px] transition-colors duration-fast hover:bg-surface-3"
                 >
                   <Icon name="lucide:play-circle" class="size-5 shrink-0 text-primary-text" />
                   <span class="min-w-0 flex-1 text-foreground transition-colors group-hover:text-primary-text">{{ video.titlevideo }}</span>
-                  <span v-if="!isFree" class="hidden bg-primary/15 px-2 py-0.5 text-xs text-primary-text sm:inline">GRATIS</span>
-                  <span class="flex shrink-0 items-center gap-1.5 text-sm text-foreground-muted">
+                  <span v-if="!isFree" class="bt-badge bt-badge-primary hidden sm:inline-flex">GRATIS</span>
+                  <span class="t-meta flex shrink-0 items-center gap-1.5">
                     <Icon name="lucide:clock" class="size-3.5" />{{ video.total }}
                   </span>
                 </NuxtLink>
                 <NuxtLink
                   v-else
                   :to="`/suscripciones`"
-                  class="group flex items-center gap-3 px-5 py-3.5 font-inconsolata transition-colors hover:bg-foreground/[0.03]"
+                  class="group flex items-center gap-3 px-5 py-3.5 text-[15px] transition-colors duration-fast hover:bg-surface-3"
                 >
                   <Icon name="lucide:lock" class="size-5 shrink-0 text-foreground-subtle" />
                   <span class="min-w-0 flex-1 text-foreground-muted">{{ video.titlevideo }}</span>
-                  <span class="flex shrink-0 items-center gap-1.5 text-sm text-foreground-subtle">
+                  <span class="t-meta flex shrink-0 items-center gap-1.5">
                     <Icon name="lucide:clock" class="size-3.5" />{{ video.total }}
                   </span>
                 </NuxtLink>
@@ -211,7 +210,7 @@ function canWatch(video: Video) {
       <!-- Purchase card -->
       <aside class="lg:order-last">
         <div class="bt-surface border-border p-6 shadow-elev-2 lg:sticky lg:top-6">
-          <p class="font-inconsolata text-sm text-foreground-subtle">
+          <p class="font-mono text-sm text-foreground-muted">
             <span class="text-primary-text">$</span> consíguelo
           </p>
           <p class="mt-1 font-oswald text-5xl font-semibold text-foreground">
@@ -225,12 +224,12 @@ function canWatch(video: Video) {
 
           <NuxtLink
             to="/suscripciones"
-            class="bt-focus mt-5 flex h-12 items-center justify-center gap-2 bg-primary font-oswald text-lg uppercase tracking-wider text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.9)]"
+            class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
           >
             <Icon name="lucide:zap" class="size-4" />
             Comprar suscripción mensual
           </NuxtLink>
-          <p class="mt-3 text-center font-inconsolata text-sm text-foreground-muted">
+          <p class="t-small mt-3 text-center">
             <template v-if="!isFree">
               O compra solo este curso por {{ course.price }} USD
             </template>
@@ -239,7 +238,7 @@ function canWatch(video: Video) {
             </template>
           </p>
 
-          <ul class="mt-6 space-y-3 border-t border-subtle pt-5 font-inconsolata text-sm text-foreground-secondary">
+          <ul class="mt-6 space-y-3 border-t border-subtle pt-5 text-sm text-foreground-secondary">
             <li v-if="totalLessons" class="flex items-center gap-3">
               <Icon name="lucide:video" class="size-4 text-primary-text" /> {{ totalLessons }} lecciones en video
             </li>

@@ -80,15 +80,15 @@ onBeforeUnmount(() => clearInterval(timer))
 </script>
 
 <template>
-  <section class="min-h-screen bg-surface-2 py-12">
+  <section class="min-h-screen py-12">
     <div class="container mx-auto px-4 max-w-xl text-center text-foreground">
-      <div class="bg-surface-1 rounded-lg shadow-lg p-8">
+      <div class="bt-surface p-8">
         <template v-if="state === 'checking'">
           <Icon name="lucide:loader-circle" class="size-10 text-primary-text animate-spin mx-auto" />
           <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
             Confirmando tu suscripción
           </h2>
-          <p class="mt-2 text-foreground-subtle font-inconsolata text-sm">
+          <p class="mt-2 t-small">
             Estamos verificando el pago con PayPal. No cierres esta página.
           </p>
         </template>
@@ -98,10 +98,10 @@ onBeforeUnmount(() => clearInterval(timer))
           <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
             ¡Suscripción activada!
           </h2>
-          <p class="mt-2 text-foreground-subtle font-inconsolata text-sm">
+          <p class="mt-2 t-small">
             Ya tienes acceso Premium.
           </p>
-          <NuxtLink to="/dashboard" class="inline-block mt-6 py-3 px-6 bg-primary hover:bg-primary/90 rounded-lg font-semibold font-inconsolata">
+          <NuxtLink to="/dashboard" class="bt-btn-primary bt-btn-lg mt-6">
             Ir al inicio
           </NuxtLink>
         </template>
@@ -111,11 +111,11 @@ onBeforeUnmount(() => clearInterval(timer))
           <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
             PayPal está revisando tu pago
           </h2>
-          <p class="mt-2 text-foreground-subtle font-inconsolata text-sm">
+          <p class="mt-2 t-small">
             Tu suscripción quedó registrada. PayPal retiene algunos pagos para revisión; tu acceso Premium se activa
             automáticamente cuando lo confirme. No pagues de nuevo.
           </p>
-          <NuxtLink to="/dashboard" class="inline-block mt-6 py-3 px-6 bg-surface-2 hover:bg-surface-2/90 rounded-lg font-semibold font-inconsolata">
+          <NuxtLink to="/dashboard" class="bt-btn-secondary bt-btn-lg mt-6">
             Ir al inicio
           </NuxtLink>
         </template>
@@ -125,7 +125,7 @@ onBeforeUnmount(() => clearInterval(timer))
           <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
             Aún estamos confirmando
           </h2>
-          <p class="mt-2 text-foreground-subtle font-inconsolata text-sm">
+          <p class="mt-2 t-small">
             PayPal está tardando más de lo normal. No pagues de nuevo: te avisaremos por correo cuando tu suscripción esté activa.
             Si no la ves en unos minutos, escríbenos a contacto@backtrackacademy.com.
           </p>
@@ -136,10 +136,10 @@ onBeforeUnmount(() => clearInterval(timer))
           <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
             No pudimos confirmar tu suscripción
           </h2>
-          <p class="mt-2 text-foreground-subtle font-inconsolata text-sm">
+          <p class="mt-2 t-small">
             Si PayPal te cobró, escríbenos a contacto@backtrackacademy.com y lo resolvemos.
           </p>
-          <NuxtLink to="/suscripciones" class="inline-block mt-6 py-3 px-6 bg-surface-2 hover:bg-surface-2/90 rounded-lg font-semibold font-inconsolata">
+          <NuxtLink to="/suscripciones" class="bt-btn-secondary bt-btn-lg mt-6">
             Volver a los planes
           </NuxtLink>
         </template>

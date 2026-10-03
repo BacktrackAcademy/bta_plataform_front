@@ -132,9 +132,9 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.l-info { color: rgba(255, 255, 255, 0.55); }
-.l-ok { color: hsl(var(--primary)); }
-.l-out { color: rgba(255, 255, 255, 0.5); }
+.l-info { color: hsl(var(--foreground-muted)); }
+.l-ok { color: hsl(var(--primary-text)); }
+.l-out { color: hsl(var(--foreground-subtle)); }
 
 .term-cursor {
   display: inline-block;
@@ -143,7 +143,6 @@ onBeforeUnmount(() => {
   margin-left: 2px;
   vertical-align: text-bottom;
   background: hsl(var(--primary));
-  animation: cursor-blink 1.1s steps(1) infinite;
 }
 .term-cursor--lg {
   width: 0.3em;
@@ -151,11 +150,10 @@ onBeforeUnmount(() => {
   margin-left: 0.12em;
   vertical-align: baseline;
 }
-.term-final { animation: final-in 1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.term-final { animation: final-in 400ms var(--ease-out) both; }
 
-@keyframes cursor-blink { 50% { opacity: 0; } }
 @keyframes final-in { from { opacity: 0; transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) {
-  .term-cursor, .term-final { animation: none; }
+  .term-final { animation: none; }
 }
 </style>

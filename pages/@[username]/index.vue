@@ -150,7 +150,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
       <!-- Vista previa del dueño con perfil privado -->
       <div
         v-if="p.is_owner && !p.public"
-        class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning/[0.06] px-4 py-3 font-inconsolata text-sm text-warning"
+        class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning/[0.06] px-4 py-3 text-sm text-warning"
         role="status"
       >
         <p>
@@ -165,14 +165,14 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
       <header class="overflow-hidden rounded-lg border border-subtle bg-surface-2 shadow-elev-2">
         <!-- Portada -->
         <div class="relative h-28 overflow-hidden sm:h-40" aria-hidden="true">
-          <div class="absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,hsl(var(--primary)/0.38),transparent_55%),radial-gradient(90%_120%_at_100%_100%,rgba(88,64,255,0.22),transparent_60%)]" />
+          <div class="absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,hsl(var(--primary)/0.38),transparent_55%),radial-gradient(90%_120%_at_100%_100%,hsl(var(--brand-violet)/0.35),transparent_60%)]" />
           <div class="bt-tech-grid absolute inset-0 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
           <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
         </div>
 
         <div class="relative px-5 pb-6 sm:px-8">
           <div class="-mt-14 flex flex-col items-center gap-4 sm:-mt-[4.5rem] sm:flex-row sm:items-end sm:gap-6">
-            <ProfileAvatar :src="p.avatar_url" :name="p.full_name" size="lg" class="shrink-0 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.8)]" />
+            <ProfileAvatar :src="p.avatar_url" :name="p.full_name" size="lg" class="shrink-0 shadow-elev-2" />
 
             <div class="min-w-0 flex-1 text-center sm:pb-1 sm:text-left">
               <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
@@ -181,12 +181,12 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                 </h1>
                 <span
                   v-if="p.role_label"
-                  class="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 font-inconsolata text-[11px] font-bold uppercase tracking-[0.14em] text-primary-text"
+                  class="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-primary-text"
                 >
                   <Icon name="lucide:badge-check" class="size-3.5" aria-hidden="true" />{{ p.role_label }}
                 </span>
               </div>
-              <p class="mt-2 break-all font-inconsolata text-sm text-primary-text">
+              <p class="mt-2 break-all text-sm text-primary-text">
                 @{{ p.username }}
               </p>
             </div>
@@ -236,7 +236,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
               <dd class="font-oswald text-2xl font-semibold leading-none tabular-nums" :class="s.key === 'ranking' ? 'text-primary-text' : 'text-foreground'">
                 {{ s.value }}
               </dd>
-              <dt class="mt-1.5 font-inconsolata text-xs uppercase tracking-[0.14em] text-foreground-muted transition-colors group-hover:text-foreground">
+              <dt class="mt-1.5 font-mono text-xs uppercase tracking-[0.14em] text-foreground-muted transition-colors group-hover:text-foreground">
                 {{ s.label }}
               </dt>
             </component>
@@ -258,7 +258,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                     {{ c.title }}
                   </NuxtLink>
                   <span v-else class="line-clamp-2 font-sans text-base font-semibold leading-snug text-foreground">{{ c.title }}</span>
-                  <p class="mt-0.5 font-inconsolata text-[13px] text-foreground-muted">
+                  <p class="mt-0.5 font-mono text-[13px] text-foreground-muted">
                     <span class="text-success">●</span> Aprobado · {{ fmtDate(c.date) }}
                   </p>
                 </div>
@@ -271,7 +271,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
               <li v-for="art in a.articles" :key="art.slug">
                 <NuxtLink :to="`/articulos/${art.slug}`" class="bt-focus group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-foreground/[0.03]">
                   <span class="min-w-0 truncate font-sans text-base font-medium text-foreground transition-colors group-hover:text-primary-text">{{ art.title }}</span>
-                  <span class="flex shrink-0 items-center gap-2 font-inconsolata text-[13px] text-foreground-muted">
+                  <span class="flex shrink-0 items-center gap-2 font-mono text-[13px] text-foreground-muted">
                     <span v-if="art.category" class="hidden rounded border border-border px-1.5 py-0.5 sm:inline">{{ art.category }}</span>{{ fmtDate(art.published_at) }}
                   </span>
                 </NuxtLink>
@@ -284,7 +284,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
               <li v-for="q in a.questions" :key="q.slug">
                 <NuxtLink :to="`/debates/${q.slug}`" class="bt-focus group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-foreground/[0.03]">
                   <span class="min-w-0 truncate font-sans text-base font-medium text-foreground transition-colors group-hover:text-primary-text">{{ q.title }}</span>
-                  <span class="flex shrink-0 items-center gap-1.5 font-inconsolata text-[13px] text-foreground-muted">
+                  <span class="flex shrink-0 items-center gap-1.5 font-mono text-[13px] text-foreground-muted">
                     <Icon name="lucide:message-square" class="size-3.5" aria-hidden="true" />{{ q.answers }}<span class="hidden sm:inline">{{ q.answers === 1 ? 'respuesta' : 'respuestas' }}</span>
                   </span>
                 </NuxtLink>
@@ -302,7 +302,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
             </ul>
           </ProfileSection>
 
-          <p v-if="!hasActivity" class="bt-surface p-6 text-center font-inconsolata text-sm text-foreground-muted">
+          <p v-if="!hasActivity" class="bt-surface p-6 text-center text-sm text-foreground-muted">
             <span class="text-primary-text">$</span> Aún no hay actividad pública para mostrar.
           </p>
         </div>
@@ -310,7 +310,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
         <aside class="min-w-0 space-y-8 lg:sticky lg:top-24 lg:self-start">
           <ProfileSection v-if="p.specialties.length" id="especialidades" title="Especialidades">
             <ul class="flex flex-wrap gap-2">
-              <li v-for="s in p.specialties" :key="s" class="rounded-md border border-primary/20 bg-primary/[0.07] px-2.5 py-1 font-inconsolata text-[13px] text-foreground">
+              <li v-for="s in p.specialties" :key="s" class="rounded-md border border-primary/20 bg-primary/[0.07] px-2.5 py-1 font-mono text-[13px] text-foreground">
                 {{ s }}
               </li>
             </ul>
@@ -328,7 +328,7 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
             </ul>
           </ProfileSection>
 
-          <p v-if="memberSince" class="font-inconsolata text-[13px] text-foreground-muted">
+          <p v-if="memberSince" class="font-mono text-[13px] text-foreground-muted">
             <span class="text-primary-text/70">//</span> Miembro desde {{ memberSince }}
           </p>
         </aside>

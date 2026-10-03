@@ -33,7 +33,7 @@ function handleSocialLogin(provider: 'github' | 'linkedin') {
   emit('socialLogin', provider)
 }
 
-const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-[#2A2945] font-mono text-xs text-foreground-secondary transition-colors duration-200 hover:bg-foreground/[0.05] hover:border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none'
+const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-input font-mono text-xs text-foreground-secondary transition-colors duration-200 hover:bg-foreground/[0.05] hover:border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none'
 </script>
 
 <template>
@@ -82,9 +82,9 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounde
     </button>
 
     <div class="flex items-center gap-4" role="separator">
-      <span class="h-px flex-1 bg-[#2A2945]" />
+      <span class="h-px flex-1 bg-border" />
       <span class="font-mono text-xs text-foreground-subtle">o continuar con</span>
-      <span class="h-px flex-1 bg-[#2A2945]" />
+      <span class="h-px flex-1 bg-border" />
     </div>
 
     <div class="flex gap-3">

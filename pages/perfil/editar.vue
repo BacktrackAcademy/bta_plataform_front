@@ -455,8 +455,8 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
               <div class="sm:col-span-2">
                 <label for="username" :class="labelCls">Nombre de usuario</label>
                 <div class="flex items-center rounded-md border border-border bg-transparent transition-colors hover:border-strong focus-within:border-primary/70">
-                  <span class="pl-3.5 font-inconsolata text-lg text-primary-text" aria-hidden="true">@</span>
-                  <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2.5 font-inconsolata text-lg text-foreground focus:outline-none disabled:opacity-50" type="text" maxlength="40" autocomplete="username" :disabled="locked" :aria-invalid="!usernameValid" aria-describedby="username-hint">
+                  <span class="pl-3.5 text-lg text-primary-text" aria-hidden="true">@</span>
+                  <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2.5 text-lg text-foreground focus:outline-none disabled:opacity-50" type="text" maxlength="40" autocomplete="username" :disabled="locked" :aria-invalid="!usernameValid" aria-describedby="username-hint">
                 </div>
                 <p id="username-hint" class="mt-2 font-sans text-sm" :class="usernameValid ? 'text-foreground-subtle' : 'text-danger'">
                   <template v-if="!usernameValid">
@@ -490,7 +490,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
 
               <div>
                 <label for="email" :class="labelCls">Correo electrónico</label>
-                <input id="email" :value="settings?.email" class="font-inconsolata text-lg" :class="[field]" type="email" readonly disabled aria-describedby="email-hint">
+                <input id="email" :value="settings?.email" class="text-lg" :class="[field]" type="email" readonly disabled aria-describedby="email-hint">
                 <p id="email-hint" class="mt-2 font-sans text-sm text-foreground-subtle">
                   Para cambiarlo, escríbenos a contacto@backtrackacademy.com.
                 </p>
@@ -613,8 +613,8 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
                 Eliminar mi cuenta
               </Button>
               <div v-else class="mt-4 space-y-3">
-                <label for="delete-confirm" class="block font-sans text-sm text-foreground">Escribe tu nombre de usuario (<span class="font-inconsolata text-danger">{{ savedUsername }}</span>) para confirmar</label>
-                <input id="delete-confirm" v-model="deleteConfirm" class="font-inconsolata text-lg" :class="[field]" type="text" autocomplete="off">
+                <label for="delete-confirm" class="block font-sans text-sm text-foreground">Escribe tu nombre de usuario (<span class="text-danger">{{ savedUsername }}</span>) para confirmar</label>
+                <input id="delete-confirm" v-model="deleteConfirm" class="text-lg" :class="[field]" type="text" autocomplete="off">
                 <p v-if="deleteError" class="font-sans text-sm text-danger" role="alert">
                   {{ deleteError }}
                 </p>
@@ -757,7 +757,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
                   </fieldset>
                 </div>
               </article>
-              <p v-if="!visibleEducations.length" class="rounded-lg border border-dashed border-border p-5 text-center font-inconsolata text-sm text-foreground-subtle">
+              <p v-if="!visibleEducations.length" class="rounded-lg border border-dashed border-border p-5 text-center text-sm text-foreground-subtle">
                 Aún no agregas estudios universitarios.
               </p>
               <Button type="button" variant="outline" class="bt-focus border-border bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground" @click="addEducation">
@@ -812,7 +812,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
                 <label :for="net.key" :class="labelCls">{{ net.label }}</label>
                 <div class="flex items-center rounded-md border border-border bg-transparent transition-colors hover:border-strong focus-within:border-primary/70">
                   <span class="flex items-center border-r border-border px-3.5 py-3 text-foreground-subtle"><Icon :name="net.icon" class="size-4" aria-hidden="true" /></span>
-                  <input :id="net.key" v-model="form[net.key]" class="w-full bg-transparent px-3 py-2.5 font-inconsolata text-lg text-foreground placeholder:text-foreground-subtle focus:outline-none" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
+                  <input :id="net.key" v-model="form[net.key]" class="w-full bg-transparent px-3 py-2.5 text-lg text-foreground placeholder:text-foreground-subtle focus:outline-none" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
                 </div>
               </div>
             </div>
@@ -831,7 +831,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
             <div class="mt-8 grid gap-6 sm:grid-cols-2">
               <div class="sm:col-span-2 sm:max-w-md">
                 <label for="rut" :class="labelCls">Cédula de identidad</label>
-                <input id="rut" v-model="form.rut" class="font-inconsolata text-lg" :class="[field]" type="text" maxlength="20" :disabled="locked">
+                <input id="rut" v-model="form.rut" class="text-lg" :class="[field]" type="text" maxlength="20" :disabled="locked">
               </div>
               <div>
                 <label for="residence" :class="labelCls">País de residencia</label>
@@ -861,7 +861,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
               </div>
               <div>
                 <label for="contact" :class="labelCls">Teléfono</label>
-                <input id="contact" v-model="form.contact" class="font-inconsolata text-lg" :class="[field]" type="tel" inputmode="numeric" maxlength="100" autocomplete="tel-national" :disabled="locked">
+                <input id="contact" v-model="form.contact" class="text-lg" :class="[field]" type="tel" inputmode="numeric" maxlength="100" autocomplete="tel-national" :disabled="locked">
               </div>
               <div class="sm:col-span-2">
                 <label for="address" :class="labelCls">Dirección</label>
@@ -883,7 +883,7 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
             <div v-if="settings?.payments.length" class="mt-8 overflow-x-auto">
               <table class="w-full text-left font-sans text-sm text-foreground">
                 <thead>
-                  <tr class="border-b border-border font-inconsolata text-[11px] uppercase tracking-[0.16em] text-foreground-subtle">
+                  <tr class="border-b border-border font-mono text-[11px] uppercase tracking-[0.16em] text-foreground-subtle">
                     <th class="py-3 pr-4 font-normal">
                       Fecha de pago
                     </th>

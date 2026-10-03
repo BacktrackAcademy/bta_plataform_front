@@ -9,6 +9,7 @@ const navGroups = [
       { to: '/dashboard', label: 'Inicio', icon: 'lucide:home' },
       { to: '/cursos', label: 'Mis cursos', icon: 'lucide:book-open' },
       { to: '/mi-progreso', label: 'Mi progreso', icon: 'lucide:bar-chart-3' },
+      { to: '/guardados', label: 'Guardados', icon: 'lucide:bookmark' },
     ],
   },
   {

@@ -13,6 +13,7 @@ const columns = computed(() => [
       { label: 'Dashboard', to: '/dashboard' },
       { label: 'Catálogo de cursos', to: '/cursos' },
       { label: 'Mi progreso', to: '/mi-progreso' },
+      { label: 'Guardados', to: '/guardados' },
       { label: 'Artículos', to: '/articulos' },
       { label: 'Debates', to: '/debates' },
       { label: 'Suscripción Pro', to: '/suscripciones', highlight: true },

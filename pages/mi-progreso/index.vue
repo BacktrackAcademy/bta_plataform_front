@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { CourseProgress, CoursesHistory, CoursesProgressResponse } from '~/interfaces/dashboard'
+import type { CourseProgress, CoursesProgressResponse } from '~/interfaces/dashboard'
 import ContinueMission from '~/components/progress/ContinueMission.vue'
 import CourseProgressCard from '~/components/progress/CourseProgressCard.vue'
 import ProgressPager from '~/components/progress/ProgressPager.vue'
-import ProgressSummary from '~/components/progress/ProgressSummary.vue'
 import { Skeleton } from '~/components/ui/skeleton'
 
 definePageMeta({
@@ -24,7 +23,6 @@ const MAX_PAGES = 10 // safety cap on the number of API pages fetched
 
 const { $api } = useNuxtApp()
 const { percentOf, statusOf } = useCourseProgress()
-const { clockToHours } = useFormatter()
 
 // TODO(backend): /courses/progress paginates server-side (6/page, ignores per_page) and exposes no global totals,
 // so every page is fetched here to get real filters/counts. A single summary endpoint would replace this.
@@ -38,8 +36,6 @@ const { data: courses, status, refresh } = useAsyncData<CourseProgress[]>('mi-pr
   return [first, ...rest].flatMap(r => r.courses ?? [])
 }, { lazy: true, default: () => [] })
 
-const { data: history } = useAsyncData<CoursesHistory>('mi-progreso-history', () => $api<CoursesHistory>('/courses/history'), { lazy: true })
-
 const loading = computed(() => status.value === 'pending' || status.value === 'idle')
 const failed = computed(() => status.value === 'error')
 const list = computed(() => courses.value ?? [])
@@ -50,20 +46,6 @@ const counts = computed(() => ({
   completed: list.value.filter(c => percentOf(c) >= 100).length,
   certified: list.value.filter(c => statusOf(c) === 'certified').length,
 }))
-
-const lessonsDone = computed(() => list.value.reduce((sum, c) => sum + (c.count_video ?? 0), 0))
-const lessonsTotal = computed(() => list.value.reduce((sum, c) => sum + (c.number_videos ?? 0), 0))
-// Backend `progress_percentage` reads 0 for real users; lessons done / total is the reliable figure.
-const overallPercent = computed(() => lessonsTotal.value ? Math.round((lessonsDone.value / lessonsTotal.value) * 100) : 0)
-const studyHours = computed(() => history.value ? clockToHours(history.value.total_viewed) : null)
-
-const summaryStats = computed(() => [
-  { key: 'courses', label: 'Cursos', value: history.value?.number_courses ?? counts.value.all },
-  { key: 'completed', label: 'Completados', value: counts.value.completed },
-  { key: 'certs', label: 'Certificados', value: counts.value.certified },
-  { key: 'lessons', label: 'Lecciones', value: lessonsDone.value, unit: `/ ${lessonsTotal.value}` },
-  { key: 'hours', label: 'Estudio', value: studyHours.value, unit: 'h' },
-])
 
 // Course to resume: first one already started and unfinished, else first unfinished.
 // TODO(backend): expose last_activity_at per course so this is "most recently studied" instead of list order.
@@ -159,12 +141,6 @@ const emptyText: Record<Filter, string> = {
     </section>
 
     <template v-else>
-      <ProgressSummary
-        :percent="overallPercent"
-        :stats="summaryStats"
-        :loading="loading"
-      />
-
       <Skeleton v-if="loading" class="h-40 w-full" />
       <ContinueMission v-else-if="current" :course="current" />
 

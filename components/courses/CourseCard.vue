@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CourseThumb from '~/components/dashboard/CourseThumb.vue'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 import ProgressBar from '~/components/dashboard/ProgressBar.vue'
 
 // Single course widget used across the platform (dashboard, catalog…). Optional fields are hidden when absent.
@@ -15,6 +16,7 @@ const props = defineProps<{
     price?: number | null
     created_at?: string
     total_duration_text?: string
+    total_duration_seconds?: number
     /** When set, shows the user's progress in the course. */
     percent?: number
     teacher?: { name?: string, lastname?: string, avatar_url?: string } | null
@@ -25,7 +27,6 @@ const LEVELS = ['Básicos', 'Intermedios', 'Avanzados', 'Experto']
 const NEW_WINDOW_MS = 30 * 24 * 60 * 60 * 1000
 
 const author = computed(() => [props.course.teacher?.name, props.course.teacher?.lastname].filter(Boolean).join(' '))
-const initials = computed(() => [props.course.teacher?.name, props.course.teacher?.lastname].filter(Boolean).map(n => n![0]).join('').toUpperCase())
 // Undefined price = not applicable (e.g. courses the user already owns): hide the pill instead of showing "Gratis".
 const price = computed(() => (props.course.price === undefined ? '' : props.course.price ? `$ ${props.course.price}` : 'Gratis'))
 const views = computed(() => (typeof props.course.pageviews === 'number' ? props.course.pageviews.toLocaleString('es-CL') : ''))
@@ -34,6 +35,14 @@ const isNew = computed(() => {
   const t = props.course.created_at ? Date.parse(props.course.created_at) : Number.NaN
   return !Number.isNaN(t) && Date.now() - t < NEW_WINDOW_MS
 })
+const duration = computed(() => formatCourseDuration(props.course))
+// Soft spotlight that follows the cursor (CSS vars read by the overlay below).
+function onPointerMove(e: PointerEvent) {
+  const el = e.currentTarget as HTMLElement
+  const r = el.getBoundingClientRect()
+  el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+  el.style.setProperty('--my', `${e.clientY - r.top}px`)
+}
 const hasProgress = computed(() => typeof props.course.percent === 'number')
 const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course.percent ?? 0))))
 </script>
@@ -41,9 +50,15 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
 <template>
   <NuxtLink
     :to="`/curso/${course.slug}`"
-    class="bt-surface bt-surface-hover bt-focus group flex h-full w-full flex-col overflow-hidden !rounded-2xl !border-transparent shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)] !transition-all !duration-300 motion-safe:hover:-translate-y-1"
+    @pointermove="onPointerMove"
+    class="bt-surface bt-focus group relative flex h-full w-full flex-col overflow-hidden !rounded-2xl !border-transparent shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)] ring-1 ring-inset ring-transparent transition-all duration-300 ease-out hover:bg-bta-elevated hover:shadow-[0_18px_40px_-22px_rgba(236,16,117,0.3)] hover:ring-white/[0.08] motion-safe:hover:-translate-y-0.5"
   >
-    <CourseThumb :src="course.image_thumb" :alt="course.titulo">
+    <span
+      class="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      style="background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(236, 16, 117, 0.09), transparent 70%)"
+      aria-hidden="true"
+    />
+    <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand>
       <span
         v-if="course.level_name"
         class="absolute right-3 top-3 inline-flex items-center gap-2 bg-bta-pink px-3 py-1.5 font-inconsolata text-sm text-white"
@@ -66,42 +81,25 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
         Nuevo
       </span>
       <span
-        v-if="course.total_duration_text"
+        v-if="duration"
         class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded bg-black/70 px-2 py-1 font-inconsolata text-xs text-white backdrop-blur"
       >
         <Icon name="lucide:clock" class="size-3" />
-        {{ course.total_duration_text }}
+        {{ duration }}
       </span>
     </CourseThumb>
 
     <div class="flex flex-1 flex-col p-4">
-      <h3 class="line-clamp-2 min-h-[3.4rem] font-oswald text-2xl font-semibold leading-[1.15] text-white">
+      <h3 class="line-clamp-2 min-h-[3.4rem] font-oswald text-2xl font-semibold leading-[1.15] text-white transition-colors duration-300 group-hover:text-white">
         {{ course.titulo }}
       </h3>
 
       <div v-if="author" class="mt-3 flex items-center gap-2.5">
-        <img
-          v-if="course.teacher?.avatar_url"
-          :src="course.teacher.avatar_url"
-          :alt="author"
-          width="28"
-          height="28"
-          loading="lazy"
-          class="size-7 shrink-0 rounded-full object-cover ring-1 ring-white/15"
-        >
-        <span
-          v-else
-          class="flex size-7 shrink-0 items-center justify-center rounded-full bg-bta-pink/15 font-oswald text-xs text-bta-pink ring-1 ring-bta-pink/30"
-          aria-hidden="true"
-        >{{ initials }}</span>
+        <TeacherAvatar :src="course.teacher?.avatar_url" :name="author" />
         <span class="min-w-0 flex-1 truncate font-inconsolata text-sm text-white">{{ author }}</span>
-        <span class="inline-flex shrink-0 items-center gap-1 font-inconsolata text-xs text-bta-pink opacity-0 transition-all duration-200 motion-safe:-translate-x-2 group-hover:translate-x-0 group-hover:opacity-100">
-          Ver curso
-          <Icon name="lucide:arrow-right" class="size-3.5" />
-        </span>
       </div>
 
-      <div class="mt-3 h-0.5 w-8 bg-bta-pink transition-all duration-300 group-hover:w-16" />
+      <div class="mt-3 h-0.5 w-8 bg-bta-pink transition-all duration-300 group-hover:w-12" />
 
       <p v-if="course.shortdes" class="mt-3 line-clamp-3 font-inconsolata text-sm leading-relaxed text-[#6B6F9A]">
         {{ course.shortdes }}
@@ -128,7 +126,7 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
             {{ course.number_videos }} lecciones
           </span>
         </div>
-        <span v-if="price" class="shrink-0 rounded-md border border-bta-pink/50 px-2.5 py-0.5 font-semibold text-bta-pink transition-colors duration-200 group-hover:bg-bta-pink group-hover:text-white">{{ price }}</span>
+        <span v-if="price" class="shrink-0 rounded-md border border-bta-pink/50 px-2.5 py-0.5 font-semibold text-bta-pink transition-colors duration-300 group-hover:border-bta-pink/80 group-hover:bg-bta-pink/10">{{ price }}</span>
       </div>
     </div>
   </NuxtLink>

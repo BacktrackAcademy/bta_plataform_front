@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // import { useSeoMeta } from '#app'
 import { useRoute } from 'vue-router'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
 definePageMeta({
   layout: 'custom',
@@ -42,6 +43,7 @@ interface Course {
   students?: number
   number_videos?: number
   total_duration_text?: string
+  total_duration_seconds?: number
   teacher?: Teacher
   syllabus?: Theme[]
 }
@@ -53,6 +55,7 @@ const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.st
 const isFree = computed(() => !course.value?.price)
 const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
 const teacherName = computed(() => [course.value?.teacher?.name, course.value?.teacher?.lastname].filter(Boolean).join(' '))
+const duration = computed(() => (course.value ? formatCourseDuration(course.value) : ''))
 const levels = ['Básicos', 'Intermedios', 'Avanzados', 'Experto']
 const levelIndex = computed(() => {
   const i = levels.indexOf(course.value?.level_name ?? '')
@@ -130,7 +133,7 @@ function canWatch(video: Video) {
         </div>
 
         <div v-if="teacherName" class="mt-8 inline-flex items-center gap-3 rounded-lg border border-white/[0.08] bg-black/30 py-2 pl-2 pr-5 backdrop-blur">
-          <img v-if="course.teacher?.avatar_url" :src="course.teacher.avatar_url" :alt="teacherName" class="size-11 rounded-full object-cover ring-2 ring-bta-pink/60">
+          <TeacherAvatar :src="course.teacher?.avatar_url" :name="teacherName" class="!size-11 text-base" />
           <div>
             <p class="font-inconsolata text-xs text-white/40">
               <span class="text-bta-pink">$</span> whoami --instructor
@@ -240,8 +243,8 @@ function canWatch(video: Video) {
             <li v-if="totalLessons" class="flex items-center gap-3">
               <Icon name="lucide:video" class="size-4 text-bta-pink" /> {{ totalLessons }} lecciones en video
             </li>
-            <li v-if="course.total_duration_text" class="flex items-center gap-3">
-              <Icon name="lucide:clock" class="size-4 text-bta-pink" /> {{ course.total_duration_text }} de contenido
+            <li v-if="duration" class="flex items-center gap-3">
+              <Icon name="lucide:clock" class="size-4 text-bta-pink" /> {{ duration }} de contenido
             </li>
             <li class="flex items-center gap-3">
               <Icon name="lucide:infinity" class="size-4 text-bta-pink" /> Acceso a tu propio ritmo

@@ -55,6 +55,7 @@ export interface LatestCourse {
   pageviews?: number
   created_at?: string
   total_duration_text?: string
+  total_duration_seconds?: number
   teacher?: { name: string, lastname: string, avatar_url?: string }
 }
 

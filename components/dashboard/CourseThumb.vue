@@ -31,7 +31,7 @@ const code = computed(() => {
 </script>
 
 <template>
-  <div class="relative isolate aspect-video w-full overflow-hidden bg-bta-elevated">
+  <div class="relative isolate aspect-video w-full overflow-hidden bg-surface-3">
     <img
       v-if="src && status !== 'error'"
       ref="img"
@@ -41,32 +41,32 @@ const code = computed(() => {
       height="180"
       loading="lazy"
       decoding="async"
-      class="absolute inset-0 size-full object-cover transition-[opacity,transform] duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+      class="absolute inset-0 size-full object-cover transition-[opacity,transform] duration-slow ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       :class="[status === 'loaded' ? 'opacity-100' : 'opacity-0', brand && 'brand-img']"
       @load="status = 'loaded'"
       @error="status = 'error'"
     >
-    <div v-if="status === 'loading'" class="absolute inset-0 animate-pulse bg-white/[0.04]" />
+    <div v-if="status === 'loading'" class="absolute inset-0 animate-pulse bg-foreground/[0.04]" />
     <div
       v-if="status === 'error'"
-      class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#12162A] via-bta-surface to-bta-bg"
+      class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-surface-3 via-surface-2 to-surface-1"
       role="img"
       :aria-label="alt"
     >
       <div class="bt-tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_80%)]" />
-      <div class="absolute -right-8 -top-8 size-32 rounded-full bg-bta-pink/15 blur-2xl" />
-      <span class="relative font-oswald text-3xl font-semibold tracking-widest text-white/80">
-        {{ code }}<span class="text-bta-pink">_</span>
+      <div class="absolute -right-8 -top-8 size-32 rounded-full bg-primary/10 blur-2xl" />
+      <span class="relative font-oswald text-3xl font-semibold tracking-widest text-foreground-secondary">
+        {{ code }}<span class="text-primary-text">_</span>
       </span>
     </div>
     <template v-if="brand && status === 'loaded'">
       <div class="brand-tint pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bta-surface to-transparent" aria-hidden="true" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-surface-2 to-transparent" aria-hidden="true" />
     </template>
     <!-- Blend: darkens bright/white images, grounds the image in the card and adds a crisp inner edge -->
     <div
       v-if="status === 'loaded'"
-      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-bta-surface/80 via-transparent to-bta-bg/30 ring-1 ring-inset ring-white/[0.07]"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface-2/80 via-transparent to-scrim/30 ring-1 ring-inset ring-foreground/[0.07]"
       aria-hidden="true"
     />
     <slot />
@@ -74,20 +74,21 @@ const code = computed(() => {
 </template>
 
 <style>
+/* Tratamiento de portada: greyscale parcial + tinte de marca que cede al hacer hover */
 .brand-img {
-  filter: grayscale(0.6) contrast(1.08) brightness(0.85);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out, filter 0.5s ease-out;
+  filter: grayscale(0.55) contrast(1.06) brightness(0.88);
+  transition: opacity var(--duration-slow) ease-out, transform 400ms var(--ease-out), filter var(--duration-slow) ease-out;
 }
 .brand-tint {
-  background: linear-gradient(135deg, #3b1d8f 0%, #ec1075 100%);
+  background: linear-gradient(135deg, hsl(var(--brand-violet)) 0%, hsl(var(--primary)) 100%);
   mix-blend-mode: color;
-  opacity: 0.5;
-  transition: opacity 0.5s ease-out;
+  opacity: 0.4;
+  transition: opacity var(--duration-slow) ease-out;
 }
 .group:hover .brand-img {
-  filter: grayscale(0.2) contrast(1.05) brightness(1);
+  filter: grayscale(0.2) contrast(1.04) brightness(1);
 }
 .group:hover .brand-tint {
-  opacity: 0.22;
+  opacity: 0.18;
 }
 </style>

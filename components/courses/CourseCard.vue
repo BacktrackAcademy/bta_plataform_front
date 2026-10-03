@@ -36,7 +36,6 @@ const isNew = computed(() => {
   return !Number.isNaN(t) && Date.now() - t < NEW_WINDOW_MS
 })
 const duration = computed(() => formatCourseDuration(props.course))
-const { onPointerMove } = useSpotlight()
 // Hide the bar at 0%: an empty track is just noise.
 const hasProgress = computed(() => typeof props.course.percent === 'number' && props.course.percent > 0)
 const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course.percent ?? 0))))
@@ -45,73 +44,56 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
 <template>
   <NuxtLink
     :to="`/curso/${course.slug}`"
-    @pointermove="onPointerMove"
-    class="bt-surface bt-focus group relative flex h-full w-full flex-col overflow-hidden !rounded-2xl !border-transparent shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)] ring-1 ring-inset ring-transparent transition-all duration-300 ease-out hover:bg-bta-elevated hover:shadow-[0_18px_40px_-22px_rgba(236,16,117,0.3)] hover:ring-white/[0.08] motion-safe:hover:-translate-y-0.5"
+    class="bt-card bt-card-interactive group flex h-full w-full flex-col"
   >
-    <span
-      class="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-      style="background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(236, 16, 117, 0.09), transparent 70%)"
-      aria-hidden="true"
-    />
     <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand>
-      <span
-        v-if="course.level_name"
-        class="absolute right-3 top-3 inline-flex items-center gap-2 bg-bta-pink px-3 py-1.5 font-inconsolata text-sm text-white"
-      >
+      <span v-if="course.level_name" class="bt-overlay-chip absolute right-3 top-3 font-mono">
         <span v-if="levelRank" class="flex items-end gap-px" aria-hidden="true">
           <span
             v-for="n in 4"
             :key="n"
             class="w-[3px] rounded-[1px]"
-            :class="n <= levelRank ? 'bg-white' : 'bg-white/35'"
+            :class="n <= levelRank ? 'bg-primary' : 'bg-foreground/25'"
             :style="{ height: `${n * 3 + 3}px` }"
           />
         </span>
         {{ course.level_name }}
       </span>
-      <span
-        v-if="isNew"
-        class="absolute left-3 top-3 border border-bta-pink/60 bg-black/60 px-2 py-1 font-inconsolata text-xs uppercase tracking-wider text-bta-pink backdrop-blur"
-      >
+      <span v-if="isNew" class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider text-primary-text">
         Nuevo
       </span>
-      <span
-        v-if="duration"
-        class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded bg-black/70 px-2 py-1 font-inconsolata text-xs text-white backdrop-blur"
-      >
+      <span v-if="duration" class="bt-overlay-chip absolute bottom-3 left-3 font-mono">
         <Icon name="lucide:clock" class="size-3" />
         {{ duration }}
       </span>
     </CourseThumb>
 
     <div class="flex flex-1 flex-col p-4">
-      <h3 class="line-clamp-2 min-h-[3.4rem] font-oswald text-[1.4rem] font-normal leading-[1.25] tracking-[0.015em] text-white/95 transition-colors duration-300 group-hover:text-white">
+      <h3 class="line-clamp-2 min-h-[3.1rem] font-oswald text-xl font-medium leading-[1.25] tracking-[0.01em] text-foreground">
         {{ course.titulo }}
       </h3>
 
       <div v-if="author" class="mt-3 flex items-center gap-2.5">
         <TeacherAvatar :src="course.teacher?.avatar_url" :name="author" />
-        <span class="min-w-0 flex-1 truncate font-inconsolata text-sm text-white">{{ author }}</span>
+        <span class="min-w-0 flex-1 truncate text-sm text-foreground-secondary">{{ author }}</span>
       </div>
 
-      <div class="mt-3 h-0.5 w-8 bg-bta-pink transition-all duration-300 group-hover:w-12" />
-
-      <p v-if="course.shortdes" class="mt-3 line-clamp-3 font-inconsolata text-sm leading-relaxed text-[#6B6F9A]">
+      <p v-if="course.shortdes" class="t-small mt-3 line-clamp-3">
         {{ course.shortdes }}
       </p>
 
       <div v-if="hasProgress" class="mt-4 flex items-center gap-3">
         <ProgressBar :value="percent" :label="`Progreso en ${course.titulo}`" />
-        <span class="font-inconsolata text-xs tabular-nums text-white/80">{{ percent }}%</span>
+        <span class="t-meta tabular-nums text-foreground-secondary">{{ percent }}%</span>
       </div>
 
-      <div class="h-5 shrink-0" />
-      <div class="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.06] pt-4 font-inconsolata text-sm">
-        <span v-if="hasProgress && !price" class="inline-flex items-center gap-1.5 font-medium text-white/80 transition-colors group-hover:text-bta-pink">
+      <div class="h-4 shrink-0" />
+      <div class="mt-auto flex items-center justify-between gap-3 border-t border-subtle pt-3.5">
+        <span v-if="hasProgress && !price" class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground-secondary transition-colors duration-fast group-hover:text-primary-text">
           Continuar
-          <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+          <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-base group-hover:translate-x-1" />
         </span>
-        <div class="flex min-w-0 items-center gap-3 text-gray-muted">
+        <div class="t-meta flex min-w-0 items-center gap-3">
           <span v-if="views" class="inline-flex items-center gap-1.5" title="Visitas">
             <Icon name="lucide:eye" class="size-3.5" />
             {{ views }}
@@ -121,7 +103,7 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
             {{ course.number_videos }} lecciones
           </span>
         </div>
-        <span v-if="price" class="shrink-0 rounded-md border border-bta-pink/50 px-2.5 py-0.5 font-semibold text-bta-pink transition-colors duration-300 group-hover:border-bta-pink/80 group-hover:bg-bta-pink/10">{{ price }}</span>
+        <span v-if="price" class="bt-badge-primary bt-badge shrink-0 font-mono text-[13px] font-semibold">{{ price }}</span>
       </div>
     </div>
   </NuxtLink>

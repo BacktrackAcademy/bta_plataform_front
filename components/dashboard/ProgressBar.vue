@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Magenta = progress so far, dark gray = pending. Fills in on mount (skipped for reduced motion via CSS).
+// Magenta = progreso logrado, surface-4 = pendiente. Se rellena al montar (sin transición con reduced-motion).
 const props = withDefaults(defineProps<{
   value: number
   size?: 'sm' | 'md'
@@ -23,11 +23,11 @@ onMounted(() => {
     aria-valuemin="0"
     aria-valuemax="100"
     :aria-valuenow="Math.round(clamped)"
-    class="w-full overflow-hidden rounded-full bg-white/[0.07]"
+    class="w-full overflow-hidden rounded-full bg-surface-4"
     :class="size === 'md' ? 'h-2' : 'h-1.5'"
   >
     <div
-      class="h-full rounded-full bg-bta-pink shadow-[0_0_12px_rgba(236,16,117,0.55)] transition-[width] duration-1000 ease-out motion-reduce:transition-none"
+      class="h-full rounded-full bg-primary transition-[width] duration-700 ease-out motion-reduce:transition-none"
       :style="{ width: `${shown ? clamped : 0}%` }"
     />
   </div>

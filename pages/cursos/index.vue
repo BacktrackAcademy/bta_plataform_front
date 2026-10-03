@@ -4,6 +4,7 @@ import CourseCard from '@/components/courses/CourseCard.vue'
 import { refDebounced } from '@vueuse/core'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import CommonPageHeader from '@/components/common/PageHeader.vue'
 
 definePageMeta({
   layout: 'custom',
@@ -192,30 +193,25 @@ useSeoMeta({
 
 <template>
   <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
-    <header class="mb-6">
-      <h1 class="bt-section-title !text-3xl">
-        Cursos de hacking ético
-      </h1>
-      <p class="mt-2 font-inconsolata text-sm text-gray-muted">
-        <span class="text-bta-pink">$</span> ls cursos/
-        <span v-if="total" class="text-white/70">→ {{ total }} {{ total === 1 ? 'curso' : 'cursos' }}{{ hasFilters ? ' encontrados' : '' }}</span>
-      </p>
-    </header>
+    <CommonPageHeader title="Cursos de hacking ético" class="mb-6">
+      <span class="font-mono"><span class="text-primary-text">$</span> ls cursos/</span>
+      <span v-if="total" class="font-mono text-foreground-secondary"> → {{ total }} {{ total === 1 ? 'curso' : 'cursos' }}{{ hasFilters ? ' encontrados' : '' }}</span>
+    </CommonPageHeader>
 
-    <!-- Filters -->
-    <section class="bt-surface mb-8 space-y-4 !rounded-2xl !border-transparent p-4 shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)] sm:p-5" aria-label="Filtros">
+    <!-- Filtros: L1, sobre el fondo de página -->
+    <section class="bt-panel mb-8 space-y-4 p-4 sm:p-5" aria-label="Filtros">
       <div class="grid gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <label class="relative block">
           <span class="sr-only">Buscar cursos</span>
-          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-inconsolata text-bta-pink" aria-hidden="true">&gt;</span>
+          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-primary-text" aria-hidden="true">&gt;</span>
           <Input
             v-model="searchQuery"
-            class="h-11 border-white/10 bg-bta-bg pl-8 font-inconsolata text-white placeholder:text-gray-muted"
-            placeholder="buscar cursos…"
+            class="h-11 bg-surface-2 pl-8"
+            placeholder="Buscar cursos…"
           />
         </label>
         <MultiSelect
-          class-name="font-inconsolata !min-h-11 !border-white/10 !bg-bta-bg"
+          class-name="!min-h-11"
           :options="formattedCategories"
           :selected="categorySelected"
           placeholder="Categorías"
@@ -223,7 +219,7 @@ useSeoMeta({
           @change="categorySelected = $event"
         />
         <MultiSelect
-          class-name="font-inconsolata !min-h-11 !border-white/10 !bg-bta-bg"
+          class-name="!min-h-11"
           :options="formattedTeachers"
           :selected="selectedTeachers"
           placeholder="Profesores"
@@ -233,16 +229,13 @@ useSeoMeta({
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <span class="mr-1 font-inconsolata text-xs uppercase tracking-wider text-gray-muted">Nivel</span>
+        <span class="t-eyebrow mr-1 !text-[11px]">Nivel</span>
         <button
           v-for="level in formattedLevels"
           :key="level.value"
           type="button"
           :aria-pressed="levelSelected.includes(level.value)"
-          class="bt-focus border px-3 py-1.5 font-inconsolata text-sm transition-colors duration-200"
-          :class="levelSelected.includes(level.value)
-            ? 'border-bta-pink bg-bta-pink text-white'
-            : 'border-white/10 text-bta-text-2 hover:border-bta-pink/50 hover:text-white'"
+          class="bt-chip bg-surface-2"
           @click="toggleLevel(level.value)"
         >
           {{ level.label }}
@@ -251,7 +244,7 @@ useSeoMeta({
         <button
           v-if="activeFilterCount"
           type="button"
-          class="bt-focus ml-auto inline-flex items-center gap-1.5 font-inconsolata text-sm text-bta-pink transition-opacity hover:opacity-80"
+          class="bt-focus ml-auto inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-primary-text transition-opacity duration-fast hover:opacity-80"
           @click="clearFilters"
         >
           <Icon name="lucide:x" class="size-3.5" />
@@ -265,14 +258,14 @@ useSeoMeta({
       v-if="!isLoading && !courses.courses.length"
       class="grid place-items-center py-20"
     >
-      <div class="max-w-md border border-white/[0.08] bg-black/30 p-6 font-inconsolata text-sm">
-        <p class="text-white">
-          <span class="text-bta-pink">$</span> grep -ri "{{ debouncedQuery || 'filtros' }}" cursos/
+      <div class="max-w-md rounded-lg border border-subtle bg-surface-1 p-6 font-mono text-sm">
+        <p class="text-foreground">
+          <span class="text-primary-text">$</span> grep -ri "{{ debouncedQuery || 'filtros' }}" cursos/
         </p>
-        <p class="mt-2 text-gray-muted">
+        <p class="mt-2 text-foreground-muted">
           0 resultados. Prueba con otros términos o quita algún filtro.
         </p>
-        <button v-if="hasFilters" type="button" class="bt-focus mt-4 text-bta-pink hover:underline" @click="clearFilters">
+        <button v-if="hasFilters" type="button" class="bt-focus mt-4 rounded-sm text-primary-text hover:underline" @click="clearFilters">
           &gt; limpiar filtros
         </button>
       </div>
@@ -283,12 +276,11 @@ useSeoMeta({
         <CourseCard :course="course" />
       </div>
       <template v-if="isLoading">
-        <div v-for="n in (courses.courses.length ? 3 : perPage)" :key="`sk${n}`" class="bt-surface overflow-hidden !rounded-2xl !border-transparent">
+        <div v-for="n in (courses.courses.length ? 3 : perPage)" :key="`sk${n}`" class="bt-surface overflow-hidden">
           <Skeleton class="aspect-video w-full rounded-none" />
           <div class="space-y-3 p-4">
             <Skeleton class="h-6 w-4/5" />
             <Skeleton class="h-4 w-1/2" />
-            <Skeleton class="h-0.5 w-8" />
             <Skeleton class="h-10 w-full" />
           </div>
         </div>
@@ -296,25 +288,19 @@ useSeoMeta({
     </div>
 
     <div ref="sentinel" class="h-px" aria-hidden="true" />
-    <p v-if="!hasMore && courses.courses.length" class="py-10 text-center font-inconsolata text-sm text-gray-muted">
-      <span class="text-bta-pink">$</span> fin de la lista<span class="term-cursor ml-1" aria-hidden="true" />
+    <p v-if="!hasMore && courses.courses.length" class="py-10 text-center font-mono text-sm text-foreground-muted">
+      <span class="text-primary-text">$</span> fin de la lista<span class="term-cursor ml-1" aria-hidden="true" />
     </p>
   </div>
 </template>
 
 <style>
+/* Cursor de terminal estático (sin parpadeo decorativo) */
 .term-cursor {
   display: inline-block;
   width: 0.45rem;
   height: 0.95rem;
-  background: #ec1075;
+  background: hsl(var(--primary));
   vertical-align: text-bottom;
-  animation: term-blink 1.1s steps(1) infinite;
-}
-@keyframes term-blink {
-  50% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .term-cursor { animation: none; }
 }
 </style>

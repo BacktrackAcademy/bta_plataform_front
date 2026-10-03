@@ -12,19 +12,10 @@ const firstName = computed(() => session.value?.user?.name?.split(' ')[0] ?? '')
 </script>
 
 <template>
-  <header class="relative overflow-hidden rounded-xl border border-white/[0.06] bg-bta-surface px-6 py-6 sm:px-8">
-    <div class="bt-tech-grid pointer-events-none absolute inset-0 opacity-[0.55] [mask-image:radial-gradient(ellipse_at_85%_0%,#000_0%,transparent_70%)]" aria-hidden="true" />
-    <div class="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-bta-pink/10 blur-3xl" aria-hidden="true" />
-
-    <div class="relative">
-      <h1 class="font-oswald text-3xl font-semibold leading-tight text-white sm:text-4xl">
-        {{ greeting }}<template v-if="firstName">
-          , {{ firstName }}
-        </template>
-      </h1>
-      <p class="mt-1.5 text-[15px] text-bta-text-2">
-        Continúa donde lo dejaste.
-      </p>
-    </div>
+  <!-- Saludo deliberadamente discreto: la protagonista del dashboard es la tarjeta "Continuar curso" -->
+  <header>
+    <h1 class="font-oswald text-2xl font-medium leading-tight text-foreground-secondary sm:text-[1.75rem]">
+      {{ greeting }}<span v-if="firstName">, <span class="text-foreground">{{ firstName }}</span></span>
+    </h1>
   </header>
 </template>

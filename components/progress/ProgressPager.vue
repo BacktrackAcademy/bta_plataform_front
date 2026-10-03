@@ -19,20 +19,20 @@ const pages = computed<(number | null)[]>(() => {
   return list
 })
 
-const btn = 'bt-focus inline-flex h-9 items-center justify-center border border-white/[0.06] px-3 font-inconsolata text-sm transition-colors disabled:pointer-events-none disabled:opacity-30'
+const btn = 'bt-focus inline-flex h-9 items-center justify-center rounded-md border border-subtle bg-surface-1 px-3 font-mono text-sm transition-colors duration-fast disabled:pointer-events-none disabled:opacity-45'
 </script>
 
 <template>
   <nav v-if="totalPages > 1" aria-label="Paginación de cursos" class="flex flex-wrap items-center justify-center gap-1.5">
-    <button type="button" :class="btn" class="gap-1.5 text-white/80 hover:border-bta-pink/50 hover:text-white" :disabled="page <= 1" @click="emit('update:page', page - 1)">
+    <button type="button" :class="btn" class="gap-1.5 text-foreground-secondary hover:border-border hover:bg-surface-3 hover:text-foreground" :disabled="page <= 1" @click="emit('update:page', page - 1)">
       <Icon name="lucide:arrow-left" class="size-3.5" aria-hidden="true" /> PREV
     </button>
     <template v-for="(n, i) in pages" :key="i">
-      <span v-if="n === null" class="px-1 font-inconsolata text-gray-muted" aria-hidden="true">…</span>
+      <span v-if="n === null" class="px-1 font-inconsolata text-foreground-subtle" aria-hidden="true">…</span>
       <button
         v-else
         type="button"
-        :class="[btn, n === page ? '!border-bta-pink bg-bta-pink/10 text-white' : 'text-bta-text-2 hover:border-bta-pink/50 hover:text-white']"
+        :class="[btn, n === page ? '!border-primary/50 !bg-primary/10 text-foreground' : 'text-foreground-muted hover:border-border hover:bg-surface-3 hover:text-foreground']"
         :aria-current="n === page ? 'page' : undefined"
         :aria-label="`Página ${n}`"
         @click="emit('update:page', n)"
@@ -40,7 +40,7 @@ const btn = 'bt-focus inline-flex h-9 items-center justify-center border border-
         {{ pad(n) }}
       </button>
     </template>
-    <button type="button" :class="btn" class="gap-1.5 text-white/80 hover:border-bta-pink/50 hover:text-white" :disabled="page >= totalPages" @click="emit('update:page', page + 1)">
+    <button type="button" :class="btn" class="gap-1.5 text-foreground-secondary hover:border-border hover:bg-surface-3 hover:text-foreground" :disabled="page >= totalPages" @click="emit('update:page', page + 1)">
       NEXT <Icon name="lucide:arrow-right" class="size-3.5" aria-hidden="true" />
     </button>
   </nav>

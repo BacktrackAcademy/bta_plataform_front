@@ -64,26 +64,28 @@ function handleMouseDownPrevent(e: MouseEvent) {
     <PopoverTrigger as-child>
       <div
         role="combobox"
+        tabindex="0"
         :aria-expanded="open"
+        :data-open="open"
         :class="cn(
-          'relative flex min-h-10 w-full flex-wrap items-center justify-start gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+          'relative flex min-h-10 w-full cursor-pointer flex-wrap items-center justify-start gap-1 rounded-md border border-input bg-surface-2 px-3 py-2 text-sm text-foreground transition-[border-color,box-shadow] duration-fast ease-out hover:border-foreground-subtle focus-visible:border-primary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 data-[open=true]:border-primary/70 disabled:cursor-not-allowed disabled:opacity-50',
           className,
         )"
       >
         <div class="flex flex-wrap gap-1 flex-grow">
-          <p v-if="selected.length === 0" class="text-sm text-muted-foreground">
+          <p v-if="selected.length === 0" class="text-sm text-foreground-subtle">
             {{ placeholder }}
           </p>
           <Badge
             v-for="value in selected"
             :key="value"
             variant="secondary"
-            class="rounded-sm px-1 font-normal mr-1 mb-1"
+            class="mb-1 mr-1 px-1.5 font-normal"
           >
             {{ options.find((o) => o.value === value)?.label }}
             <button
               type="button"
-              class="ml-1 rounded-sm outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              class="bt-focus ml-1 rounded-sm"
               @keydown.enter="handleUnselect(value)"
               @mousedown="handleMouseDownPrevent"
               @click="handleUnselect(value)"

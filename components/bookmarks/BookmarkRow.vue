@@ -36,44 +36,44 @@ const details = computed(() => [
 
 <template>
   <li
-    class="group relative flex items-start gap-3 border-b border-white/[0.06] px-3 py-4 transition-[background-color,opacity] duration-150 hover:bg-white/[0.02] sm:gap-4 sm:px-4"
+    class="group relative flex items-start gap-3 border-b border-subtle px-3 py-4 transition-[background-color,opacity] duration-fast hover:bg-surface-2 sm:gap-4 sm:px-4"
     :class="{ 'pointer-events-none opacity-40': removing }"
   >
-    <span class="hidden size-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-bta-surface text-bta-text-2 sm:flex" aria-hidden="true">
+    <span class="hidden size-9 shrink-0 items-center justify-center rounded-md border border-subtle bg-surface-2 text-foreground-muted group-hover:bg-surface-3 sm:flex" aria-hidden="true">
       <Icon :name="meta.icon" class="size-4" />
     </span>
 
     <div class="min-w-0 flex-1">
-      <p class="flex flex-wrap items-center gap-x-2 font-inconsolata text-xs text-gray-muted">
-        <span class="text-bta-text-2">{{ meta.label }}</span>
+      <p class="t-meta flex flex-wrap items-center gap-x-2 !text-xs">
+        <span class="text-foreground-secondary">{{ meta.label }}</span>
         <template v-for="d in details" :key="d">
           <span aria-hidden="true">·</span>
           <span>{{ d }}</span>
         </template>
       </p>
-      <h3 class="mt-1 text-[17px] font-medium leading-snug text-white">
-        <a v-if="external" :href="href" class="bt-focus rounded after:absolute after:inset-0 hover:underline">{{ item.title }}</a>
-        <NuxtLink v-else :to="href" class="bt-focus rounded after:absolute after:inset-0 hover:underline">
+      <h3 class="mt-1 text-[17px] font-medium leading-snug text-foreground">
+        <a v-if="external" :href="href" class="bt-focus rounded-sm after:absolute after:inset-0 hover:underline">{{ item.title }}</a>
+        <NuxtLink v-else :to="href" class="bt-focus rounded-sm after:absolute after:inset-0 hover:underline">
           {{ item.title }}
         </NuxtLink>
       </h3>
-      <p v-if="item.excerpt" class="mt-1 line-clamp-2 hidden text-sm text-bta-text-2 sm:block">
+      <p v-if="item.excerpt" class="t-small mt-1 line-clamp-2 hidden sm:block">
         {{ item.excerpt }}
       </p>
       <div v-if="item.kind === 'video' && progress > 0" class="mt-2 flex max-w-[280px] items-center gap-3">
         <ProgressBar :value="progress" :label="`Progreso en ${item.title}`" />
-        <span class="whitespace-nowrap font-inconsolata text-xs text-white/80">{{ progress >= 100 ? 'Completada' : `${progress}%` }}</span>
+        <span class="t-meta whitespace-nowrap !text-xs text-foreground-secondary">{{ progress >= 100 ? 'Completada' : `${progress}%` }}</span>
       </div>
-      <p class="mt-1.5 hidden font-inconsolata text-xs text-gray-muted sm:block">
+      <p class="t-caption mt-1.5 hidden sm:block">
         Guardado {{ timeAgo(item.saved_at) }}
       </p>
     </div>
 
     <div class="relative z-10 flex shrink-0 items-center gap-1 self-center">
-      <span class="hidden font-inconsolata text-sm text-bta-text-2 transition-colors group-hover:text-white md:inline">{{ cta }} →</span>
+      <span class="hidden text-sm text-foreground-muted transition-colors duration-fast group-hover:text-foreground md:inline">{{ cta }} →</span>
       <button
         type="button"
-        class="bt-focus -mr-2 inline-flex size-11 items-center justify-center rounded-lg text-bta-pink transition-colors hover:bg-bta-pink/10 active:scale-95"
+        class="bt-focus -mr-2 inline-flex size-11 items-center justify-center rounded-md text-primary-text transition-colors duration-fast hover:bg-primary/10 active:bg-primary/15"
         aria-pressed="true"
         :aria-label="`Quitar «${item.title}» de Guardados`"
         title="Quitar de Guardados"

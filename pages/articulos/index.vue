@@ -12,6 +12,7 @@ import {
   PaginationPrev,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
+import PageHeader from '~/components/common/PageHeader.vue'
 import ArticleCard from '~/components/articles/ArticleCard.vue'
 
 definePageMeta({
@@ -49,64 +50,67 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="w-full py-8 px-16">
-    <div class="lg:h-full">
-      <h1 class="text-white text-3xl font-oswald mb-5 uppercase font-semibold">
-        Noticias sobre seguridad
-      </h1>
-      <div v-if="status === 'pending'" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 py-5">
-        <Skeleton v-for="i in 6" :key="i" class="h-[390px] w-full bg-bta-dark-blue" />
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+    <PageHeader title="Noticias sobre seguridad">
+      Actualizaciones, novedades y tips de la comunidad de ciberseguridad.
+    </PageHeader>
+
+    <div v-if="status === 'pending'" class="grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-for="i in 6" :key="i" class="bt-surface overflow-hidden">
+        <Skeleton class="aspect-video w-full rounded-none" />
+        <div class="space-y-3 p-4">
+          <Skeleton class="h-6 w-4/5" />
+          <Skeleton class="h-4 w-1/2" />
+          <Skeleton class="h-10 w-full" />
+        </div>
       </div>
-
-      <template v-else>
-        <div class="flex">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 py-5">
-            <ArticleCard v-for="article in articles?.data" :key="article.id" :article="article" />
-          </div>
-          <div class="h-[200px]" />
-        </div>
-        <!-- Paginación -->
-        <div class="mt-8 flex justify-center">
-          <Pagination
-            v-slot="{ page }"
-            :total="totalItems"
-            :per-page="itemsPerPage"
-            :sibling-count="1"
-            show-edges
-            :default-page="currentPage"
-            @update:page="currentPage = $event"
-          >
-            <PaginationList v-slot="{ items }" class="flex items-center gap-1">
-              <PaginationFirst />
-              <PaginationPrev />
-
-              <template v-for="(item, index) in items">
-                <PaginationListItem
-                  v-if="item.type === 'page'"
-                  :key="index"
-                  :value="item.value"
-                  as-child
-                >
-                  <Button
-                    class="w-10 h-10 p-0"
-                    :variant="item.value === page ? 'default' : 'outline'"
-                  >
-                    {{ item.value }}
-                  </Button>
-                </PaginationListItem>
-                <PaginationEllipsis
-                  v-else
-                  :key="item.type"
-                  :index="index"
-                />
-              </template>
-
-              <PaginationNext />
-              <PaginationLast />
-            </PaginationList>
-          </Pagination>
-        </div>
-      </template>
     </div>
+
+    <template v-else>
+      <div class="grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-3">
+        <ArticleCard v-for="article in articles?.data" :key="article.id" :article="article" />
+      </div>
+      <!-- Paginación -->
+      <div class="mt-4 flex justify-center">
+        <Pagination
+          v-slot="{ page }"
+          :total="totalItems"
+          :per-page="itemsPerPage"
+          :sibling-count="1"
+          show-edges
+          :default-page="currentPage"
+          @update:page="currentPage = $event"
+        >
+          <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+            <PaginationFirst />
+            <PaginationPrev />
+
+            <template v-for="(item, index) in items">
+              <PaginationListItem
+                v-if="item.type === 'page'"
+                :key="index"
+                :value="item.value"
+                as-child
+              >
+                <Button
+                  class="size-10 p-0 font-mono"
+                  :variant="item.value === page ? 'default' : 'outline'"
+                >
+                  {{ item.value }}
+                </Button>
+              </PaginationListItem>
+              <PaginationEllipsis
+                v-else
+                :key="item.type"
+                :index="index"
+              />
+            </template>
+
+            <PaginationNext />
+            <PaginationLast />
+          </PaginationList>
+        </Pagination>
+      </div>
+    </template>
   </div>
 </template>

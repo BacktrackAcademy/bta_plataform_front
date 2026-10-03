@@ -52,28 +52,26 @@ function toTop() {
 </script>
 
 <template>
-  <footer v-if="compact" class="mt-10 border-t border-white/[0.06] bg-bta-dark-blue">
-    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-4 font-inconsolata text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+  <footer v-if="compact" class="mt-10 border-t border-subtle bg-surface-1">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-4 font-inconsolata text-xs text-foreground-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
       <p>© {{ year }} Backtrack Academy · Santiago, Chile</p>
       <nav aria-label="Pie de página" class="flex flex-wrap items-center gap-x-5 gap-y-1">
-        <a :href="landingUrl('/privacy_policy')" class="bt-focus rounded transition-colors hover:text-white">Privacidad</a>
-        <a :href="landingUrl('/terms_of_use')" class="bt-focus rounded transition-colors hover:text-white">Términos</a>
-        <a href="mailto:contacto@backtrackacademy.com" class="bt-focus rounded transition-colors hover:text-white">Contacto</a>
-        <button type="button" class="bt-focus inline-flex items-center gap-1 rounded transition-colors hover:text-bta-pink" @click="toTop">
+        <a :href="landingUrl('/privacy_policy')" class="bt-focus rounded transition-colors hover:text-foreground">Privacidad</a>
+        <a :href="landingUrl('/terms_of_use')" class="bt-focus rounded transition-colors hover:text-foreground">Términos</a>
+        <a href="mailto:contacto@backtrackacademy.com" class="bt-focus rounded transition-colors hover:text-foreground">Contacto</a>
+        <button type="button" class="bt-focus inline-flex items-center gap-1 rounded transition-colors hover:text-primary-text" @click="toTop">
           <Icon name="lucide:arrow-up" class="size-3" aria-hidden="true" />
           Arriba
         </button>
       </nav>
     </div>
   </footer>
-  <footer v-else class="relative mt-16 overflow-hidden border-t border-white/[0.06] bg-bta-dark-blue text-white">
-    <!-- decorative: neon line + tech grid -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-bta-pink to-transparent" aria-hidden="true" />
+  <footer v-else class="relative mt-16 overflow-hidden border-t border-subtle bg-surface-1 text-foreground">
+    <!-- decorative: tech grid -->
     <div
       class="bt-tech-grid pointer-events-none absolute inset-0 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_70%)]"
       aria-hidden="true"
     />
-    <div class="pointer-events-none absolute -top-32 left-1/2 h-64 w-[40rem] -translate-x-1/2 rounded-full bg-bta-pink/10 blur-3xl" aria-hidden="true" />
 
     <div class="relative mx-auto max-w-7xl px-4 pb-8 pt-14 sm:px-6 lg:px-10">
       <div class="grid gap-12 lg:grid-cols-[1.4fr_2fr]">
@@ -82,34 +80,31 @@ function toTop() {
           <NuxtLink to="/dashboard" class="bt-focus inline-block rounded" aria-label="Backtrack Academy — Inicio">
             <img class="w-36" src="~/assets/logo.svg" alt="Backtrack Academy">
           </NuxtLink>
-          <p class="mt-5 max-w-sm font-inconsolata text-base leading-relaxed text-bta-text-2">
+          <p class="t-body mt-5 max-w-sm">
             Cursos prácticos de ciberseguridad ofensiva y defensiva, en español.
           </p>
 
-          <div class="mt-6 max-w-sm rounded-lg border border-white/[0.08] bg-black/40 font-inconsolata text-sm shadow-[0_0_30px_-15px_rgba(236,16,117,0.6)]">
-            <div class="flex items-center gap-1.5 border-b border-white/[0.06] px-3 py-2">
-              <span class="size-2.5 rounded-full bg-[#ff5f56]" />
-              <span class="size-2.5 rounded-full bg-[#ffbd2e]" />
-              <span class="size-2.5 rounded-full bg-[#27c93f]" />
-              <span class="ml-2 text-xs text-white/40">contacto — bash</span>
+          <div class="mt-6 max-w-sm rounded-lg border border-subtle bg-surface-2 font-mono text-sm">
+            <div class="flex items-center gap-1.5 border-b border-subtle px-3 py-2">
+              <span class="size-2.5 rounded-full bg-foreground/15" />
+              <span class="size-2.5 rounded-full bg-foreground/15" />
+              <span class="size-2.5 rounded-full bg-foreground/15" />
+              <span class="ml-2 text-xs text-foreground-subtle">contacto — bash</span>
             </div>
             <div class="space-y-1.5 p-3.5">
               <p>
-                <span class="text-bta-pink">$</span>
-                <a href="mailto:contacto@backtrackacademy.com" class="ml-2 text-white transition-colors hover:text-bta-pink">mail contacto@</a>
+                <span class="text-primary-text">$</span>
+                <a href="mailto:contacto@backtrackacademy.com" class="ml-2 text-foreground transition-colors hover:text-primary-text">mail contacto@</a>
               </p>
               <p>
-                <span class="text-bta-pink">$</span>
-                <a href="mailto:ventas@backtrackacademy.com" class="ml-2 text-white transition-colors hover:text-bta-pink">mail ventas@ <span class="text-white/40"># empresas</span></a>
+                <span class="text-primary-text">$</span>
+                <a href="mailto:ventas@backtrackacademy.com" class="ml-2 text-foreground transition-colors hover:text-primary-text">mail ventas@ <span class="text-foreground-subtle"># empresas</span></a>
               </p>
-              <p class="flex items-center gap-2 text-white/60">
-                <span class="text-bta-pink">$</span>
+              <p class="flex items-center gap-2 text-foreground-muted">
+                <span class="text-primary-text">$</span>
                 <span>status</span>
-                <span class="inline-flex items-center gap-1.5 text-emerald-400">
-                  <span class="relative flex size-2">
-                    <span class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/60 motion-reduce:animate-none" />
-                    <span class="relative inline-flex size-2 rounded-full bg-emerald-400" />
-                  </span>
+                <span class="inline-flex items-center gap-1.5 text-success">
+                  <span class="size-1.5 rounded-full bg-success" />
                   online
                 </span>
                 <span class="term-cursor" aria-hidden="true" />
@@ -124,7 +119,7 @@ function toTop() {
                 target="_blank"
                 rel="noopener noreferrer"
                 :aria-label="s.label"
-                class="bt-focus flex size-9 items-center justify-center rounded-md border border-white/[0.08] text-bta-text-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-bta-pink/60 hover:text-bta-pink hover:shadow-[0_8px_20px_-10px_rgba(236,16,117,0.8)]"
+                class="bt-focus flex size-9 items-center justify-center rounded-md border border-subtle text-foreground-muted transition-colors duration-fast hover:border-border-strong hover:bg-surface-3 hover:text-foreground"
               >
                 <Icon :name="s.icon" class="size-4" />
               </a>
@@ -135,19 +130,19 @@ function toTop() {
         <!-- Link columns -->
         <nav aria-label="Pie de página" class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
           <div v-for="col in columns" :key="col.title">
-            <h3 class="font-oswald text-lg font-medium uppercase tracking-wider text-white">
+            <h3 class="font-oswald text-lg font-medium uppercase tracking-wider text-foreground">
               {{ col.title }}
             </h3>
-            <p class="mb-4 mt-0.5 font-inconsolata text-xs text-white/30">
-              <span class="text-bta-pink/80">$</span> {{ col.cmd }}
+            <p class="mb-4 mt-0.5 font-inconsolata text-xs text-foreground-subtle">
+              <span class="text-primary-text/80">$</span> {{ col.cmd }}
             </p>
-            <ul class="space-y-2.5 font-inconsolata text-[15px]">
+            <ul class="space-y-2.5 text-[15px]">
               <li v-for="l in col.links" :key="l.label">
                 <component
                   :is="l.external ? 'a' : 'NuxtLink'"
                   v-bind="l.external ? { href: l.to } : { to: l.to }"
                   class="foot__link group inline-flex items-center"
-                  :class="l.highlight ? 'text-bta-pink' : 'text-bta-text-2 hover:text-white'"
+                  :class="l.highlight ? 'text-primary-text' : 'text-foreground-muted hover:text-foreground'"
                 >
                   <span class="foot__arrow" aria-hidden="true">&gt;</span>
                   {{ l.label }}
@@ -159,18 +154,18 @@ function toTop() {
       </div>
 
       <!-- Bottom bar -->
-      <div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-white/[0.06] pt-6 font-inconsolata text-sm text-white/40 sm:flex-row sm:items-center">
+      <div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-subtle pt-6 font-inconsolata text-sm text-foreground-subtle sm:flex-row sm:items-center">
         <p>
           © {{ year }} Backtrack Academy · Santiago, Chile · Todos los derechos reservados.
         </p>
         <div class="flex items-center gap-4">
           <span class="hidden items-center gap-1.5 md:inline-flex">
-            <Icon name="lucide:shield-check" class="size-4 text-bta-pink" />
+            <Icon name="lucide:shield-check" class="size-4 text-primary-text" />
             Aprende. Practica. Protege.
           </span>
           <button
             type="button"
-            class="bt-focus inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-1.5 text-white/60 transition-colors hover:border-bta-pink/60 hover:text-bta-pink"
+            class="bt-focus inline-flex items-center gap-1.5 rounded-md border border-subtle px-3 py-1.5 text-foreground-muted transition-colors hover:border-primary/60 hover:text-primary-text"
             @click="toTop"
           >
             <Icon name="lucide:arrow-up" class="size-3.5" />
@@ -184,14 +179,14 @@ function toTop() {
 
 <style scoped>
 .foot__link {
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color var(--duration-base) ease;
 }
 .foot__arrow {
   width: 0;
   overflow: hidden;
   opacity: 0;
-  color: #ec1075;
-  transition: width 0.2s ease, opacity 0.2s ease;
+  color: hsl(var(--primary));
+  transition: width var(--duration-base) ease, opacity var(--duration-base) ease;
 }
 .foot__link:hover .foot__arrow,
 .foot__link:focus-visible .foot__arrow {
@@ -202,13 +197,6 @@ function toTop() {
   display: inline-block;
   width: 0.5rem;
   height: 1rem;
-  background: #ec1075;
-  animation: blink 1.1s steps(1) infinite;
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .term-cursor { animation: none; }
+  background: hsl(var(--primary));
 }
 </style>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// `compact`: slim single-row footer for data-heavy authenticated screens.
+defineProps<{ compact?: boolean }>()
+
 const landingUrl = useLandingUrl()
 const year = new Date().getFullYear()
 
@@ -48,7 +51,21 @@ function toTop() {
 </script>
 
 <template>
-  <footer class="relative mt-16 overflow-hidden border-t border-white/[0.06] bg-bta-dark-blue text-white">
+  <footer v-if="compact" class="mt-10 border-t border-white/[0.06] bg-bta-dark-blue">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-4 font-inconsolata text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+      <p>© {{ year }} Backtrack Academy · Santiago, Chile</p>
+      <nav aria-label="Pie de página" class="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <a :href="landingUrl('/privacy_policy')" class="bt-focus rounded transition-colors hover:text-white">Privacidad</a>
+        <a :href="landingUrl('/terms_of_use')" class="bt-focus rounded transition-colors hover:text-white">Términos</a>
+        <a href="mailto:contacto@backtrackacademy.com" class="bt-focus rounded transition-colors hover:text-white">Contacto</a>
+        <button type="button" class="bt-focus inline-flex items-center gap-1 rounded transition-colors hover:text-bta-pink" @click="toTop">
+          <Icon name="lucide:arrow-up" class="size-3" aria-hidden="true" />
+          Arriba
+        </button>
+      </nav>
+    </div>
+  </footer>
+  <footer v-else class="relative mt-16 overflow-hidden border-t border-white/[0.06] bg-bta-dark-blue text-white">
     <!-- decorative: neon line + tech grid -->
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-bta-pink to-transparent" aria-hidden="true" />
     <div

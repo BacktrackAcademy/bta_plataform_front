@@ -23,10 +23,18 @@ export interface CourseProgress extends HistoryCourse {
   count_video?: number
   total_user?: number
   last_video_viewed?: { titlevideo?: string } | null
+  approved_exam?: boolean
+  exam?: { id: number, time?: string | null } | null
+  user_exam?: { certification_key?: string | null, percent?: number | null } | null
+  certificate_url?: string | null
 }
 
 export interface CoursesProgressResponse {
   courses: CourseProgress[]
+  current_page?: number
+  per_page?: number
+  total_pages?: number
+  total_items?: number
 }
 
 export interface Degree {

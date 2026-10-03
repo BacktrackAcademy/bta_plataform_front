@@ -121,7 +121,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md font-i
 
       <main class="min-w-0 flex-1 md:overflow-y-auto">
         <slot />
-        <AppFooter />
+        <AppFooter :compact="route.meta.footer === 'compact'" />
       </main>
     </div>
   </div>

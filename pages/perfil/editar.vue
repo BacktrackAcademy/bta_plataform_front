@@ -48,6 +48,8 @@ interface SettingsResponse {
   area_codes: [string, string][]
   institutions: { id: number, name: string }[]
   educations: { id: number, institution_id: number, education_degree_id: number, start_date: string | null, end_date: string | null }[]
+  can_delete_account: boolean
+  delete_blocked_reason: string | null
   notifications: Record<string, boolean>
   payments: { id: number, paid_at: string | null, expires_at: string | null, recurring: boolean, name: string | null, quantity: number | null, price: number | null }[]
 }
@@ -381,6 +383,20 @@ async function deleteAccount() {
   }
 }
 
+// ---- Solicitud de eliminación (docentes, bloggers y cuentas con contenido) ---------------
+const requestMessage = ref('')
+const requestStatus = ref<'idle' | 'sending' | 'sent' | 'error'>('idle')
+async function requestDeletion() {
+  requestStatus.value = 'sending'
+  try {
+    await api('/settings/deletion_request', { method: 'POST', body: { message: requestMessage.value } })
+    requestStatus.value = 'sent'
+  }
+  catch {
+    requestStatus.value = 'error'
+  }
+}
+
 // ---- Presentación ------------------------------------------------------------------------
 const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('es-CL') : '—')
 const fmtPrice = (n: number | null) => (n == null ? '—' : `$${Number(n).toFixed(2).replace(/\.00$/, '')}`)
@@ -568,27 +584,50 @@ const primaryBtn = 'bt-focus rounded-md bg-bta-pink px-5 font-semibold text-whit
             <h2 id="danger-title" :class="sectionTitle">
               Eliminar cuenta
             </h2>
-            <p :class="sectionLead">
+            <p v-if="!settings || settings.can_delete_account" :class="sectionLead">
               Se borrará tu cuenta y tus datos de forma permanente. Esta acción no se puede deshacer.
             </p>
-            <Button v-if="!deleteOpen" type="button" variant="outline" class="bt-focus mt-5 border-red-400/30 bg-transparent text-red-300 hover:bg-red-500/10 hover:text-red-200" @click="deleteOpen = true">
-              Eliminar mi cuenta
-            </Button>
-            <div v-else class="mt-4 space-y-3">
-              <label for="delete-confirm" class="block font-sans text-sm text-white">Escribe tu nombre de usuario (<span class="font-inconsolata text-red-300">{{ savedUsername }}</span>) para confirmar</label>
-              <input id="delete-confirm" v-model="deleteConfirm" class="font-inconsolata text-lg" :class="[field]" type="text" autocomplete="off">
-              <p v-if="deleteError" class="font-sans text-sm text-red-400" role="alert">
-                {{ deleteError }}
+            <!-- Cuentas con contenido o rol editorial: no se pueden autoeliminar -->
+            <div v-if="settings && !settings.can_delete_account" class="mt-5 space-y-4">
+              <p class="font-sans text-sm text-white/70">
+                {{ settings.delete_blocked_reason }}
+                Al eliminar una cuenta se borra su información, y los cursos y artículos asociados quedarían sin autor.
               </p>
-              <div class="flex gap-2">
-                <Button type="button" class="bt-focus bg-red-500 text-white hover:bg-red-500/85" :disabled="deleteBusy || deleteConfirm.toLowerCase() !== savedUsername.toLowerCase()" @click="deleteAccount">
-                  {{ deleteBusy ? 'Eliminando…' : 'Eliminar definitivamente' }}
+              <template v-if="requestStatus !== 'sent'">
+                <label for="deletion-message" :class="labelCls">Mensaje para el equipo (opcional)</label>
+                <textarea id="deletion-message" v-model="requestMessage" :class="field" rows="3" maxlength="1000" />
+                <p v-if="requestStatus === 'error'" class="font-sans text-sm text-red-400" role="alert">
+                  No pudimos enviar la solicitud. Escríbenos a contacto@backtrackacademy.com.
+                </p>
+                <Button type="button" variant="outline" class="bt-focus border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white" :disabled="requestStatus === 'sending'" @click="requestDeletion">
+                  {{ requestStatus === 'sending' ? 'Enviando…' : 'Solicitar eliminación' }}
                 </Button>
-                <Button type="button" variant="ghost" class="bt-focus text-white/50 hover:bg-white/10 hover:text-white" @click="deleteOpen = false; deleteConfirm = ''">
-                  Cancelar
-                </Button>
-              </div>
+              </template>
+              <p v-else class="font-sans text-sm text-emerald-400" role="status">
+                Solicitud enviada. El equipo te contactará a tu correo.
+              </p>
             </div>
+
+            <template v-else>
+              <Button v-if="!deleteOpen" type="button" variant="outline" class="bt-focus mt-5 border-red-400/30 bg-transparent text-red-300 hover:bg-red-500/10 hover:text-red-200" @click="deleteOpen = true">
+                Eliminar mi cuenta
+              </Button>
+              <div v-else class="mt-4 space-y-3">
+                <label for="delete-confirm" class="block font-sans text-sm text-white">Escribe tu nombre de usuario (<span class="font-inconsolata text-red-300">{{ savedUsername }}</span>) para confirmar</label>
+                <input id="delete-confirm" v-model="deleteConfirm" class="font-inconsolata text-lg" :class="[field]" type="text" autocomplete="off">
+                <p v-if="deleteError" class="font-sans text-sm text-red-400" role="alert">
+                  {{ deleteError }}
+                </p>
+                <div class="flex gap-2">
+                  <Button type="button" class="bt-focus bg-red-500 text-white hover:bg-red-500/85" :disabled="deleteBusy || deleteConfirm.toLowerCase() !== savedUsername.toLowerCase()" @click="deleteAccount">
+                    {{ deleteBusy ? 'Eliminando…' : 'Eliminar definitivamente' }}
+                  </Button>
+                  <Button type="button" variant="ghost" class="bt-focus text-white/50 hover:bg-white/10 hover:text-white" @click="deleteOpen = false; deleteConfirm = ''">
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            </template>
           </section>
         </template>
 

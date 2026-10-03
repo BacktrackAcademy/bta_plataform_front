@@ -4,6 +4,8 @@ const props = defineProps<{
   src?: string | null
   alt: string
   code?: string
+  /** Unifies mismatched cover art: partial greyscale + brand tint that eases off on hover. */
+  brand?: boolean
 }>()
 
 const status = ref<'loading' | 'loaded' | 'error'>(props.src ? 'loading' : 'error')
@@ -29,7 +31,7 @@ const code = computed(() => {
 </script>
 
 <template>
-  <div class="relative aspect-video w-full overflow-hidden bg-bta-elevated">
+  <div class="relative isolate aspect-video w-full overflow-hidden bg-bta-elevated">
     <img
       v-if="src && status !== 'error'"
       ref="img"
@@ -40,7 +42,7 @@ const code = computed(() => {
       loading="lazy"
       decoding="async"
       class="absolute inset-0 size-full object-cover transition-[opacity,transform] duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-      :class="status === 'loaded' ? 'opacity-100' : 'opacity-0'"
+      :class="[status === 'loaded' ? 'opacity-100' : 'opacity-0', brand && 'brand-img']"
       @load="status = 'loaded'"
       @error="status = 'error'"
     >
@@ -57,6 +59,10 @@ const code = computed(() => {
         {{ code }}<span class="text-bta-pink">_</span>
       </span>
     </div>
+    <template v-if="brand && status === 'loaded'">
+      <div class="brand-tint pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bta-surface to-transparent" aria-hidden="true" />
+    </template>
     <!-- Blend: darkens bright/white images, grounds the image in the card and adds a crisp inner edge -->
     <div
       v-if="status === 'loaded'"
@@ -66,3 +72,22 @@ const code = computed(() => {
     <slot />
   </div>
 </template>
+
+<style>
+.brand-img {
+  filter: grayscale(0.6) contrast(1.08) brightness(0.85);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out, filter 0.5s ease-out;
+}
+.brand-tint {
+  background: linear-gradient(135deg, #3b1d8f 0%, #ec1075 100%);
+  mix-blend-mode: color;
+  opacity: 0.5;
+  transition: opacity 0.5s ease-out;
+}
+.group:hover .brand-img {
+  filter: grayscale(0.2) contrast(1.05) brightness(1);
+}
+.group:hover .brand-tint {
+  opacity: 0.22;
+}
+</style>

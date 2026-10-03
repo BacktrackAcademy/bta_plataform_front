@@ -36,13 +36,7 @@ const isNew = computed(() => {
   return !Number.isNaN(t) && Date.now() - t < NEW_WINDOW_MS
 })
 const duration = computed(() => formatCourseDuration(props.course))
-// Soft spotlight that follows the cursor (CSS vars read by the overlay below).
-function onPointerMove(e: PointerEvent) {
-  const el = e.currentTarget as HTMLElement
-  const r = el.getBoundingClientRect()
-  el.style.setProperty('--mx', `${e.clientX - r.left}px`)
-  el.style.setProperty('--my', `${e.clientY - r.top}px`)
-}
+const { onPointerMove } = useSpotlight()
 const hasProgress = computed(() => typeof props.course.percent === 'number')
 const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course.percent ?? 0))))
 </script>

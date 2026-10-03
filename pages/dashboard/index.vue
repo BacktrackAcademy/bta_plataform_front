@@ -2,7 +2,7 @@
 import type { CoursesHistory, CoursesProgressResponse, DashboardCourse, Degree, LatestArticlesResponse, LatestCoursesResponse } from '~/interfaces/dashboard'
 import CurrentCourse from '~/components/dashboard/CurrentCourse.vue'
 import DashboardHeader from '~/components/dashboard/DashboardHeader.vue'
-import LatestArticleCard from '~/components/dashboard/LatestArticleCard.vue'
+import ArticleCard from '~/components/articles/ArticleCard.vue'
 import CourseCard from '~/components/courses/CourseCard.vue'
 import LearningPathCard from '~/components/dashboard/LearningPathCard.vue'
 import ProgressOverview from '~/components/dashboard/ProgressOverview.vue'
@@ -107,7 +107,7 @@ useSeoMeta({
       <!-- 3. Continúa aprendiendo -->
       <section v-if="loading || others.length" aria-labelledby="continue-title">
         <div class="mb-4 flex items-end justify-between gap-4">
-          <h2 id="continue-title" class="font-oswald text-xl font-medium text-white">
+          <h2 id="continue-title" class="bt-section-title">
             Continúa aprendiendo
           </h2>
           <NuxtLink to="/mi-progreso" class="bt-focus group inline-flex items-center gap-1.5 rounded text-sm text-bta-text-2 transition-colors hover:text-white">
@@ -140,7 +140,7 @@ useSeoMeta({
       <!-- 4. Rutas de especialización -->
       <section v-if="degreeStatus === 'pending' || degrees?.length" aria-labelledby="paths-title">
         <div class="mb-4 flex items-end justify-between gap-4">
-          <h2 id="paths-title" class="font-oswald text-xl font-medium text-white">
+          <h2 id="paths-title" class="bt-section-title">
             Rutas de especialización
           </h2>
           <NuxtLink to="/cursos" class="bt-focus group inline-flex items-center gap-1.5 rounded text-sm text-bta-text-2 transition-colors hover:text-white">
@@ -159,7 +159,7 @@ useSeoMeta({
       <!-- 5. Últimos cursos publicados -->
       <section v-if="latestCoursesStatus === 'pending' || latestCourses?.courses?.length" aria-labelledby="latest-courses-title">
         <div class="mb-4 flex items-end justify-between gap-4">
-          <h2 id="latest-courses-title" class="font-oswald text-xl font-medium text-white">
+          <h2 id="latest-courses-title" class="bt-section-title">
             Últimos cursos publicados
           </h2>
           <NuxtLink to="/cursos" class="bt-focus group inline-flex items-center gap-1.5 rounded text-sm text-bta-text-2 transition-colors hover:text-white">
@@ -184,7 +184,7 @@ useSeoMeta({
       <!-- 6. Últimos artículos publicados -->
       <section v-if="latestArticlesStatus === 'pending' || latestArticles?.data?.length" aria-labelledby="latest-articles-title">
         <div class="mb-4 flex items-end justify-between gap-4">
-          <h2 id="latest-articles-title" class="font-oswald text-xl font-medium text-white">
+          <h2 id="latest-articles-title" class="bt-section-title">
             Últimos artículos publicados
           </h2>
           <NuxtLink to="/articulos" class="bt-focus group inline-flex items-center gap-1.5 rounded text-sm text-bta-text-2 transition-colors hover:text-white">
@@ -202,7 +202,7 @@ useSeoMeta({
               </div>
             </div>
           </template>
-          <LatestArticleCard v-for="article in latestArticles?.data" v-else :key="article.id" :article="article" />
+          <ArticleCard v-for="article in latestArticles?.data" v-else :key="article.id" :article="article" />
         </div>
       </section>
     </template>

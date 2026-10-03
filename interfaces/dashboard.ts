@@ -68,6 +68,9 @@ export interface LatestArticle {
   title: string
   slug: string
   image_thumb_service?: string | null
+  short?: string
+  published_at?: string
+  likes_count?: number
   category?: { name: string } | null
   user?: { name: string, avatar_url?: string | null } | null
 }

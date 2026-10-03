@@ -12,7 +12,7 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
 </script>
 
 <template>
-  <section class="bt-surface flex flex-col p-6" aria-label="Progreso general">
+  <section class="bt-surface flex flex-col p-5" aria-label="Progreso general">
     <p class="t-eyebrow">
       Tu progreso
     </p>
@@ -28,7 +28,7 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
     </p>
 
     <template v-else>
-      <p class="mt-3 font-oswald text-5xl font-semibold leading-none text-foreground">
+      <p class="mt-2 font-oswald text-4xl font-semibold leading-none text-foreground">
         {{ percent }}<span class="text-2xl text-primary-text">%</span>
       </p>
       <p class="t-small mt-1.5">
@@ -38,7 +38,7 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
         <ProgressBar :value="percent" label="Progreso general" />
       </div>
 
-      <dl class="mt-6 grid grid-cols-2 gap-4 border-t border-subtle pt-5">
+      <dl class="mt-4 grid grid-cols-2 gap-4 border-t border-subtle pt-4">
         <div>
           <dt class="t-eyebrow !text-[11px]">
             Estudiadas

@@ -61,7 +61,7 @@ useSeoMeta({
       <!-- 1. Continuar + 2. Progreso -->
       <section class="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1fr)_300px]" aria-label="Continuar curso">
         <div v-if="loading" class="bt-surface flex flex-col md:flex-row">
-          <Skeleton class="aspect-video w-full rounded-none md:aspect-auto md:min-h-[260px] md:w-[44%]" />
+          <Skeleton class="aspect-video w-full rounded-none md:aspect-auto md:min-h-[200px] md:w-[38%]" />
           <div class="flex-1 space-y-4 p-7">
             <Skeleton class="h-3 w-28" />
             <Skeleton class="h-7 w-4/5" />

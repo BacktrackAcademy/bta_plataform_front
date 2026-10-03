@@ -26,7 +26,7 @@ const remaining = computed(() => {
   <article class="group relative overflow-hidden rounded-lg border border-border bg-surface-2 shadow-elev-2">
     <div class="flex flex-col md:flex-row">
       <!-- Cover: fills the whole column on desktop (absolute) instead of relying on a percentage height -->
-      <div class="relative aspect-video md:aspect-auto md:min-h-[260px] md:w-[44%] md:shrink-0">
+      <div class="relative aspect-video md:aspect-auto md:min-h-[200px] md:w-[38%] md:shrink-0">
         <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand class="absolute inset-0 !aspect-auto size-full" />
         <div class="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-surface-2/60 via-transparent to-transparent dark:block md:dark:bg-gradient-to-r md:dark:from-transparent md:dark:via-transparent md:dark:to-surface-2" />
         <p class="bt-overlay-chip absolute left-4 top-4 font-mono uppercase tracking-wider text-on-scrim-primary">
@@ -35,22 +35,22 @@ const remaining = computed(() => {
         </p>
       </div>
 
-      <div class="flex flex-1 flex-col p-6 sm:p-8">
+      <div class="flex flex-1 flex-col p-5 sm:p-6">
         <p v-if="course.path || course.level_name" class="font-mono text-sm uppercase tracking-wider text-primary-text">
           {{ course.path || course.level_name }}
         </p>
-        <h2 class="t-h1 mt-2 !text-3xl sm:!text-4xl">
+        <h2 class="t-h1 mt-1.5 line-clamp-2 !text-2xl sm:!text-[1.75rem]">
           {{ course.titulo }}
         </h2>
 
-        <div v-if="author" class="mt-4 flex items-center gap-2.5">
+        <div v-if="author" class="mt-3 flex items-center gap-2.5">
           <TeacherAvatar :src="course.teacher?.avatar_url" :name="author" />
           <span class="truncate text-sm text-foreground-secondary">{{ author }}</span>
         </div>
 
-        <div v-if="hasProgress" class="mt-6">
+        <div v-if="hasProgress" class="mt-4">
           <div class="mb-2.5 flex items-baseline justify-between gap-3">
-            <span class="font-oswald text-3xl font-semibold leading-none text-foreground">
+            <span class="font-oswald text-2xl font-semibold leading-none text-foreground">
               {{ percent }}<span class="text-lg text-primary-text">%</span>
             </span>
             <span class="t-meta">
@@ -71,8 +71,8 @@ const remaining = computed(() => {
           </p>
         </div>
 
-        <div class="mt-auto pt-7">
-          <NuxtLink :to="`/curso/${course.slug}`" class="bt-btn-primary bt-btn-lg group/cta font-oswald text-lg uppercase tracking-wider">
+        <div class="mt-auto pt-5">
+          <NuxtLink :to="`/curso/${course.slug}`" class="bt-btn-primary group/cta font-oswald text-base uppercase tracking-wider">
             {{ done ? 'Repasar curso' : 'Continuar curso' }}
             <Icon name="lucide:arrow-right" class="size-4 transition-transform duration-base group-hover/cta:translate-x-1 motion-reduce:transition-none" />
           </NuxtLink>

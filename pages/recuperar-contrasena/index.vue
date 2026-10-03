@@ -58,9 +58,9 @@ async function handleSubmit() {
         </span>
       </button>
 
-      <p class="text-center font-mono text-[13px] text-white/55">
+      <p class="text-center font-mono text-[13px] text-foreground-muted">
         ¿Ya tienes cuenta?
-        <NuxtLink to="/login" :class="[linkClass, 'font-medium text-white hover:text-bta-pink']">
+        <NuxtLink to="/login" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
           Iniciar sesión
         </NuxtLink>
       </p>

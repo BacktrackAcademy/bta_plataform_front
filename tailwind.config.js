@@ -2,6 +2,11 @@ import typography from '@tailwindcss/typography'
 
 const animate = require('tailwindcss-animate')
 
+// hsl(var(--x) / <alpha-value>) → soporta bg-primary/10 y demás modificadores de opacidad
+function token(name) {
+  return `hsl(var(--${name}) / <alpha-value>)`
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -23,6 +28,7 @@ module.exports = {
       fontFamily: {
         oswald: ['Oswald', 'helvetica neue', 'Helvetica', 'Arial', 'sans-serif'],
         inconsolata: ['Inconsolata', 'monospace'],
+        mono: ['Inconsolata', 'ui-monospace', 'monospace'],
         sans: ['IBM Plex Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       scale: {
@@ -30,57 +36,78 @@ module.exports = {
         80: '0.8',
       },
       colors: {
-        'bta-pink': '#EC1075', // principal
-        'bta-blue': '#141224', // body-back
-        'bta-dark-blue': '#070916', // header
-        'bta-section': '#141224', //
-        // Dashboard / authenticated shell surfaces
-        'bta-bg': '#0E0F22',
-        'bta-side': '#080A1A',
-        'bta-surface': '#070916',
-        'bta-elevated': '#0C0E24',
-        'bta-text-2': '#9299AA',
-        'gray-border': '#36364e',
-        'gray-muted': '#565982',
-        'border': 'hsl(var(--border))',
-        'input': 'hsl(var(--input))',
-        'ring': 'hsl(var(--ring))',
-        'background': 'hsl(var(--background))',
-        'foreground': 'hsl(var(--foreground))',
+        // ---- Tokens semánticos (valores en assets/css/tailwind.css) ----
+        'background': token('background'),
+        'foreground': {
+          DEFAULT: token('foreground'),
+          secondary: token('foreground-secondary'),
+          muted: token('foreground-muted'),
+          subtle: token('foreground-subtle'),
+        },
+        // L1 sidebar/topbar/inputs · L2 cards · L3 popovers/hover · L4 selected
+        'surface': {
+          1: token('surface-1'),
+          2: token('surface-2'),
+          3: token('surface-3'),
+          4: token('surface-4'),
+        },
+        'border': {
+          DEFAULT: token('border'),
+          subtle: token('border-subtle'),
+          strong: token('border-strong'),
+        },
+        'input': token('input'),
+        'ring': token('focus-ring'),
         'primary': {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: token('primary'),
+          hover: token('primary-hover'),
+          active: token('primary-active'),
+          foreground: token('primary-foreground'),
+          subtle: token('primary-subtle'),
+          text: token('primary-text'),
         },
-        'secondary': {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+        'success': token('success'),
+        'warning': token('warning'),
+        'danger': token('danger'),
+        'info': token('info'),
+        'scrim': token('scrim'),
+        'on-scrim': {
+          DEFAULT: token('on-scrim'),
+          primary: token('primary-on-scrim'),
         },
-        'destructive': {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        'muted': {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        'accent': {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        'popover': {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        'card': {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
+        // ---- Compatibilidad shadcn-vue (components/ui) ----
+        'secondary': { DEFAULT: token('secondary'), foreground: token('secondary-foreground') },
+        'destructive': { DEFAULT: token('destructive'), foreground: token('destructive-foreground') },
+        'muted': { DEFAULT: token('muted'), foreground: token('muted-foreground') },
+        'accent': { DEFAULT: token('accent'), foreground: token('accent-foreground') },
+        'popover': { DEFAULT: token('popover'), foreground: token('popover-foreground') },
+        'card': { DEFAULT: token('card'), foreground: token('card-foreground') },
       },
+      // `border-subtle` / `border-strong` además de `border-border-subtle`
+      borderColor: {
+        subtle: token('border-subtle'),
+        strong: token('border-strong'),
+      },
+      boxShadow: {
+        'elev-1': 'var(--shadow-1)',
+        'elev-2': 'var(--shadow-2)',
+        'elev-3': 'var(--shadow-3)',
+      },
+      transitionDuration: {
+        fast: 'var(--duration-fast)',
+        base: 'var(--duration-base)',
+        slow: 'var(--duration-slow)',
+      },
+      transitionTimingFunction: {
+        out: 'var(--ease-out)',
+      },
+      // Radius pequeño y técnico: nada supera 8px aunque el código use rounded-xl/2xl
       borderRadius: {
-        xl: 'calc(var(--radius) + 4px)',
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        'sm': 'var(--radius-sm)',
+        'md': 'var(--radius-md)',
+        'lg': 'var(--radius-lg)',
+        'xl': 'var(--radius-lg)',
+        '2xl': 'var(--radius-lg)',
       },
       keyframes: {
         'rise-in': {

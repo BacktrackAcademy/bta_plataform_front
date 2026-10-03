@@ -109,7 +109,7 @@ function addPercentage(percentage: number) {
 </script>
 
 <template>
-  <section class="bg-bta-dark-blue px-4 sm:px-6 xl:px-8">
+  <section class="bg-surface-1 px-4 sm:px-6 xl:px-8">
     <div class="lg:flex gap-6 xl:gap-8">
       <div class="lg:w-[70%]">
         <!-- Video player -->
@@ -144,7 +144,7 @@ function addPercentage(percentage: number) {
                   :to="`/curso/${video.slug}`"
                   class="block w-full"
                 >
-                  <h2 class="text-white text-2xl font-oswald font-bold">
+                  <h2 class="text-foreground text-2xl font-oswald font-bold">
                     {{ video?.titlevideo }}
                   </h2>
                 </NuxtLink>
@@ -154,7 +154,7 @@ function addPercentage(percentage: number) {
                   alt=""
                   class="w-6 h-6 rounded-full mr-1"
                 >
-                <p class="text-gray-muted font-inconsolata">
+                <p class="text-foreground-muted">
                   {{ teacher?.name }} {{ teacher?.lastname }}
                 </p>
               </div>
@@ -164,7 +164,7 @@ function addPercentage(percentage: number) {
               <NuxtLink
                 v-if="video?.prev"
                 :to="`/video/${video.prev.slug}`"
-                class="flex items-center bg-bta-pink text-white hover:bg-bta-pink/90 px-3 py-2 w-[144px] rounded-[8px] mr-2"
+                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
               >
                 <ArrowToRight class="mr-3 rotate-180" />
                 <span
@@ -178,7 +178,7 @@ function addPercentage(percentage: number) {
               <NuxtLink
                 v-if="video?.next"
                 :to="`/video/${video.next.slug}`"
-                class="flex items-center bg-bta-pink text-white hover:bg-bta-pink/90 px-3 py-2 w-[144px] rounded-[8px] mr-2"
+                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
               >
                 <span
                   class="uppercase text-left text-sm font-bold w-[137px] text-ellipsis whitespace-nowrap overflow-hidden"
@@ -191,8 +191,8 @@ function addPercentage(percentage: number) {
             </div>
           </div>
 
-          <div class="text-white font-inconsolata">
-            <h3 class="text-xl text-white leading-9 my-4 font-oswald">
+          <div class="text-foreground">
+            <h3 class="text-xl text-foreground leading-9 my-4 font-oswald">
               Resumen del curso
             </h3>
             <div>
@@ -221,14 +221,14 @@ function addPercentage(percentage: number) {
               </div>
             </div>
           </div>
-          <h3 class="text-xl text-white leading-9 my-4 font-oswald">
+          <h3 class="text-xl text-foreground leading-9 my-4 font-oswald">
             Tu avance
           </h3>
           <BarChart
             :data="data"
             index="name"
             :categories="['total', 'predicted']"
-            :colors="['#141224', '#EC1075']"
+            :colors="['hsl(var(--surface-4))', 'hsl(var(--primary))']"
             :y-formatter="(tick) => {
               if (typeof tick === 'number') {
                 const minutes = Math.floor(tick / 60);
@@ -243,24 +243,24 @@ function addPercentage(percentage: number) {
 
       <div class="lg:w-[30%]">
         <!-- badge -->
-        <div class="text-white text-center my-8">
-          <p class="font-inconsolata">
+        <div class="text-foreground text-center my-8">
+          <p class="">
             Has estudiado
           </p>
           <p class="font-oswald font-medium text-6xl mb-3">
             {{ video?.course_advance }} %
           </p>
-          <p class="font-inconsolata">
-            del curso <span class="text-white">{{ course?.titulo }}</span>
+          <p class="">
+            del curso <span class="text-foreground">{{ course?.titulo }}</span>
           </p>
           <br>
-          <p class="font-inconsolata">
+          <p class="">
             Tienes 0 oportunidades
           </p>
         </div>
         <!-- Temario -->
         <div>
-          <h4 class="text-2xl text-white font-oswald font-medium mt-5 mb-2">
+          <h4 class="text-2xl text-foreground font-oswald font-medium mt-5 mb-2">
             Temario
           </h4>
           <div
@@ -268,19 +268,19 @@ function addPercentage(percentage: number) {
             :key="theme.titulo + i"
             class="mb-3"
           >
-            <h3 class="text-gray-muted font-inconsolata py-2">
+            <h3 class="t-eyebrow py-2">
               {{ theme.titulo }}
             </h3>
             <div v-for="(video, i) in theme.videos" :key="video.slug + i">
               <NuxtLink
                 v-if="video.is_free"
-                class="flex gap-x-3 p-2 rounded hover:bg-bta-blue"
+                class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2"
                 :to="`/video/${video.slug}`"
               >
                 <span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="text-white h-6 w-6"
+                    class="text-foreground h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -299,15 +299,15 @@ function addPercentage(percentage: number) {
                   </svg>
                 </span>
                 <div>
-                  <span class="text-white font-inconsolata">{{ video.titlevideo }}</span>
+                  <span class="text-foreground">{{ video.titlevideo }}</span>
                 </div>
               </NuxtLink>
-              <div v-else class="flex gap-x-3 p-2 rounded hover:bg-bta-blue">
+              <div v-else class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2">
                 <span>
                   <!-- Lock icon -->
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="text-white h-5 w-5"
+                    class="text-foreground h-5 w-5"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -319,7 +319,7 @@ function addPercentage(percentage: number) {
                   </svg>
                 </span>
                 <div>
-                  <span class="text-white font-inconsolata">
+                  <span class="text-foreground">
                     {{ video.titlevideo }}
                   </span>
                 </div>

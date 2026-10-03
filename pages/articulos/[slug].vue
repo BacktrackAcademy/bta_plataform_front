@@ -52,12 +52,12 @@ const isoDate = computed(() => {
 </script>
 
 <template>
-  <section class="bg-bta-dark-blue px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+  <section class="px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto py-16">
       <!-- Contenido principal -->
       <article v-if="status === 'success' && article" class="space-y-10 opacity-0 animate-fade-in">
         <header class="space-y-6">
-          <figure class="relative aspect-[2/1] rounded-xl overflow-hidden shadow-lg">
+          <figure class="relative aspect-[2/1] overflow-hidden rounded-lg border border-subtle">
             <NuxtImg
               :src="article.image_thumb_service"
               :alt="`Imagen principal de ${article.title}`"
@@ -67,37 +67,37 @@ const isoDate = computed(() => {
               class="object-cover w-full h-full transition-opacity duration-500 ease-in-out"
             >
               <template #fallback>
-                <div class="w-full h-full bg-gray-700 animate-pulse" />
+                <div class="w-full h-full bg-surface-3 animate-pulse" />
               </template>
             </NuxtImg>
           </figure>
 
-          <h1 class="text-white text-3xl md:text-4xl lg:text-5xl font-semibold text-center font-oswald leading-tight drop-shadow-md">
+          <h1 class="t-h1 text-center !text-3xl md:!text-4xl lg:!text-5xl">
             {{ article.title }}
           </h1>
 
-          <div class="flex items-center justify-center space-x-4 text-gray-400 text-sm">
+          <div class="flex items-center justify-center space-x-4 text-foreground-muted text-sm">
             <div class="flex items-center space-x-2">
-              <span class="font-inconsolata text-gray-300">Por</span>
-              <span class="font-semibold text-white">{{ article.user.name || article.user.username }}</span>
+              <span class="text-foreground-muted">Por</span>
+              <span class="font-semibold text-foreground">{{ article.user.name || article.user.username }}</span>
             </div>
-            <span class="text-gray-500">•</span>
-            <time :datetime="isoDate" class="font-inconsolata text-gray-300">
+            <span class="text-foreground-subtle">•</span>
+            <time :datetime="isoDate" class="font-mono text-foreground-muted">
               {{ formattedDate }}
             </time>
           </div>
         </header>
 
-        <main class="prose prose-lg prose-invert max-w-none">
-          <div class="font-inconsolata space-y-6 tracking-wide" v-html="article.description" />
+        <main class="prose prose-lg max-w-none dark:prose-invert">
+          <div class="space-y-6" v-html="article.description" />
         </main>
       </article>
 
       <!-- Estado de carga -->
       <div v-else-if="status === 'pending'" class="min-h-[50vh] flex items-center justify-center opacity-0 animate-fade-in">
-        <div class="text-white text-center space-y-6">
-          <div class="w-16 h-16 mx-auto border-4 border-white/80 border-t-transparent rounded-full animate-spin" />
-          <p class="font-inconsolata text-lg">
+        <div class="text-foreground text-center space-y-6">
+          <div class="mx-auto size-12 animate-spin rounded-full border-4 border-foreground/20 border-t-primary" />
+          <p class="t-body">
             Cargando artículo...
           </p>
         </div>
@@ -105,13 +105,13 @@ const isoDate = computed(() => {
 
       <!-- Estado de error -->
       <div v-else-if="status === 'error'" class="min-h-[50vh] flex items-center justify-center">
-        <div class="text-white text-center space-y-6 bg-gray-800/50 p-8 rounded-lg shadow-lg">
-          <p class="font-inconsolata text-xl">
+        <div class="space-y-6 rounded-lg border border-danger/30 bg-danger/[0.06] p-8 text-center">
+          <p class="font-oswald text-xl text-foreground">
             {{ error?.message || 'No se pudo cargar el artículo' }}
           </p>
           <NuxtLink
             to="/articulos"
-            class="inline-block px-8 py-3 bg-bta-pink text-white font-inconsolata rounded-md hover:bg-bta-pink/90 transition-all duration-200 transform hover:scale-105"
+            class="bt-btn-primary bt-btn-lg"
           >
             Volver a artículos
           </NuxtLink>
@@ -124,27 +124,30 @@ const isoDate = computed(() => {
 <style scoped>
 /* Estilos para el contenido renderizado */
 .prose :deep(img) {
-  @apply max-w-full h-auto rounded-md shadow-sm;
+  @apply h-auto max-w-full rounded-md border border-subtle;
 }
 
-.prose :deep(h2, h3, h4) {
-  @apply font-oswald mt-10 mb-6 text-white;
+.prose :deep(h2),
+.prose :deep(h3),
+.prose :deep(h4) {
+  @apply font-oswald mt-10 mb-6 text-foreground;
 }
 
 .prose :deep(p) {
-  @apply text-gray-200 leading-relaxed;
+  @apply leading-relaxed text-foreground-secondary;
 }
 
 .prose :deep(blockquote) {
-  @apply border-l-4 border-bta-pink pl-4 italic text-gray-300;
+  @apply border-l-2 border-primary pl-4 italic text-foreground-secondary;
 }
 
-.prose :deep(ul, ol) {
+.prose :deep(ul),
+.prose :deep(ol) {
   @apply pl-6 space-y-2;
 }
 
 .prose :deep(li) {
-  @apply text-gray-200;
+  @apply text-foreground-secondary;
 }
 
 /* Animación personalizada para fade-in */
@@ -154,6 +157,6 @@ const isoDate = computed(() => {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-in forwards;
+  animation: fadeIn var(--duration-slow) ease-out forwards;
 }
 </style>

@@ -6,7 +6,7 @@
   <!-- <AppFooter /> -->
   <!-- </div> -->
   <!-- <div v-else> -->
-  <div class="bg-bta-dark-blue">
+  <div class="bg-surface-1">
     <AppHeader />
     <slot />
     <AppFooter />

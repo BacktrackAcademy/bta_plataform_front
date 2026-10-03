@@ -12,8 +12,8 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
 </script>
 
 <template>
-  <section class="bt-surface flex flex-col !rounded-2xl !border-transparent p-6 shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)]" aria-label="Progreso general">
-    <p class="font-inconsolata text-sm uppercase tracking-wider text-gray-muted">
+  <section class="bt-surface flex flex-col p-5" aria-label="Progreso general">
+    <p class="t-eyebrow">
       Tu progreso
     </p>
 
@@ -23,35 +23,35 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
       <Skeleton class="mt-8 h-10 w-full" />
     </template>
 
-    <p v-else-if="!hasData" class="mt-4 font-inconsolata text-sm leading-relaxed text-gray-muted">
+    <p v-else-if="!hasData" class="t-small mt-4 leading-relaxed">
       Tu progreso aparecerá aquí cuando comiences un curso.
     </p>
 
     <template v-else>
-      <p class="mt-3 font-oswald text-5xl font-semibold leading-none text-white">
-        {{ percent }}<span class="text-2xl text-bta-pink">%</span>
+      <p class="mt-2 font-oswald text-4xl font-semibold leading-none text-foreground">
+        {{ percent }}<span class="text-2xl text-primary-text">%</span>
       </p>
-      <p class="mt-1.5 font-inconsolata text-sm text-gray-muted">
+      <p class="t-small mt-1.5">
         Progreso general
       </p>
       <div class="mt-4">
         <ProgressBar :value="percent" label="Progreso general" />
       </div>
 
-      <dl class="mt-6 grid grid-cols-2 gap-4 border-t border-white/[0.06] pt-5">
+      <dl class="mt-4 grid grid-cols-2 gap-4 border-t border-subtle pt-4">
         <div>
-          <dt class="font-inconsolata text-xs uppercase tracking-wider text-gray-muted">
+          <dt class="t-eyebrow !text-[11px]">
             Estudiadas
           </dt>
-          <dd class="mt-1 font-oswald text-2xl font-medium text-white">
-            {{ viewed }}<span class="font-inconsolata text-sm text-gray-muted"> / {{ total }} h</span>
+          <dd class="mt-1 font-oswald text-2xl font-medium text-foreground">
+            {{ viewed }}<span class="t-meta"> / {{ total }} h</span>
           </dd>
         </div>
         <div>
-          <dt class="font-inconsolata text-xs uppercase tracking-wider text-gray-muted">
+          <dt class="t-eyebrow !text-[11px]">
             Cursos
           </dt>
-          <dd class="mt-1 font-oswald text-2xl font-medium text-white">
+          <dd class="mt-1 font-oswald text-2xl font-medium text-foreground">
             {{ history?.number_courses }}
           </dd>
         </div>

@@ -2,7 +2,6 @@
 useHead({
   htmlAttrs: {
     lang: 'es',
-    class: 'dark',
   },
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },

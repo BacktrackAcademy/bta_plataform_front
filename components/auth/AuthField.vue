@@ -21,15 +21,15 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
 <template>
   <div>
     <div class="flex items-center justify-between">
-      <label :for="id" class="block font-mono text-[11px] text-white/45">{{ label }}</label>
+      <label :for="id" class="block font-mono text-xs text-foreground-muted">{{ label }}</label>
       <slot name="label-extra" />
     </div>
-    <div class="group flex items-center gap-3 h-11 border-b border-[#2D2C4A] transition-colors duration-300 hover:border-white/30 focus-within:border-bta-pink focus-within:shadow-[0_1px_0_0_rgba(236,16,117,0.6)]">
-      <span class="term-prompt font-mono text-sm text-bta-pink select-none" aria-hidden="true">&gt;</span>
+    <div class="group flex items-center gap-3 h-11 border-b border-input transition-colors duration-base hover:border-foreground-subtle focus-within:border-primary">
+      <span class="term-prompt font-mono text-sm text-primary-text select-none" aria-hidden="true">&gt;</span>
       <input
         :id="id"
         v-model="model"
-        class="term-input flex-1 min-w-0 h-full bg-transparent font-mono text-sm text-white caret-bta-pink placeholder:text-white/25 outline-none disabled:opacity-60"
+        class="term-input flex-1 min-w-0 h-full bg-transparent font-mono text-sm text-foreground caret-primary placeholder:text-foreground-subtle outline-none disabled:opacity-60"
         :type="inputType"
         :name="id"
         :inputmode="inputmode"
@@ -44,7 +44,7 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
       <button
         v-if="type === 'password'"
         type="button"
-        class="p-1 rounded text-white/40 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bta-pink/60"
+        class="p-1 bt-focus rounded-sm text-foreground-muted hover:text-foreground transition-colors duration-fast"
         :aria-label="reveal ? 'Ocultar contraseña' : 'Mostrar contraseña'"
         :aria-pressed="reveal"
         @click="reveal = !reveal"
@@ -60,10 +60,10 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
 .term-input:-webkit-autofill,
 .term-input:-webkit-autofill:hover,
 .term-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #fff;
-  caret-color: #ec1075;
-  -webkit-box-shadow: 0 0 0 1000px #070916 inset;
-  box-shadow: 0 0 0 1000px #070916 inset;
+  -webkit-text-fill-color: hsl(var(--foreground));
+  caret-color: hsl(var(--primary));
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--surface-1)) inset;
+  box-shadow: 0 0 0 1000px hsl(var(--surface-1)) inset;
   transition: background-color 9999s ease-out 0s;
 }
 .term-input {
@@ -71,17 +71,7 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
   font-variant-ligatures: none;
 }
 .term-input::selection {
-  background: rgba(236, 16, 117, 0.35);
-  color: #fff;
-}
-/* Prompt blinks like a terminal cursor while its field has focus */
-.group:focus-within .term-prompt {
-  animation: term-blink 1.1s steps(1) infinite;
-}
-@keyframes term-blink {
-  50% { opacity: 0.15; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .group:focus-within .term-prompt { animation: none; }
+  background: hsl(var(--primary)/0.35);
+  color: hsl(var(--foreground));
 }
 </style>

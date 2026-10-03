@@ -3,6 +3,8 @@ import type { CourseProgress, CoursesProgressResponse } from '~/interfaces/dashb
 import ContinueMission from '~/components/progress/ContinueMission.vue'
 import CourseProgressCard from '~/components/progress/CourseProgressCard.vue'
 import ProgressPager from '~/components/progress/ProgressPager.vue'
+import PageHeader from '~/components/common/PageHeader.vue'
+import StateCard from '~/components/common/StateCard.vue'
 import { Skeleton } from '~/components/ui/skeleton'
 
 definePageMeta({
@@ -104,41 +106,23 @@ const emptyText: Record<Filter, string> = {
 
 <template>
   <div class="mx-auto w-full max-w-[1200px] space-y-6 px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
-    <!-- Header -->
-    <header class="animate-rise-in flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h1 class="bt-section-title">
-          Mi ruta de estudio
-        </h1>
-        <p class="mt-2 font-inconsolata text-sm text-bta-text-2">
-          Continúa donde quedaste y completa tu ruta de formación.
+    <PageHeader title="Mi ruta de estudio" class="animate-rise-in">
+      Continúa donde quedaste y completa tu ruta de formación.
+      <template #actions>
+        <p class="t-meta hidden sm:block" aria-hidden="true">
+          <span class="mr-2 inline-block size-1.5 rounded-full bg-success align-middle" />
+          <span class="text-primary-text/80">$</span> learning_path --status active
         </p>
-      </div>
-      <p class="font-inconsolata text-xs text-gray-muted" aria-hidden="true">
-        <span class="mr-2 inline-block size-1.5 rounded-full bg-emerald-400 align-middle" />
-        <span class="text-bta-pink/80">$</span> learning_path --status active
-      </p>
-    </header>
+      </template>
+    </PageHeader>
 
     <!-- Error -->
-    <section v-if="failed" class="bt-surface flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center sm:justify-between" role="alert">
-      <div>
-        <p class="font-oswald text-lg text-white">
-          No pudimos cargar tu progreso
-        </p>
-        <p class="mt-1 text-sm text-bta-text-2">
-          Revisa tu conexión e inténtalo de nuevo.
-        </p>
-      </div>
-      <button
-        type="button"
-        class="bt-focus inline-flex h-10 items-center gap-2 rounded-md border border-white/15 px-4 text-sm font-medium text-white transition-colors hover:border-bta-pink/60 hover:text-bta-pink"
-        @click="refresh()"
-      >
+    <StateCard v-if="failed" variant="error" title="No pudimos cargar tu progreso" text="Revisa tu conexión e inténtalo de nuevo.">
+      <button type="button" class="bt-btn-secondary" @click="refresh()">
         <Icon name="lucide:rotate-cw" class="size-4" />
         Reintentar
       </button>
-    </section>
+    </StateCard>
 
     <template v-else>
       <Skeleton v-if="loading" class="h-40 w-full" />
@@ -156,12 +140,11 @@ const emptyText: Record<Filter, string> = {
               :key="f.key"
               type="button"
               :aria-pressed="filter === f.key"
-              class="bt-focus inline-flex h-8 items-center gap-2 border px-3 font-inconsolata text-xs uppercase tracking-wider transition-colors"
-              :class="filter === f.key ? 'border-bta-pink bg-bta-pink/10 text-white' : 'border-white/[0.06] text-bta-text-2 hover:border-white/20 hover:text-white'"
+              class="bt-chip"
               @click="setFilter(f.key)"
             >
               {{ f.label }}
-              <span v-if="!loading" class="text-gray-muted" :class="{ '!text-bta-pink': filter === f.key }">{{ counts[f.key] }}</span>
+              <span v-if="!loading" class="font-mono text-xs text-foreground-subtle" :class="{ '!text-primary-text': filter === f.key }">{{ counts[f.key] }}</span>
             </button>
           </div>
         </div>
@@ -170,12 +153,11 @@ const emptyText: Record<Filter, string> = {
           <Skeleton v-for="n in 3" :key="n" class="h-44" />
         </div>
 
-        <p v-else-if="!visibleCourses.length" class="bt-surface p-6 font-inconsolata text-sm text-bta-text-2" role="status">
-          {{ emptyText[filter] }}
-          <NuxtLink v-if="filter === 'all' || filter === 'in_progress'" to="/cursos" class="bt-focus ml-1 text-bta-pink hover:underline">
+        <StateCard v-else-if="!visibleCourses.length" :title="emptyText[filter]" icon="lucide:inbox">
+          <NuxtLink v-if="filter === 'all' || filter === 'in_progress'" to="/cursos" class="bt-btn-secondary">
             Explorar cursos
           </NuxtLink>
-        </p>
+        </StateCard>
 
         <ul v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <li v-for="course in visibleCourses" :key="course.id">

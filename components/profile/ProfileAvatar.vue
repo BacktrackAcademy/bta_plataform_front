@@ -24,7 +24,7 @@ const sizes = {
 
 <template>
   <span
-    class="relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bta-elevated ring-[3px] ring-bta-pink/70 ring-offset-4 ring-offset-bta-surface"
+    class="relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-3 ring-[3px] ring-primary/70 ring-offset-4 ring-offset-surface-2"
     :class="sizes[size]"
     role="img"
     :aria-label="name"
@@ -39,6 +39,6 @@ const sizes = {
       class="size-full object-cover"
       @error="failed = true"
     >
-    <span v-else class="font-oswald tracking-wide text-bta-pink" aria-hidden="true">{{ initials }}</span>
+    <span v-else class="font-oswald tracking-wide text-primary-text" aria-hidden="true">{{ initials }}</span>
   </span>
 </template>

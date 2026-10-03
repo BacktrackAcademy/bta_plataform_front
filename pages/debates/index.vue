@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { DiscussionResponse } from '@/interfaces/discussion.response'
 import { Button } from '@/components/ui/button'
+import PageHeader from '~/components/common/PageHeader.vue'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Pagination,
   PaginationEllipsis,
@@ -46,21 +48,25 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="container mx-auto px-4 lg:px-8 py-8">
-    <h1 class="text-4xl font-bold text-white font-oswald mb-2">
-      Debates
-    </h1>
-    <p class="text-gray-400 font-inconsolata mb-8">
-      Explora y participa en las discusiones de la comunidad
-    </p>
+  <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+    <PageHeader title="Debates">
+      Explora y participa en las discusiones de la comunidad.
+    </PageHeader>
 
-    <div v-if="status === 'pending'" class="flex justify-center items-center min-h-[200px]">
-      <span class="text-white">Cargando debates...</span>
+    <div v-if="status === 'pending'" class="mt-8 space-y-4" aria-busy="true">
+      <div v-for="n in 3" :key="n" class="bt-surface space-y-4 p-6">
+        <div class="flex items-center gap-3">
+          <Skeleton class="size-11 rounded-full" />
+          <Skeleton class="h-4 w-48" />
+        </div>
+        <Skeleton class="h-6 w-3/4" />
+        <Skeleton class="h-16 w-full" />
+      </div>
     </div>
 
     <template v-else>
       <!-- Lista de debates -->
-      <div class="space-y-6">
+      <div class="mt-8 space-y-4">
         <CardDebate
           v-for="discussion in discussions?.data"
           :key="discussion.id"
@@ -91,7 +97,7 @@ useSeoMeta({
                 as-child
               >
                 <Button
-                  class="w-10 h-10 p-0"
+                  class="size-10 p-0 font-mono"
                   :variant="item.value === page ? 'default' : 'outline'"
                 >
                   {{ item.value }}

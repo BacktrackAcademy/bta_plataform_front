@@ -110,21 +110,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div aria-hidden="true" class="term font-mono text-[13px] leading-6 text-white/60 min-h-[520px]">
+  <div aria-hidden="true" class="term font-mono text-[13px] leading-6 text-foreground-muted min-h-[520px]">
     <div v-for="(l, i) in shown" :key="i" class="whitespace-pre-wrap" :class="`l-${l.cls}`">
       <template v-if="l.prefix">
-        <span class="text-white/40">{{ PROMPT }}</span>
-        <span v-if="l.cls === 'p1'" class="text-bta-pink">{{ ' ' + MOD }}</span>
-        <span class="text-white/40">{{ " > " }}</span>
+        <span class="text-foreground-subtle">{{ PROMPT }}</span>
+        <span v-if="l.cls === 'p1'" class="text-primary-text">{{ ' ' + MOD }}</span>
+        <span class="text-foreground-subtle">{{ " > " }}</span>
       </template>
-      <span :class="{ 'text-white': l.prefix }">{{ l.text }}</span><span v-if="i === shown.length - 1 && !done" class="term-cursor" />
+      <span :class="{ 'text-foreground': l.prefix }">{{ l.text }}</span><span v-if="i === shown.length - 1 && !done" class="term-cursor" />
     </div>
 
     <div v-if="done" class="term-final mt-10">
-      <p class="font-oswald font-bold uppercase text-5xl xl:text-7xl leading-[0.95] text-white">
+      <p class="font-oswald font-bold uppercase text-5xl xl:text-7xl leading-[0.95] text-foreground">
         Happy<br>Hacking<span class="term-cursor term-cursor--lg" />
       </p>
-      <p class="mt-6 font-mono text-sm text-white/70">
+      <p class="mt-6 font-mono text-sm text-foreground-muted">
         Comienza tu carrera en Ciberseguridad
       </p>
     </div>
@@ -132,9 +132,9 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.l-info { color: rgba(255, 255, 255, 0.55); }
-.l-ok { color: #ec1075; }
-.l-out { color: rgba(255, 255, 255, 0.5); }
+.l-info { color: hsl(var(--foreground-muted)); }
+.l-ok { color: hsl(var(--primary-text)); }
+.l-out { color: hsl(var(--foreground-subtle)); }
 
 .term-cursor {
   display: inline-block;
@@ -142,8 +142,7 @@ onBeforeUnmount(() => {
   height: 1.05em;
   margin-left: 2px;
   vertical-align: text-bottom;
-  background: #ec1075;
-  animation: cursor-blink 1.1s steps(1) infinite;
+  background: hsl(var(--primary));
 }
 .term-cursor--lg {
   width: 0.3em;
@@ -151,11 +150,10 @@ onBeforeUnmount(() => {
   margin-left: 0.12em;
   vertical-align: baseline;
 }
-.term-final { animation: final-in 1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.term-final { animation: final-in 400ms var(--ease-out) both; }
 
-@keyframes cursor-blink { 50% { opacity: 0; } }
 @keyframes final-in { from { opacity: 0; transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) {
-  .term-cursor, .term-final { animation: none; }
+  .term-final { animation: none; }
 }
 </style>

@@ -24,7 +24,7 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
       <label :for="id" class="block font-mono text-[11px] text-white/45">{{ label }}</label>
       <slot name="label-extra" />
     </div>
-    <div class="group flex items-center gap-3 h-11 border-b border-[#2a2f3f] transition-colors duration-300 hover:border-white/30 focus-within:border-bta-pink focus-within:shadow-[0_1px_0_0_rgba(236,16,117,0.6)]">
+    <div class="group flex items-center gap-3 h-11 border-b border-[#2D2C4A] transition-colors duration-300 hover:border-white/30 focus-within:border-bta-pink focus-within:shadow-[0_1px_0_0_rgba(236,16,117,0.6)]">
       <span class="term-prompt font-mono text-sm text-bta-pink select-none" aria-hidden="true">&gt;</span>
       <input
         :id="id"
@@ -62,8 +62,8 @@ const inputType = computed(() => (props.type === 'password' && reveal.value ? 't
 .term-input:-webkit-autofill:focus {
   -webkit-text-fill-color: #fff;
   caret-color: #ec1075;
-  -webkit-box-shadow: 0 0 0 1000px #080a10 inset;
-  box-shadow: 0 0 0 1000px #080a10 inset;
+  -webkit-box-shadow: 0 0 0 1000px #070916 inset;
+  box-shadow: 0 0 0 1000px #070916 inset;
   transition: background-color 9999s ease-out 0s;
 }
 .term-input {

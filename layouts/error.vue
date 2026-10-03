@@ -5,7 +5,7 @@
       class="fixed z-50 top-0 h-screen w-screen flex justify-center items-center"
     >
       <div
-        class="hidden flex-col items-center justify-center bg-gray-900 text-white w-screen h-screen md:flex"
+        class="hidden flex-col items-center justify-center bg-bta-bg text-white w-screen h-screen md:flex"
       >
         <div id="stars" class="self-start z-30"></div>
         <div id="stars2" class="self-start z-40"></div>

@@ -17,7 +17,7 @@ const links = [[0, 1], [1, 2], [2, 3], [1, 4], [4, 5], [2, 5], [5, 6], [3, 7], [
 
 <template>
   <div class="auth-backdrop absolute inset-0 overflow-hidden" aria-hidden="true">
-    <div class="absolute inset-0 bg-gradient-to-br from-[#0D0F17] via-[#080A10] to-[#05060B]" />
+    <div class="absolute inset-0 bg-gradient-to-br from-[#141228] via-[#0E0F22] to-[#0E0F22]" />
     <div class="auth-glow absolute -left-40 top-1/3 size-[640px] rounded-full" />
     <div class="auth-grid absolute inset-0" />
 
@@ -39,7 +39,7 @@ const links = [[0, 1], [1, 2], [2, 3], [1, 4], [4, 5], [2, 5], [5, 6], [3, 7], [
     </svg>
 
     <div class="auth-scan absolute inset-y-0 w-px" />
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#05060B_100%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#0E0F22_100%)]" />
   </div>
 </template>
 

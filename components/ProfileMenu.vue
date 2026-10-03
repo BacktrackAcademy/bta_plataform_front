@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
 const { data: session, signOut } = useAuth()
 
@@ -42,24 +42,30 @@ async function handleLogout() {
 
     <DropdownMenuContent align="end" class="relative mt-1 w-64 overflow-hidden rounded-xl border-white/[0.08] bg-bta-dark-blue p-1.5 text-white shadow-[0_18px_40px_-18px_rgba(236,16,117,0.35)]">
       <span class="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-bta-pink/70 to-transparent" aria-hidden="true" />
-      <DropdownMenuLabel class="font-normal">
+      <DropdownMenuLabel class="px-3 pb-1 pt-2 font-normal">
         <p class="font-inconsolata text-xs text-gray-muted">
           <span class="text-bta-pink">$</span> whoami
         </p>
-        <p class="mt-1 truncate font-oswald text-xl font-semibold leading-tight text-white">
-          {{ fullName }}
-        </p>
-        <p class="truncate font-inconsolata text-xs text-bta-text-2">
-          {{ user?.email }}
-        </p>
       </DropdownMenuLabel>
-      <DropdownMenuSeparator class="bg-white/[0.08]" />
-      <DropdownMenuItem as-child :class="itemClass">
-        <NuxtLink :to="profilePath">
-          <span class="text-bta-pink" aria-hidden="true">&gt;</span>
-          <span>Ver mi perfil</span>
+      <DropdownMenuItem as-child class="group/profile cursor-pointer rounded-md p-3 focus:bg-white/[0.06]">
+        <NuxtLink :to="profilePath" class="flex items-center gap-3" title="Ver mi perfil">
+          <TeacherAvatar
+            :src="user?.avatar_url"
+            :name="fullName || '?'"
+            class="!size-14 shrink-0 text-2xl ring-2 ring-transparent transition-shadow duration-200 group-hover/profile:ring-bta-pink group-focus/profile:ring-bta-pink"
+          />
+          <span class="min-w-0 flex-1">
+            <span class="block truncate font-oswald text-lg font-semibold leading-tight text-white">
+              {{ fullName }}
+            </span>
+            <span class="block truncate font-inconsolata text-xs text-bta-text-2">
+              {{ user?.email }}
+            </span>
+          </span>
+          <Icon name="lucide:chevron-right" class="size-4 shrink-0 text-bta-pink opacity-0 transition-opacity duration-200 group-hover/profile:opacity-100 group-focus/profile:opacity-100" />
         </NuxtLink>
       </DropdownMenuItem>
+      <DropdownMenuSeparator class="bg-white/[0.08]" />
       <DropdownMenuItem as-child :class="itemClass">
         <NuxtLink to="/perfil/editar">
           <span class="text-bta-pink" aria-hidden="true">&gt;</span>

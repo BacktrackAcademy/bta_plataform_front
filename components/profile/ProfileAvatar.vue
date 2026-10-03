@@ -18,13 +18,13 @@ const initials = computed(() =>
 const sizes = {
   sm: 'size-10 text-sm',
   md: 'size-24 text-3xl sm:size-28',
-  lg: 'size-28 text-4xl sm:size-32',
+  lg: 'size-28 text-4xl sm:size-36',
 } as const
 </script>
 
 <template>
   <span
-    class="relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bta-elevated ring-2 ring-bta-pink/50 ring-offset-2 ring-offset-bta-surface"
+    class="relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bta-elevated ring-[3px] ring-bta-pink/70 ring-offset-4 ring-offset-bta-surface"
     :class="sizes[size]"
     role="img"
     :aria-label="name"

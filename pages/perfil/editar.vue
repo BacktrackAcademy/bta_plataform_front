@@ -146,132 +146,145 @@ async function save() {
   }
 }
 
-const field = 'w-full rounded-md border border-white/10 bg-bta-bg px-3 py-2 font-inconsolata text-sm text-white placeholder:text-gray-muted focus:border-bta-pink/60 focus:outline-none focus:ring-2 focus:ring-bta-pink/30'
-const labelCls = 'mb-1.5 block text-sm font-medium text-white'
+const field = 'w-full rounded-lg border border-white/10 bg-bta-bg px-3.5 py-2.5 font-sans text-[15px] text-white placeholder:text-gray-muted transition-colors hover:border-white/20 focus:border-bta-pink/60 focus:outline-none focus:ring-2 focus:ring-bta-pink/30'
+const labelCls = 'mb-1.5 block font-inconsolata text-xs font-bold uppercase tracking-[0.14em] text-white/80'
+const sectionTitle = 'flex items-center gap-3 font-inconsolata text-xs font-bold uppercase tracking-[0.2em] text-white/80 after:h-px after:flex-1 after:bg-gradient-to-r after:from-white/10 after:to-transparent'
 </script>
 
 <template>
   <div class="mx-auto w-full max-w-3xl px-4 py-6 pb-28 sm:px-6 sm:py-10">
-    <h1 class="font-oswald text-3xl font-semibold text-white">
+    <NuxtLink :to="publicPath" class="bt-focus inline-flex items-center gap-2 rounded font-inconsolata text-sm text-bta-text-2 transition-colors hover:text-white">
+      <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" /> @{{ savedUsername }}
+    </NuxtLink>
+    <h1 class="mt-3 font-oswald text-3xl font-semibold leading-none tracking-tight text-white sm:text-4xl">
       Editar perfil
     </h1>
+    <p class="mt-2 font-inconsolata text-sm text-bta-text-2">
+      <span class="text-bta-pink">$</span> Así te ven las demás personas en Backtrack Academy.
+    </p>
 
     <form class="mt-6 space-y-6" novalidate @submit.prevent="save">
       <!-- MI PERFIL -->
-      <section class="bt-surface p-5 sm:p-6" aria-labelledby="mi-perfil">
-        <h2 id="mi-perfil" class="font-inconsolata text-xs uppercase tracking-[0.18em] text-bta-text-2">
-          <span class="text-bta-pink/70" aria-hidden="true">//</span> Mi perfil
-        </h2>
-
-        <div class="mt-5 flex items-center gap-4">
-          <ProfileAvatar :src="avatarUrl" :name="`${form.name} ${form.lastname}`.trim() || form.username" size="lg" />
-          <div class="space-y-2">
-            <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="sr-only" aria-label="Subir foto de perfil" @change="onAvatarChange">
-            <div class="flex flex-wrap gap-2">
-              <Button type="button" variant="outline" size="sm" class="bt-focus border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="fileInput?.click()">
-                <Icon name="lucide:upload" /> {{ avatarUrl ? 'Cambiar foto' : 'Subir foto' }}
-              </Button>
-              <Button v-if="avatarUrl" type="button" variant="ghost" size="sm" class="bt-focus text-bta-text-2 hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="removeAvatar">
-                Quitar
-              </Button>
-            </div>
-            <p class="font-inconsolata text-xs text-gray-muted">
-              JPG, PNG, WEBP o GIF · máx. 3 MB
-            </p>
-            <p v-if="avatarError" class="font-inconsolata text-xs text-red-400" role="alert">
-              {{ avatarError }}
-            </p>
-          </div>
+      <section class="bt-surface overflow-hidden" aria-labelledby="mi-perfil">
+        <div class="relative h-20 overflow-hidden sm:h-24" aria-hidden="true">
+          <div class="absolute inset-0 bg-[radial-gradient(120%_160%_at_0%_0%,rgba(236,16,117,0.34),transparent_55%),radial-gradient(90%_140%_at_100%_100%,rgba(88,64,255,0.2),transparent_60%)]" />
+          <div class="bt-tech-grid absolute inset-0 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         </div>
+        <div class="p-5 pt-0 sm:p-6 sm:pt-0">
+          <h2 id="mi-perfil" class="sr-only">
+            Mi perfil
+          </h2>
 
-        <div class="mt-6 grid gap-5 sm:grid-cols-2">
-          <div>
-            <label for="name" :class="labelCls">Nombre</label>
-            <input id="name" v-model="form.name" :class="field" type="text" maxlength="35" autocomplete="given-name">
-          </div>
-          <div>
-            <label for="lastname" :class="labelCls">Apellidos</label>
-            <input id="lastname" v-model="form.lastname" :class="field" type="text" maxlength="50" autocomplete="family-name">
-          </div>
-          <div class="sm:col-span-2">
-            <label for="username" :class="labelCls">Nombre de usuario</label>
-            <div class="flex items-center rounded-md border border-white/10 bg-bta-bg focus-within:border-bta-pink/60 focus-within:ring-2 focus-within:ring-bta-pink/30">
-              <span class="pl-3 font-inconsolata text-sm text-bta-pink" aria-hidden="true">@</span>
-              <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2 font-inconsolata text-sm text-white focus:outline-none" type="text" maxlength="40" autocomplete="username" :aria-invalid="!usernameValid" aria-describedby="username-hint">
+          <div class="-mt-10 flex items-end gap-4 sm:-mt-12">
+            <ProfileAvatar :src="avatarUrl" :name="`${form.name} ${form.lastname}`.trim() || form.username" size="lg" />
+            <div class="space-y-2">
+              <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="sr-only" aria-label="Subir foto de perfil" @change="onAvatarChange">
+              <div class="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" size="sm" class="bt-focus border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="fileInput?.click()">
+                  <Icon name="lucide:upload" /> {{ avatarUrl ? 'Cambiar foto' : 'Subir foto' }}
+                </Button>
+                <Button v-if="avatarUrl" type="button" variant="ghost" size="sm" class="bt-focus text-bta-text-2 hover:bg-white/10 hover:text-white" :disabled="avatarBusy" @click="removeAvatar">
+                  Quitar
+                </Button>
+              </div>
+              <p class="font-inconsolata text-xs text-gray-muted">
+                JPG, PNG, WEBP o GIF · máx. 3 MB
+              </p>
+              <p v-if="avatarError" class="font-inconsolata text-xs text-red-400" role="alert">
+                {{ avatarError }}
+              </p>
             </div>
-            <p id="username-hint" class="mt-1.5 font-inconsolata text-xs" :class="usernameValid ? 'text-gray-muted' : 'text-red-400'">
-              <template v-if="!usernameValid">
-                De 3 a 40 caracteres: letras, números, guion o guion bajo.
-              </template>
-              <template v-else-if="usernameChanged">
-                Al cambiarlo, tu URL pública será /@{{ form.username }} y la anterior dejará de funcionar.
-              </template>
-              <template v-else>
-                Es la dirección de tu perfil.
-              </template>
-            </p>
-            <p v-for="m in errors.username" :key="m" class="mt-1 font-inconsolata text-xs text-red-400" role="alert">
-              {{ m }}
-            </p>
-          </div>
-          <div class="sm:col-span-2">
-            <label for="headline" :class="labelCls">Titular</label>
-            <input id="headline" v-model="form.headline" :class="field" type="text" maxlength="80" placeholder="Pentester web · Content Dev">
-          </div>
-          <div class="sm:col-span-2">
-            <label for="aboutme" :class="labelCls">Bio</label>
-            <textarea id="aboutme" v-model="form.aboutme" :class="field" rows="4" :maxlength="BIO_MAX" placeholder="Qué haces y en qué te especializas." />
-            <p class="mt-1 text-right font-inconsolata text-xs text-gray-muted">
-              {{ form.aboutme.length }}/{{ BIO_MAX }}
-            </p>
           </div>
 
-          <div class="sm:col-span-2">
-            <label for="skill" :class="labelCls">Especialidades</label>
-            <div class="flex flex-wrap gap-2 rounded-md border border-white/10 bg-bta-bg p-2 focus-within:border-bta-pink/60 focus-within:ring-2 focus-within:ring-bta-pink/30">
-              <span v-for="(s, i) in form.skills" :key="s" class="inline-flex items-center gap-1 rounded border border-white/10 bg-white/[0.04] py-0.5 pl-2 pr-1 font-inconsolata text-xs text-white">
-                {{ s }}
-                <button type="button" class="bt-focus rounded p-0.5 text-bta-text-2 hover:text-bta-pink" :aria-label="`Quitar ${s}`" @click="removeSkill(i)">
-                  <Icon name="lucide:x" class="size-3" />
-                </button>
-              </span>
-              <input
-                id="skill"
-                v-model="skillDraft"
-                class="min-w-[8rem] flex-1 bg-transparent px-1 py-1 font-inconsolata text-sm text-white placeholder:text-gray-muted focus:outline-none"
-                type="text"
-                maxlength="30"
-                :disabled="form.skills.length >= SPECIALTY_MAX"
-                placeholder="Web Security, OSINT…"
-                @keydown.enter.prevent="addSkill"
-                @keydown.,.prevent="addSkill"
-                @keydown.backspace="!skillDraft && form.skills.pop()"
-                @blur="addSkill"
-              >
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="name" :class="labelCls">Nombre</label>
+              <input id="name" v-model="form.name" :class="field" type="text" maxlength="35" autocomplete="given-name">
             </div>
-            <p class="mt-1.5 font-inconsolata text-xs text-gray-muted">
-              Enter para agregar · hasta {{ SPECIALTY_MAX }}
-            </p>
-          </div>
+            <div>
+              <label for="lastname" :class="labelCls">Apellidos</label>
+              <input id="lastname" v-model="form.lastname" :class="field" type="text" maxlength="50" autocomplete="family-name">
+            </div>
+            <div class="sm:col-span-2">
+              <label for="username" :class="labelCls">Nombre de usuario</label>
+              <div class="flex items-center rounded-lg border border-white/10 bg-bta-bg transition-colors hover:border-white/20 focus-within:border-bta-pink/60 focus-within:ring-2 focus-within:ring-bta-pink/30">
+                <span class="pl-3 font-inconsolata text-sm text-bta-pink" aria-hidden="true">@</span>
+                <input id="username" v-model="form.username" class="w-full bg-transparent px-2 py-2.5 font-inconsolata text-sm text-white focus:outline-none" type="text" maxlength="40" autocomplete="username" :aria-invalid="!usernameValid" aria-describedby="username-hint">
+              </div>
+              <p id="username-hint" class="mt-1.5 font-inconsolata text-xs" :class="usernameValid ? 'text-gray-muted' : 'text-red-400'">
+                <template v-if="!usernameValid">
+                  De 3 a 40 caracteres: letras, números, guion o guion bajo.
+                </template>
+                <template v-else-if="usernameChanged">
+                  Al cambiarlo, tu URL pública será /@{{ form.username }} y la anterior dejará de funcionar.
+                </template>
+                <template v-else>
+                  Es la dirección de tu perfil.
+                </template>
+              </p>
+              <p v-for="m in errors.username" :key="m" class="mt-1 font-inconsolata text-xs text-red-400" role="alert">
+                {{ m }}
+              </p>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="headline" :class="labelCls">Titular</label>
+              <input id="headline" v-model="form.headline" :class="field" type="text" maxlength="80" placeholder="Pentester web · Content Dev">
+            </div>
+            <div class="sm:col-span-2">
+              <label for="aboutme" :class="labelCls">Bio</label>
+              <textarea id="aboutme" v-model="form.aboutme" :class="field" rows="4" :maxlength="BIO_MAX" placeholder="Qué haces y en qué te especializas." />
+              <p class="mt-1 text-right font-inconsolata text-xs text-gray-muted">
+                {{ form.aboutme.length }}/{{ BIO_MAX }}
+              </p>
+            </div>
 
-          <div>
-            <label for="linkedin" :class="labelCls">LinkedIn</label>
-            <input id="linkedin" v-model="form.linkedin_url" :class="field" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
-          </div>
-          <div>
-            <label for="twitter" :class="labelCls">X (Twitter)</label>
-            <input id="twitter" v-model="form.twitter_url" :class="field" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
+            <div class="sm:col-span-2">
+              <label for="skill" :class="labelCls">Especialidades</label>
+              <div class="flex flex-wrap gap-2 rounded-lg border border-white/10 bg-bta-bg p-2 transition-colors hover:border-white/20 focus-within:border-bta-pink/60 focus-within:ring-2 focus-within:ring-bta-pink/30">
+                <span v-for="(s, i) in form.skills" :key="s" class="inline-flex items-center gap-1 rounded-md border border-bta-pink/20 bg-bta-pink/[0.07] py-0.5 pl-2 pr-1 font-inconsolata text-xs text-white">
+                  {{ s }}
+                  <button type="button" class="bt-focus rounded p-0.5 text-bta-text-2 hover:text-bta-pink" :aria-label="`Quitar ${s}`" @click="removeSkill(i)">
+                    <Icon name="lucide:x" class="size-3" />
+                  </button>
+                </span>
+                <input
+                  id="skill"
+                  v-model="skillDraft"
+                  class="min-w-[8rem] flex-1 bg-transparent px-1 py-1 font-inconsolata text-sm text-white placeholder:text-gray-muted focus:outline-none"
+                  type="text"
+                  maxlength="30"
+                  :disabled="form.skills.length >= SPECIALTY_MAX"
+                  placeholder="Web Security, OSINT…"
+                  @keydown.enter.prevent="addSkill"
+                  @keydown.,.prevent="addSkill"
+                  @keydown.backspace="!skillDraft && form.skills.pop()"
+                  @blur="addSkill"
+                >
+              </div>
+              <p class="mt-1.5 font-inconsolata text-xs text-gray-muted">
+                Enter para agregar · hasta {{ SPECIALTY_MAX }}
+              </p>
+            </div>
+
+            <div>
+              <label for="linkedin" :class="labelCls">LinkedIn</label>
+              <input id="linkedin" v-model="form.linkedin_url" :class="field" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
+            </div>
+            <div>
+              <label for="twitter" :class="labelCls">X (Twitter)</label>
+              <input id="twitter" v-model="form.twitter_url" :class="field" type="text" maxlength="200" placeholder="tu-usuario o URL del perfil">
+            </div>
           </div>
         </div>
       </section>
 
       <!-- PRIVACIDAD -->
       <section id="privacidad" class="bt-surface scroll-mt-24 p-5 sm:p-6" aria-labelledby="privacidad-title">
-        <h2 id="privacidad-title" class="font-inconsolata text-xs uppercase tracking-[0.18em] text-bta-text-2">
-          <span class="text-bta-pink/70" aria-hidden="true">//</span> Privacidad
+        <h2 id="privacidad-title" :class="sectionTitle">
+          <span><span class="text-bta-pink/70" aria-hidden="true">//</span> Privacidad</span>
         </h2>
 
-        <div class="mt-5 space-y-5">
+        <div class="mt-5 space-y-6">
           <ProfileToggle
             id="public_profile"
             v-model="form.public_profile"
@@ -316,7 +329,7 @@ const labelCls = 'mb-1.5 block text-sm font-medium text-white'
           <p class="font-inconsolata text-xs" :class="saved && !dirty ? 'text-emerald-400' : 'text-gray-muted'" role="status">
             {{ saved && !dirty ? 'Cambios guardados' : dirty ? 'Cambios sin guardar' : '' }}
           </p>
-          <Button type="submit" class="bt-focus rounded-md bg-bta-pink px-5 text-white hover:bg-bta-pink/85" :disabled="saving || !dirty">
+          <Button type="submit" class="bt-focus rounded-lg bg-bta-pink px-5 font-semibold text-white shadow-[0_8px_24px_-10px_rgba(236,16,117,0.9)] hover:bg-bta-pink/90 disabled:shadow-none" :disabled="saving || !dirty">
             {{ saving ? 'Guardando…' : 'Guardar cambios' }}
           </Button>
         </div>

@@ -19,23 +19,11 @@ const navGroups = [
     ],
   },
 ]
-const navItems = navGroups.flatMap(g => g.items)
-
 const route = useRoute()
-const sectionLabel = computed(() => {
-  const match = navItems.find(i => route.path === i.to || route.path.startsWith(`${i.to}/`))
-  if (match)
-    return match.label
-  if (route.path.startsWith('/curso') || route.path.startsWith('/video'))
-    return 'Curso'
-  if (route.path.startsWith('/perfil'))
-    return 'Perfil'
-  if (route.path.startsWith('/suscripciones'))
-    return 'Suscripción'
-  return 'Plataforma'
-})
+// Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
+const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 
-const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[14px] font-medium text-bta-text-2 transition-colors duration-200 hover:bg-white/[0.04] hover:text-white'
+const navLinkBase = 'bt-focus group relative flex items-center rounded-md font-inconsolata text-[15px] text-bta-text-2 transition-colors duration-200 hover:bg-white/[0.04] hover:text-white'
 </script>
 
 <template>
@@ -59,8 +47,8 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[
           class="contents md:flex md:flex-col md:gap-1"
           :aria-label="group.label"
         >
-          <li class="mb-1 hidden px-3 text-xs font-medium text-white/35 lg:block" aria-hidden="true">
-            {{ group.label }}
+          <li class="mb-1 hidden px-3 font-inconsolata text-[11px] uppercase tracking-[0.18em] text-gray-muted lg:block" aria-hidden="true">
+            <span class="text-bta-pink/70">//</span> {{ group.label }}
           </li>
           <li v-for="item in group.items" :key="item.to" class="flex-1 md:flex-none">
             <NuxtLink
@@ -70,23 +58,31 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[
               :class="navLinkBase"
               class="h-12 flex-col justify-center gap-0.5 md:h-10 md:flex-row md:justify-center md:gap-3 lg:justify-start lg:px-3"
             >
-              <span class="nav-bar absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-bta-pink opacity-0 transition-opacity duration-200 md:block" aria-hidden="true" />
-              <Icon :name="item.icon" class="size-[18px] shrink-0" />
-              <span class="text-[10px] md:hidden lg:inline lg:text-[14px]">{{ item.label }}</span>
+              <span class="nav-bar absolute inset-y-2 left-0 hidden w-0.5 bg-bta-pink opacity-0 shadow-[0_0_10px_rgba(236,16,117,0.8)] transition-opacity duration-200 md:block" aria-hidden="true" />
+              <Icon :name="item.icon" class="nav-icon size-[18px] shrink-0 transition-colors duration-200" />
+              <span class="text-[10px] md:hidden lg:inline lg:text-[15px]">{{ item.label }}</span>
+              <span class="nav-prompt ml-auto hidden font-inconsolata text-bta-pink lg:inline" aria-hidden="true">&gt;</span>
             </NuxtLink>
           </li>
         </ul>
       </div>
 
       <div class="hidden border-t border-white/[0.06] p-3 md:block">
+        <p class="mb-2 hidden items-center gap-2 px-3 font-inconsolata text-xs text-gray-muted lg:flex">
+          <span class="relative flex size-2">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/50 motion-reduce:animate-none" />
+            <span class="relative inline-flex size-2 rounded-full bg-emerald-400" />
+          </span>
+          sesión activa
+        </p>
         <a
           href="mailto:contacto@backtrackacademy.com?subject=Feedback%20Backtrack%20Academy"
           title="Enviar feedback"
           :class="navLinkBase"
           class="h-10 justify-center gap-3 text-[13px] lg:justify-start lg:px-3"
         >
-          <Icon name="lucide:message-square-more" class="size-[18px] shrink-0" />
-          <span class="hidden lg:inline">Enviar feedback</span>
+          <Icon name="lucide:terminal" class="size-[18px] shrink-0" />
+          <span class="hidden lg:inline"><span class="text-bta-pink">$</span> feedback</span>
         </a>
       </div>
     </nav>
@@ -97,14 +93,14 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[
         <NuxtLink to="/dashboard" class="bt-focus rounded md:hidden" aria-label="Backtrack Academy — Inicio">
           <img class="w-28" src="~/assets/logo.svg" alt="Backtrack Academy">
         </NuxtLink>
-        <p class="hidden text-sm font-medium text-white md:block" aria-live="polite">
-          {{ sectionLabel }}
+        <p class="hidden min-w-0 items-center truncate font-inconsolata text-sm text-white md:flex" aria-live="polite">
+          <span class="text-bta-pink">~/</span><span class="truncate">{{ sectionPath }}</span><span class="term-cursor ml-1" aria-hidden="true" />
         </p>
         <div class="flex items-center gap-3 sm:gap-4">
           <NuxtLink
             v-if="!session?.user?.validate_pay"
             to="/suscripciones"
-            class="bt-focus group inline-flex h-9 items-center gap-2 rounded-md border border-bta-pink/70 bg-bta-pink/[0.08] px-3.5 font-oswald text-[15px] tracking-wide text-white shadow-[0_0_20px_-8px_rgba(236,16,117,0.8)] transition-all duration-200 hover:border-bta-pink hover:bg-bta-pink"
+            class="bt-focus group inline-flex h-9 items-center gap-2 border border-bta-pink/70 bg-bta-pink/[0.08] px-3.5 font-oswald text-[15px] uppercase tracking-wider text-white shadow-[0_0_20px_-8px_rgba(236,16,117,0.8)] transition-all duration-200 hover:border-bta-pink hover:bg-bta-pink"
           >
             <Icon name="lucide:zap" class="size-3.5 text-bta-pink transition-colors group-hover:text-white" />
             Vuélvete Pro
@@ -143,14 +139,40 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-[
 }
 
 .nav-active {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-image: linear-gradient(90deg, rgba(236, 16, 117, 0.14), transparent 85%);
 }
 .nav-active .nav-bar {
   opacity: 1;
 }
+.nav-active .nav-icon {
+  color: #ec1075;
+}
+.nav-prompt {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.nav-active .nav-prompt,
+a:hover .nav-prompt {
+  opacity: 1;
+  transform: translateX(0);
+}
+.term-cursor {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.95rem;
+  background: #ec1075;
+  animation: term-blink 1.1s steps(1) infinite;
+}
+@keyframes term-blink {
+  50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .term-cursor { animation: none; }
+}
 @media (max-width: 767px) {
   .nav-active {
-    background-color: transparent;
+    background-image: none;
     color: #ec1075 !important;
   }
 }

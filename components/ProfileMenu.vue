@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +14,8 @@ const { data: session, signOut } = useAuth()
 const user = computed(() => session.value?.user)
 const shortName = computed(() => [user.value?.name?.split(' ')[0], user.value?.lastname?.split(' ')[0]].filter(Boolean).join(' '))
 const fullName = computed(() => [user.value?.name, user.value?.lastname].filter(Boolean).join(' '))
-const initials = computed(() => (user.value?.name?.[0] ?? '?').toUpperCase())
 
-const itemClass = 'cursor-pointer gap-3 rounded-md px-3 py-2 text-sm text-white focus:bg-white/[0.06] focus:text-white'
+const itemClass = 'group/item cursor-pointer gap-2 rounded-md px-3 py-2 font-inconsolata text-sm text-white focus:bg-white/[0.06] focus:text-white'
 
 async function handleLogout() {
   await signOut()
@@ -30,13 +29,8 @@ async function handleLogout() {
       class="bt-focus group flex items-center gap-2.5 rounded-md p-1 pr-2 transition-colors duration-200 hover:bg-white/[0.05]"
       aria-label="Menú de usuario"
     >
-      <Avatar class="size-8 border border-white/15">
-        <AvatarImage v-if="user?.avatar_url" :src="user.avatar_url" :alt="user?.name ?? 'Avatar'" />
-        <AvatarFallback class="flex size-full items-center justify-center bg-bta-elevated text-xs font-semibold text-white">
-          {{ initials }}
-        </AvatarFallback>
-      </Avatar>
-      <span class="hidden max-w-[180px] truncate text-sm font-medium text-white sm:block">
+      <TeacherAvatar :src="user?.avatar_url" :name="fullName || '?'" class="!size-8 text-base" />
+      <span class="hidden max-w-[180px] truncate font-inconsolata text-sm text-white sm:block">
         {{ shortName }}
       </span>
       <Icon
@@ -45,24 +39,28 @@ async function handleLogout() {
       />
     </DropdownMenuTrigger>
 
-    <DropdownMenuContent align="end" class="mt-1 w-64 border-white/[0.08] bg-bta-elevated text-white">
+    <DropdownMenuContent align="end" class="relative mt-1 w-64 overflow-hidden rounded-xl border-white/[0.08] bg-bta-dark-blue p-1.5 text-white shadow-[0_18px_40px_-18px_rgba(236,16,117,0.35)]">
+      <span class="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-bta-pink/70 to-transparent" aria-hidden="true" />
       <DropdownMenuLabel class="font-normal">
-        <p class="truncate text-sm font-medium text-white">
+        <p class="font-inconsolata text-xs text-gray-muted">
+          <span class="text-bta-pink">$</span> whoami
+        </p>
+        <p class="mt-1 truncate font-oswald text-xl font-semibold leading-tight text-white">
           {{ fullName }}
         </p>
-        <p class="truncate text-xs text-bta-text-2">
+        <p class="truncate font-inconsolata text-xs text-bta-text-2">
           {{ user?.email }}
         </p>
       </DropdownMenuLabel>
       <DropdownMenuSeparator class="bg-white/[0.08]" />
       <DropdownMenuItem as-child :class="itemClass">
         <NuxtLink to="/perfil">
-          <Icon name="lucide:user" class="size-4 shrink-0 text-bta-text-2" />
+          <span class="text-bta-pink" aria-hidden="true">&gt;</span>
           <span>Ver mi perfil</span>
         </NuxtLink>
       </DropdownMenuItem>
       <DropdownMenuItem :class="itemClass" class="!text-red-400 focus:!bg-red-500/10 focus:!text-red-300" @select="handleLogout">
-        <Icon name="lucide:log-out" class="size-4 shrink-0" />
+        <span aria-hidden="true">&gt;</span>
         <span>Cerrar sesión</span>
       </DropdownMenuItem>
     </DropdownMenuContent>

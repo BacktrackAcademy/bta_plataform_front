@@ -21,6 +21,10 @@ const navGroups = [
   },
 ]
 const route = useRoute()
+// Pantallas "workspace" (p. ej. estudiar una clase): ocupan todo el alto, sin footer y admiten modo foco.
+const isWorkspace = computed(() => route.meta.workspace === true)
+const { focus } = useFocusMode()
+const focusActive = computed(() => isWorkspace.value && focus.value)
 // Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
 const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 
@@ -28,9 +32,10 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
 </script>
 
 <template>
-  <div class="shell min-h-screen bg-background text-foreground">
+  <div class="shell min-h-screen bg-background text-foreground" :class="{ 'shell--focus': focusActive }">
     <!-- L1 · Sidebar (lg) / icon rail (md) / bottom bar (mobile) -->
     <nav
+      v-if="!focusActive"
       aria-label="Principal"
       class="shell-menu fixed inset-x-0 bottom-0 z-40 border-t border-subtle bg-surface-1 md:static md:z-auto md:flex md:h-screen md:flex-col md:border-r md:border-t-0"
     >
@@ -85,9 +90,9 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
       </div>
     </nav>
 
-    <div class="shell-body flex min-w-0 flex-col pb-[68px] md:h-screen md:pb-0">
+    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[68px]'">
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
-      <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-subtle bg-background/85 px-4 backdrop-blur sm:px-6 lg:px-10">
+      <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-subtle bg-background/85 px-4 backdrop-blur sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">
           <CommonBrandLogo class="w-28" />
         </NuxtLink>
@@ -119,9 +124,9 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
         </div>
       </header>
 
-      <main class="min-w-0 flex-1 bg-background md:overflow-y-auto">
+      <main class="min-h-0 min-w-0 flex-1 bg-background" :class="isWorkspace ? 'md:flex md:flex-col md:overflow-hidden' : 'md:overflow-y-auto'">
         <slot />
-        <AppFooter :compact="route.meta.footer === 'compact'" />
+        <AppFooter v-if="!isWorkspace" :compact="route.meta.footer === 'compact'" />
       </main>
     </div>
   </div>
@@ -144,6 +149,13 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
 @media (min-width: 1024px) {
   .shell {
     grid-template-columns: 232px minmax(0, 1fr);
+  }
+}
+
+/* Modo foco: sin sidebar, el contenido ocupa todo el ancho */
+@media (min-width: 768px) {
+  .shell--focus {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

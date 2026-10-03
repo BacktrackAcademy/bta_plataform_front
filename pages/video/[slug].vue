@@ -1,333 +1,283 @@
 <script setup lang="ts">
-import { BarChart } from '@/components/ui/chart-bar'
-import Player from '@vimeo/player'
-import ArrowToRight from '../../components/icons/arrow-to-right.vue'
+import type { LessonProgressRow, LessonResponse, LessonState, LessonVideo, WorkspaceLesson, WorkspaceUnit } from '~/interfaces/learning'
+import { onKeyStroke, useClipboard } from '@vueuse/core'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
+import ProgressBar from '~/components/dashboard/ProgressBar.vue'
 
+// Learning Workspace: video dominante + navegador del curso. Layout `custom` sin footer (meta.workspace).
 definePageMeta({
   layout: 'custom',
   auth: true,
+  workspace: true,
 })
 
-interface Teacher {
-  id: number
-  name: string
-  lastname: string
-  avatar_url: string
-}
-
-interface Video {
-  id: number
-  titlevideo: string
-  url: string
-  slug: string
-  is_free: boolean
-}
-
-interface Theme {
-  id: number
-  titulo: string
-  videos: Video[]
-}
-
-interface Course {
-  id: number
-  titulo: string
-  slug: string
-  descripcion: string
-  image_thumb: string
-  teacher: Teacher
-  syllabus: Theme[]
-}
-const vimeoPlayer = ref<HTMLIFrameElement | null>(null)
-let player: Player | null = null
-const videoDuration = ref<number>(0)
-
-function formatTime(seconds: number): string {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const remainingSeconds = seconds % 60
-
-  return [
-    hours > 0 ? String(hours).padStart(2, '0') : '00',
-    String(minutes).padStart(2, '0'),
-    String(remainingSeconds).padStart(2, '0'),
-  ].join(':')
-}
-
-function formatNumber(value: number): string {
-  return new Intl.NumberFormat('en-US').format(value)
-}
-function initVimeoPlayer() {
-  if (!vimeoPlayer.value)
-    return
-  player = new Player(vimeoPlayer.value)
-  player.getDuration().then((duration: number) => {
-    videoDuration.value = duration
-  }).catch((error: any) => {
-    console.error('Error getting video duration:', error)
-  })
-  player.on('progress', (data: any) => {
-    addPercentage(data.percent)
-  })
-}
-
-// Initialize player after component is mounted
-onMounted(() => {
-  initVimeoPlayer()
-})
-
-// Route
 const route = useRoute()
+const router = useRouter()
+const { isPremium } = usePremium()
+const { focus, toggleFocus } = useFocusMode()
 
-// Estados reactivos
-const video = ref<Video | null>(null)
-const course = ref<Course | null>(null)
-const teacher = ref<Teacher | null>(null)
-const syllabus = ref<Theme[]>([])
-const data = ref<any>([])
+const { data: lesson, error, refresh } = await useAPI<LessonResponse>(() => `/video/${route.params.slug}`)
 
-// Cargar datos del video
-const { data: Video, status: VideoStatus } = await useAPI<Video>(`/video/${route.params.slug}`)
+useHead({ title: () => lesson.value?.titlevideo ?? 'Clase' })
 
-// Cargar datos del curso
-if (Video) {
-  video.value = Video.value
-  data.value = Video.value.video_details_in_seconds
-  course.value = Video.value.course
-  teacher.value = Video.value.course.teacher
-  syllabus.value = Video.value.course.syllabus
+const pad = (n: number) => String(n).padStart(2, '0')
+// "MM:SS" → minutos (el backend interpreta el primer bloque como minutos)
+function minutesOf(total?: string | null) {
+  const [m, s] = (total ?? '').split(':').map(Number)
+  return Number.isFinite(m) ? Math.max(1, Math.round(m + (s || 0) / 60)) : 0
 }
-function addPercentage(percentage: number) {
-  useAPI('/details/add_percentage', {
+
+const course = computed(() => lesson.value?.course)
+const teacherName = computed(() => [course.value?.teacher?.name, course.value?.teacher?.lastname].filter(Boolean).join(' '))
+const hasAccess = computed(() => lesson.value?.course_access ?? isPremium.value)
+
+const progressRows = computed(() => new Map<number, LessonProgressRow>((lesson.value?.video_details_in_seconds ?? []).map(r => [r.id, r])))
+// `is_finish` por clase llega desde el backend; si falta (API anterior) no mostramos clases completadas inventadas.
+const hasFinishData = computed(() => (lesson.value?.video_details_in_seconds ?? []).some(r => r.is_finish !== undefined))
+const currentFinished = computed(() => (lesson.value?.video_percent ?? 0) >= 99 || progressRows.value.get(lesson.value?.id ?? -1)?.is_finish === true)
+
+const units = computed<WorkspaceUnit[]>(() => {
+  let n = 0
+  return (course.value?.syllabus ?? []).map(unit => ({
+    titulo: unit.titulo,
+    lessons: (unit.videos ?? []).map((v: LessonVideo): WorkspaceLesson => {
+      const isCurrent = v.slug === lesson.value?.slug
+      const finished = progressRows.value.get(v.id)?.is_finish === true || (isCurrent && currentFinished.value)
+      const locked = !v.is_free && !hasAccess.value
+      const state: LessonState = isCurrent ? 'current' : locked ? 'locked' : finished ? 'completed' : 'available'
+      return { ...v, number: ++n, finished, locked, state }
+    }),
+  }))
+})
+const flat = computed(() => units.value.flatMap(u => u.lessons))
+const currentIndex = computed(() => flat.value.findIndex(l => l.slug === lesson.value?.slug))
+const current = computed(() => flat.value[currentIndex.value])
+const currentUnit = computed(() => units.value.find(u => u.lessons.some(l => l.state === 'current')))
+
+// Anterior/siguiente se derivan del temario ordenado; el `prev`/`next` del backend queda de respaldo.
+function target(l?: WorkspaceLesson | LessonVideo | null) {
+  if (!l)
+    return null
+  const known = flat.value.find(x => x.slug === l.slug)
+  return { slug: l.slug, title: l.titlevideo, number: known?.number, locked: known ? known.locked : !l.is_free && !hasAccess.value }
+}
+const prevTarget = computed(() => currentIndex.value >= 0 ? target(flat.value[currentIndex.value - 1]) : target(lesson.value?.prev))
+const nextTarget = computed(() => currentIndex.value >= 0 ? target(flat.value[currentIndex.value + 1]) : target(lesson.value?.next))
+
+const totalLessons = computed(() => flat.value.length || lesson.value?.number_videos || 0)
+const completedLessons = computed(() => hasFinishData.value ? flat.value.filter(l => l.finished).length : lesson.value?.videos_finish ?? 0)
+const percent = computed(() => totalLessons.value > 0 ? Math.min(100, Math.round((completedLessons.value / totalLessons.value) * 100)) : 0)
+const studied = computed(() => lesson.value?.time_studied_text ?? '')
+const minutes = computed(() => minutesOf(lesson.value?.total))
+const lessonLabel = computed(() => current.value ? `${pad(current.value.number)} — ${lesson.value?.titlevideo}` : lesson.value?.titlevideo ?? '')
+
+// Progreso de reproducción: misma regla de siempre (POST /details/add_percentage), sin tocar su cadencia.
+const { $api } = useNuxtApp()
+function addPercentage(percent: number) {
+  if (!lesson.value)
+    return
+  $api('/details/add_percentage', {
     method: 'POST',
-    body: {
-      detail_id: video.value?.id,
-      percent: percentage * 100,
-    },
-  })
+    body: { detail_id: lesson.value.id, percent: percent * 100 },
+  }).catch(() => {})
 }
+// Al terminar el video se relee el estado real (el backend decide cuándo una clase queda completada).
+const wasFinished = ref(false)
+function onEnded() {
+  wasFinished.value = true
+  refresh()
+}
+
+// Compartir: enlace a la clase (sólo cliente, sin backend).
+const { copy, copied } = useClipboard({ copiedDuring: 2000 })
+async function share() {
+  const url = window.location.href
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: lesson.value?.titlevideo, url })
+      return
+    }
+    catch {}
+  }
+  copy(url)
+}
+
+// Temario móvil/tablet
+const tocOpen = ref(false)
+
+// Atajos: ] siguiente · [ anterior · F modo foco · Esc salir del modo foco
+function typing(e: KeyboardEvent) {
+  const el = e.target as HTMLElement | null
+  return !!el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))
+}
+onKeyStroke(']', (e) => {
+  if (!typing(e) && nextTarget.value && !nextTarget.value.locked)
+    router.push(`/video/${nextTarget.value.slug}`)
+})
+onKeyStroke('[', (e) => {
+  if (!typing(e) && prevTarget.value && !prevTarget.value.locked)
+    router.push(`/video/${prevTarget.value.slug}`)
+})
+onKeyStroke(['f', 'F'], (e) => {
+  if (!typing(e) && !e.metaKey && !e.ctrlKey && !e.altKey)
+    toggleFocus()
+})
+onKeyStroke('Escape', () => {
+  if (focus.value && !tocOpen.value)
+    focus.value = false
+})
 </script>
 
 <template>
-  <section class="bg-surface-1 px-4 sm:px-6 xl:px-8">
-    <div class="lg:flex gap-6 xl:gap-8">
-      <div class="lg:w-[70%]">
-        <!-- Video player -->
-        <div class="relative top-0 max-h-[calc(100vh - 52px)] mx-auto">
-          <div style="padding: 56.25% 0 0 0; position: relative">
-            <iframe
-              v-if="video?.url"
-              ref="vimeoPlayer"
-              :src="`https://player.vimeo.com/video/${video.url}?h=0eb117b38a&title=0&byline=0&portrait=0&badge=0`"
-              class="absolute top-0 left-0 w-full h-full"
-              frameborder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowfullscreen
-            />
-          </div>
-        </div>
-        <div>
-          <!-- curso Header -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center pt-4">
-              <!-- Curso image thumb -->
-              <img
-                v-if="course?.image_thumb"
-                :src="course.image_thumb"
-                alt=""
-                class="mr-3 w-12 h-12 rounded-full"
-              >
-              <!-- header content -->
-              <div class="flex flex-wrap">
-                <NuxtLink
-                  v-if="video?.slug"
-                  :to="`/curso/${video.slug}`"
-                  class="block w-full"
-                >
-                  <h2 class="text-foreground text-2xl font-oswald font-bold">
-                    {{ video?.titlevideo }}
-                  </h2>
-                </NuxtLink>
-                <img
-                  v-if="teacher?.avatar_url"
-                  :src="teacher.avatar_url"
-                  alt=""
-                  class="w-6 h-6 rounded-full mr-1"
-                >
-                <p class="text-foreground-muted">
-                  {{ teacher?.name }} {{ teacher?.lastname }}
-                </p>
-              </div>
-            </div>
+  <div v-if="lesson && course" class="flex flex-col md:min-h-0 md:flex-1" :class="focus ? 'min-h-dvh' : 'min-h-[calc(100dvh-4rem)]'">
+    <!-- Barra de contexto: dónde estoy y cuánto llevo -->
+    <div class="flex h-11 shrink-0 items-center gap-3 border-b border-subtle bg-surface-1 px-4 sm:px-6">
+      <NuxtLink v-if="focus" to="/dashboard" class="bt-focus mr-1 shrink-0 rounded-sm" aria-label="Backtrack Academy — Inicio">
+        <CommonBrandLogo class="w-24" />
+      </NuxtLink>
+      <nav aria-label="Ruta" class="flex min-w-0 flex-1 items-center gap-1.5 font-mono text-sm text-foreground-muted">
+        <NuxtLink to="/cursos" class="bt-focus hidden shrink-0 rounded-sm transition-colors hover:text-primary-text sm:inline">
+          ~/cursos
+        </NuxtLink>
+        <span class="hidden text-primary-text sm:inline">/</span>
+        <NuxtLink :to="`/curso/${course.slug}`" class="bt-focus min-w-0 truncate rounded-sm transition-colors hover:text-primary-text" :title="course.titulo">
+          {{ course.slug }}
+        </NuxtLink>
+        <template v-if="current">
+          <span class="text-primary-text">/</span>
+          <span class="shrink-0 text-foreground-secondary">{{ pad(current.number) }}</span>
+        </template>
+      </nav>
 
-            <div class="flex items-center">
-              <NuxtLink
-                v-if="video?.prev"
-                :to="`/video/${video.prev.slug}`"
-                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
-              >
-                <ArrowToRight class="mr-3 rotate-180" />
-                <span
-                  class="uppercase text-left text-sm font-bold w-[137px] text-ellipsis whitespace-nowrap overflow-hidden"
-                  title="Definición y características de Cobalt Strike"
-                >
-                  {{ video?.prev.titlevideo }}
-                </span>
-              </NuxtLink>
-
-              <NuxtLink
-                v-if="video?.next"
-                :to="`/video/${video.next.slug}`"
-                class="bt-btn-primary mr-2 h-auto w-[144px] justify-start px-3 py-2"
-              >
-                <span
-                  class="uppercase text-left text-sm font-bold w-[137px] text-ellipsis whitespace-nowrap overflow-hidden"
-                  title="Definición y características de Cobalt Strike"
-                >
-                  {{ video?.next.titlevideo }}
-                </span>
-                <ArrowToRight class="mr-3" />
-              </NuxtLink>
-            </div>
-          </div>
-
-          <div class="text-foreground">
-            <h3 class="text-xl text-foreground leading-9 my-4 font-oswald">
-              Resumen del curso
-            </h3>
-            <div>
-              <p>
-                {{ course?.descripcion }}
-              </p>
-              <div class="flex flex-1 gap-4 mt-2">
-                <p>
-                  Duración del curso {{ formatTime(course?.total_duration_seconds) }}
-                </p>
-                <p>
-                  Tiempo estudiado {{ video?.time_studied_text }}
-                </p>
-                <p>{{ video?.videos_finish }} / {{ video?.number_videos }} videos completados</p>
-                <div>
-                  <p v-if="course?.students > 1">
-                    {{ formatNumber(course?.students) }} personas han estudiado este curso.
-                  </p>
-                  <p v-else-if="course?.students === 1">
-                    {{ course?.students }} persona ha estudiado este curso.
-                  </p>
-                  <p v-else>
-                    Sé el primero en estudiar este curso.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h3 class="text-xl text-foreground leading-9 my-4 font-oswald">
-            Tu avance
-          </h3>
-          <BarChart
-            :data="data"
-            index="name"
-            :categories="['total', 'predicted']"
-            :colors="['hsl(var(--surface-4))', 'hsl(var(--primary))']"
-            :y-formatter="(tick) => {
-              if (typeof tick === 'number') {
-                const minutes = Math.floor(tick / 60);
-                const seconds = tick % 60;
-                return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-              }
-              return '';
-            }"
-          />
-        </div>
+      <div class="flex shrink-0 items-center gap-3 font-mono text-xs text-foreground-muted" :title="`${completedLessons} de ${totalLessons} clases completadas`">
+        <span class="hidden sm:inline">Curso</span>
+        <ProgressBar :value="percent" label="Progreso del curso" class="!w-16 sm:!w-28" />
+        <span class="w-9 text-right text-foreground">{{ percent }}%</span>
       </div>
 
-      <div class="lg:w-[30%]">
-        <!-- badge -->
-        <div class="text-foreground text-center my-8">
-          <p class="">
-            Has estudiado
-          </p>
-          <p class="font-oswald font-medium text-6xl mb-3">
-            {{ video?.course_advance }} %
-          </p>
-          <p class="">
-            del curso <span class="text-foreground">{{ course?.titulo }}</span>
-          </p>
-          <br>
-          <p class="">
-            Tienes 0 oportunidades
-          </p>
-        </div>
-        <!-- Temario -->
-        <div>
-          <h4 class="text-2xl text-foreground font-oswald font-medium mt-5 mb-2">
-            Temario
-          </h4>
-          <div
-            v-for="(theme, i) in syllabus"
-            :key="theme.titulo + i"
-            class="mb-3"
-          >
-            <h3 class="t-eyebrow py-2">
-              {{ theme.titulo }}
-            </h3>
-            <div v-for="(video, i) in theme.videos" :key="video.slug + i">
-              <NuxtLink
-                v-if="video.is_free"
-                class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2"
-                :to="`/video/${video.slug}`"
-              >
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="text-foreground h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </span>
-                <div>
-                  <span class="text-foreground">{{ video.titlevideo }}</span>
-                </div>
-              </NuxtLink>
-              <div v-else class="flex gap-x-3 rounded-md p-2 transition-colors duration-fast hover:bg-surface-2">
-                <span>
-                  <!-- Lock icon -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="text-foreground h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-                <div>
-                  <span class="text-foreground">
-                    {{ video.titlevideo }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button
+        type="button"
+        class="bt-icon-btn !size-8 shrink-0"
+        :aria-pressed="focus"
+        :aria-label="focus ? 'Salir del modo foco' : 'Activar modo foco'"
+        :title="focus ? 'Salir del modo foco (Esc)' : 'Modo foco (F)'"
+        @click="toggleFocus"
+      >
+        <Icon :name="focus ? 'lucide:x' : 'lucide:maximize'" class="size-4" />
+      </button>
     </div>
-  </section>
+
+    <div class="flex min-h-0 flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_380px]">
+      <!-- Contenido -->
+      <div class="flex min-h-0 min-w-0 flex-col">
+        <div class="min-h-0 flex-1 md:overflow-y-auto">
+          <div class="border-b border-subtle bg-black">
+            <div class="stage mx-auto" :style="{ '--stage-reserve': focus ? '13rem' : '17rem' }">
+              <LearningVideoStage :key="lesson.id" :video-id="lesson.url" :title="lesson.titlevideo" @progress="addPercentage" @ended="onEnded" />
+            </div>
+          </div>
+
+          <!-- Temario (< lg): abre un bottom sheet -->
+          <button
+            type="button"
+            class="bt-focus flex w-full items-center gap-3 border-b border-subtle bg-surface-1 px-4 py-2.5 text-left transition-colors hover:bg-surface-2 sm:px-6 lg:hidden"
+            aria-haspopup="dialog"
+            @click="tocOpen = true"
+          >
+            <Icon name="lucide:list-video" class="size-4 shrink-0 text-primary-text" aria-hidden="true" />
+            <span class="min-w-0 flex-1">
+              <span class="block text-sm font-medium text-foreground">Temario ({{ completedLessons }}/{{ totalLessons }})</span>
+              <span v-if="currentUnit" class="t-meta block truncate !text-xs">{{ currentUnit.titulo }}</span>
+            </span>
+            <Icon name="lucide:chevron-up" class="size-4 shrink-0 text-foreground-subtle" aria-hidden="true" />
+          </button>
+
+          <article class="max-w-3xl px-4 py-5 sm:px-6">
+            <p v-if="currentUnit" class="t-eyebrow truncate">
+              <span class="text-primary-text">//</span> {{ currentUnit.titulo }}
+            </p>
+            <h1 class="mt-1 font-oswald text-xl font-semibold leading-snug text-foreground sm:text-2xl">
+              {{ lessonLabel }}
+            </h1>
+
+            <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+              <span v-if="teacherName" class="flex items-center gap-2 text-foreground-secondary">
+                <TeacherAvatar :src="course.teacher?.avatar_url" :name="teacherName" />
+                {{ teacherName }}
+              </span>
+              <span class="t-meta">
+                Video<template v-if="minutes"> · {{ minutes }} min</template>
+              </span>
+              <span v-if="currentFinished || wasFinished" class="flex items-center gap-1.5 text-sm text-success">
+                <Icon name="lucide:circle-check" class="size-4" aria-hidden="true" />
+                Completada
+              </span>
+              <button type="button" class="bt-btn-ghost !h-8 !px-2.5 sm:ml-auto" @click="share">
+                <Icon :name="copied ? 'lucide:check' : 'lucide:share-2'" class="size-4" aria-hidden="true" />
+                {{ copied ? 'Enlace copiado' : 'Compartir' }}
+              </button>
+            </div>
+
+            <p v-if="lesson.description" class="t-body mt-4 whitespace-pre-line">
+              {{ lesson.description }}
+            </p>
+          </article>
+        </div>
+
+        <!-- Siguiente acción: siempre a la vista -->
+        <LearningLessonPager
+          class="shrink-0 border-t border-subtle bg-surface-1 px-4 py-3 sm:px-6"
+          :prev="prevTarget"
+          :next="nextTarget"
+          :finished="currentFinished || wasFinished"
+          :course-slug="course.slug"
+        />
+      </div>
+
+      <!-- Course navigator (lg+) con scroll propio -->
+      <aside class="hidden min-h-0 border-l border-subtle lg:block" aria-label="Temario">
+        <LearningCourseNavigator
+          :course-title="course.titulo"
+          :units="units"
+          :completed="completedLessons"
+          :total="totalLessons"
+          :percent="percent"
+          :studied="studied"
+        />
+      </aside>
+    </div>
+
+    <LearningTocSheet v-model="tocOpen" :label="`temario ${completedLessons}/${totalLessons}`">
+      <LearningCourseNavigator
+        :course-title="course.titulo"
+        :units="units"
+        :completed="completedLessons"
+        :total="totalLessons"
+        :percent="percent"
+        :studied="studied"
+      />
+    </LearningTocSheet>
+  </div>
+
+  <div v-else class="p-4 sm:p-6">
+    <CommonStateCard
+      variant="error"
+      title="No pudimos cargar esta clase"
+      :text="error ? 'Revisa tu conexión e inténtalo de nuevo.' : 'La clase no existe o ya no está disponible.'"
+    >
+      <button type="button" class="bt-btn-secondary" @click="refresh()">
+        Reintentar
+      </button>
+    </CommonStateCard>
+  </div>
 </template>
+
+<style scoped>
+/* Video 16:9 que nunca empuja la información fuera de pantalla: el ancho se limita según el alto disponible. */
+@media (min-width: 768px) {
+  .stage {
+    width: min(100%, calc((100dvh - var(--stage-reserve)) * 16 / 9));
+    min-width: min(100%, 480px);
+  }
+}
+</style>

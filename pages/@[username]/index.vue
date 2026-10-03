@@ -117,8 +117,9 @@ async function share() {
 }
 
 // ---- Presentación ------------------------------------------------------------------------
-const fmtDate = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString('es-CL', { month: 'short', year: 'numeric' }) : ''
+function fmtDate(iso: string | null) {
+  return iso ? new Date(iso).toLocaleDateString('es-CL', { month: 'short', year: 'numeric' }) : ''
+}
 
 const memberSince = computed(() => (p.value.member_since ? new Date(p.value.member_since).getFullYear() : null))
 

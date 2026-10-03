@@ -49,7 +49,7 @@ watch(() => form.public_profile, (on) => {
   }
 })
 
-const usernameValid = computed(() => /^[A-Za-z0-9][\w-]{2,39}$/.test(form.username))
+const usernameValid = computed(() => /^[A-Z0-9][\w-]{2,39}$/i.test(form.username))
 const usernameChanged = computed(() => form.username !== savedUsername.value)
 const thinProfile = computed(() => form.aboutme.trim().length < 40 && !form.headline.trim())
 const publicPath = computed(() => `/@${savedUsername.value}`)

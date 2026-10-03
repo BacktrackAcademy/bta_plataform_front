@@ -9,6 +9,7 @@ export interface PaypalSubscription {
 export interface PaypalEligibility {
   flow: 'rest' | 'legacy'
   rest_enabled: boolean
+  premium: boolean
   rest_subscription: PaypalSubscription | null
   legacy_subscription: {
     can_migrate: boolean

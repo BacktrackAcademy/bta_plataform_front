@@ -4,29 +4,43 @@ definePageMeta({
   auth: true,
 })
 
-type ViewState = 'checking' | 'active' | 'pending' | 'failed'
+type ViewState = 'checking' | 'active' | 'review' | 'pending' | 'failed'
 
 const { getSubscription } = usePaypalSubscription()
 const { $api } = useNuxtApp()
 
+const { refreshPremium } = usePremium()
+
 const state = ref<ViewState>('checking')
+const subscriptionActive = ref(false)
 const MAX_ATTEMPTS = 20 // ~1 minuto: PayPal confirma por webhook, puede tardar unos segundos
 const INTERVAL_MS = 3000
 let timer: ReturnType<typeof setInterval> | undefined
 
-// PayPal vuelve aquí tras la aprobación. El estado real lo confirma el backend con PayPal
-// (GET /paypal/subscriptions/:id sincroniza); aquí solo esperamos a que figure como activa.
+// PayPal vuelve aquí tras la aprobación. El estado real lo confirma el backend: la suscripción pasa a
+// 'active' al aprobar, pero el ACCESO (premium) se concede cuando PayPal confirma el cobro, que puede
+// quedar en revisión. Esperamos a ambos, y si el acceso no llega distinguimos "pago en revisión".
 async function check(id: number) {
   const sub = await getSubscription(id)
-  if (sub.status === 'active') {
-    state.value = 'active'
-    return true
-  }
   if (['cancelled', 'expired', 'failed', 'abandoned'].includes(sub.status)) {
     state.value = 'failed'
     return true
   }
+  subscriptionActive.value = sub.status === 'active'
+  if (!subscriptionActive.value)
+    return false
+  const info = await $api<{ validate_pay?: boolean }>('/user/info')
+  if (info.validate_pay) {
+    state.value = 'active'
+    await refreshPremium()
+    return true
+  }
   return false
+}
+
+function finishWaiting() {
+  if (state.value === 'checking')
+    state.value = subscriptionActive.value ? 'review' : 'pending'
 }
 
 onMounted(async () => {
@@ -46,14 +60,13 @@ onMounted(async () => {
       try {
         if (await check(sub.id) || attempts >= MAX_ATTEMPTS) {
           clearInterval(timer)
-          if (state.value === 'checking')
-            state.value = 'pending'
+          finishWaiting()
         }
       }
       catch {
         if (attempts >= MAX_ATTEMPTS) {
           clearInterval(timer)
-          state.value = 'pending'
+          finishWaiting()
         }
       }
     }, INTERVAL_MS)
@@ -86,9 +99,23 @@ onBeforeUnmount(() => clearInterval(timer))
             ¡Suscripción activada!
           </h2>
           <p class="mt-2 text-gray-muted font-inconsolata text-sm">
-            Tu acceso se habilita en unos instantes, apenas PayPal confirma el cobro.
+            Ya tienes acceso Premium.
           </p>
           <NuxtLink to="/dashboard" class="inline-block mt-6 py-3 px-6 bg-bta-pink hover:bg-bta-pink/90 rounded-lg font-semibold font-inconsolata">
+            Ir al inicio
+          </NuxtLink>
+        </template>
+
+        <template v-else-if="state === 'review'">
+          <Icon name="lucide:shield-alert" class="size-10 text-amber-400 mx-auto" />
+          <h2 class="mt-4 text-2xl font-semibold font-oswald uppercase">
+            PayPal está revisando tu pago
+          </h2>
+          <p class="mt-2 text-gray-muted font-inconsolata text-sm">
+            Tu suscripción quedó registrada. PayPal retiene algunos pagos para revisión; tu acceso Premium se activa
+            automáticamente cuando lo confirme. No pagues de nuevo.
+          </p>
+          <NuxtLink to="/dashboard" class="inline-block mt-6 py-3 px-6 bg-bta-blue hover:bg-bta-blue/90 rounded-lg font-semibold font-inconsolata">
             Ir al inicio
           </NuxtLink>
         </template>

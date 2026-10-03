@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data: session } = useAuth()
+const { isPremium } = usePremium()
 
 // Authenticated shell: sidebar (lg) → icon rail (md) → bottom bar (mobile).
 const navGroups = [
@@ -98,7 +98,16 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md font-i
         </p>
         <div class="flex items-center gap-3 sm:gap-4">
           <NuxtLink
-            v-if="!session?.user?.validate_pay"
+            v-if="isPremium"
+            to="/suscripciones"
+            class="bt-focus group inline-flex h-9 items-center gap-2 border border-amber-400/70 bg-amber-400/[0.10] px-3.5 font-oswald text-[15px] uppercase tracking-wider text-amber-300 shadow-[0_0_20px_-8px_rgba(251,191,36,0.8)] transition-all duration-200 hover:border-amber-300 hover:bg-amber-400 hover:text-bta-dark-blue"
+            title="Tu suscripción está activa"
+          >
+            <Icon name="lucide:crown" class="size-3.5 text-amber-300 transition-colors group-hover:text-bta-dark-blue" />
+            Cuenta Premium
+          </NuxtLink>
+          <NuxtLink
+            v-else
             to="/suscripciones"
             class="bt-focus group inline-flex h-9 items-center gap-2 border border-bta-pink/70 bg-bta-pink/[0.08] px-3.5 font-oswald text-[15px] uppercase tracking-wider text-white shadow-[0_0_20px_-8px_rgba(236,16,117,0.8)] transition-all duration-200 hover:border-bta-pink hover:bg-bta-pink"
           >

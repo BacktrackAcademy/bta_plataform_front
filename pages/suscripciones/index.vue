@@ -14,7 +14,7 @@ interface Subscription {
   recommended: number
 }
 
-const { data: subscriptions, status: subscriptionStatus } = useAPI<Subscription[]>('/subscriptions')
+const { data: subscriptions } = useAPI<Subscription[]>('/subscriptions')
 const { data: eligibility } = useAPI<PaypalEligibility>('/paypal/eligibility')
 const { loading, error, subscribe, migrate } = usePaypalSubscription()
 
@@ -22,6 +22,8 @@ const busyPlan = ref<number | null>(null)
 
 const hasActiveRest = computed(() =>
   ['active', 'suspended'].includes(eligibility.value?.rest_subscription?.status ?? ''))
+// Suscripción activa en PayPal pero sin acceso todavía: el cobro está en revisión (se concede al confirmarse).
+const paymentInReview = computed(() => hasActiveRest.value && eligibility.value?.premium === false)
 const canBuy = computed(() => eligibility.value?.flow === 'rest' && !hasActiveRest.value)
 
 async function onSubscribe(planId: number) {
@@ -50,7 +52,11 @@ function formatDate(value: string | null | undefined) {
 
       <!-- Estado de la cuenta / errores -->
       <div class="max-w-3xl mx-auto mb-8 space-y-3 font-inconsolata text-sm">
-        <p v-if="hasActiveRest" class="rounded-lg border border-green-500/40 bg-green-500/10 p-4 text-green-400">
+        <p v-if="paymentInReview" class="rounded-lg border border-amber-400/40 bg-amber-400/10 p-4 text-amber-300">
+          Tu suscripción está registrada, pero PayPal está revisando el pago. Tu acceso Premium se activa automáticamente
+          cuando lo confirme; no necesitas pagar de nuevo.
+        </p>
+        <p v-else-if="hasActiveRest" class="rounded-lg border border-green-500/40 bg-green-500/10 p-4 text-green-400">
           Ya tienes una suscripción activa. Puedes gestionarla desde tu perfil.
         </p>
         <div

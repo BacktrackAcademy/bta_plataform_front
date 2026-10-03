@@ -12,8 +12,8 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
 </script>
 
 <template>
-  <section class="bt-surface flex flex-col p-6" aria-label="Progreso general">
-    <p class="bt-eyebrow">
+  <section class="bt-surface flex flex-col !rounded-2xl !border-transparent p-6 shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)]" aria-label="Progreso general">
+    <p class="font-inconsolata text-sm uppercase tracking-wider text-gray-muted">
       Tu progreso
     </p>
 
@@ -23,7 +23,7 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
       <Skeleton class="mt-8 h-10 w-full" />
     </template>
 
-    <p v-else-if="!hasData" class="mt-4 text-sm leading-relaxed text-bta-text-2">
+    <p v-else-if="!hasData" class="mt-4 font-inconsolata text-sm leading-relaxed text-gray-muted">
       Tu progreso aparecerá aquí cuando comiences un curso.
     </p>
 
@@ -31,7 +31,7 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
       <p class="mt-3 font-oswald text-5xl font-semibold leading-none text-white">
         {{ percent }}<span class="text-2xl text-bta-pink">%</span>
       </p>
-      <p class="mt-1.5 text-sm text-bta-text-2">
+      <p class="mt-1.5 font-inconsolata text-sm text-gray-muted">
         Progreso general
       </p>
       <div class="mt-4">
@@ -40,15 +40,15 @@ const hasData = computed(() => (props.history?.number_courses ?? 0) > 0)
 
       <dl class="mt-6 grid grid-cols-2 gap-4 border-t border-white/[0.06] pt-5">
         <div>
-          <dt class="text-xs text-bta-text-2">
+          <dt class="font-inconsolata text-xs uppercase tracking-wider text-gray-muted">
             Estudiadas
           </dt>
           <dd class="mt-1 font-oswald text-2xl font-medium text-white">
-            {{ viewed }}<span class="text-sm text-bta-text-2"> / {{ total }} h</span>
+            {{ viewed }}<span class="font-inconsolata text-sm text-gray-muted"> / {{ total }} h</span>
           </dd>
         </div>
         <div>
-          <dt class="text-xs text-bta-text-2">
+          <dt class="font-inconsolata text-xs uppercase tracking-wider text-gray-muted">
             Cursos
           </dt>
           <dd class="mt-1 font-oswald text-2xl font-medium text-white">

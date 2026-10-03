@@ -15,7 +15,7 @@ export interface HistoryCourse {
   degree_id?: number | null
   number_videos?: number
   total_duration_seconds?: number
-  teacher?: { name: string, lastname: string }
+  teacher?: { name: string, lastname: string, avatar_url?: string }
 }
 
 export interface CourseProgress extends HistoryCourse {

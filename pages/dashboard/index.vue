@@ -82,7 +82,7 @@ useSeoMeta({
           </div>
         </div>
         <CurrentCourse v-else-if="current" :course="current" class="animate-rise-in [animation-delay:80ms]" />
-        <div v-else class="bt-surface flex flex-col items-start justify-center gap-4 p-8">
+        <div v-else class="bt-surface flex flex-col items-start justify-center gap-4 !rounded-2xl !border-transparent p-8 shadow-[0_10px_25px_-8px_rgba(0,0,0,0.7)]">
           <p class="bt-eyebrow">
             En curso
           </p>

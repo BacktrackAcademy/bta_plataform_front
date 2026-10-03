@@ -12,6 +12,7 @@ import {
 const { data: session, signOut } = useAuth()
 
 const user = computed(() => session.value?.user)
+const profilePath = computed(() => (user.value?.username ? `/@${user.value.username}` : '/perfil'))
 const shortName = computed(() => [user.value?.name?.split(' ')[0], user.value?.lastname?.split(' ')[0]].filter(Boolean).join(' '))
 const fullName = computed(() => [user.value?.name, user.value?.lastname].filter(Boolean).join(' '))
 
@@ -54,9 +55,15 @@ async function handleLogout() {
       </DropdownMenuLabel>
       <DropdownMenuSeparator class="bg-white/[0.08]" />
       <DropdownMenuItem as-child :class="itemClass">
-        <NuxtLink to="/perfil">
+        <NuxtLink :to="profilePath">
           <span class="text-bta-pink" aria-hidden="true">&gt;</span>
           <span>Ver mi perfil</span>
+        </NuxtLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem as-child :class="itemClass">
+        <NuxtLink to="/perfil/editar">
+          <span class="text-bta-pink" aria-hidden="true">&gt;</span>
+          <span>Editar perfil</span>
         </NuxtLink>
       </DropdownMenuItem>
       <DropdownMenuItem :class="itemClass" class="!text-red-400 focus:!bg-red-500/10 focus:!text-red-300" @select="handleLogout">

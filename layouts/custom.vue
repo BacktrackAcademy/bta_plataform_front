@@ -114,6 +114,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
           </NuxtLink>
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
           <CommonThemeToggle />
+          <NotificationsNotificationBell />
           <ProfileMenu />
         </div>
       </header>

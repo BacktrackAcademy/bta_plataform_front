@@ -20,6 +20,7 @@ useSeoMeta({
 type Filter = 'all' | BookmarkKind
 
 const KINDS: { key: BookmarkKind, label: string }[] = [
+  { key: 'course', label: 'Cursos' },
   { key: 'video', label: 'Lecciones' },
   { key: 'post', label: 'Artículos' },
   { key: 'discussion', label: 'Preguntas' },
@@ -133,7 +134,7 @@ async function remove(item: BookmarkItem) {
         Todavía no tienes contenido guardado
       </h2>
       <p class="t-small mt-2 max-w-md">
-        Guarda lecciones, artículos o preguntas para encontrarlos rápidamente desde aquí.
+        Guarda cursos, lecciones, artículos o preguntas para encontrarlos rápidamente desde aquí.
       </p>
       <NuxtLink to="/cursos" class="bt-btn-secondary mt-5">
         Explorar contenido

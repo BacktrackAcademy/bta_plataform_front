@@ -9,6 +9,7 @@ const { timeAgo } = useFormatter()
 const siteUrl = useSiteUrl()
 
 const META: Record<BookmarkKind, { label: string, icon: string, cta: string }> = {
+  course: { label: 'Curso', icon: 'lucide:graduation-cap', cta: 'Ver curso' },
   video: { label: 'Lección', icon: 'lucide:play', cta: 'Ver lección' },
   post: { label: 'Artículo', icon: 'lucide:file-text', cta: 'Leer artículo' },
   discussion: { label: 'Pregunta', icon: 'lucide:message-circle', cta: 'Ver discusión' },
@@ -21,6 +22,7 @@ const cta = computed(() => props.item.kind === 'video' && progress.value > 0 && 
 const external = computed(() => props.item.kind === 'discussion')
 const href = computed(() => {
   switch (props.item.kind) {
+    case 'course': return `/curso/${props.item.slug}`
     case 'video': return `/video/${props.item.slug}`
     case 'post': return `/articulos/${props.item.slug}`
     default: return siteUrl(`/debate/${props.item.slug}`)

@@ -1,4 +1,4 @@
-export type BookmarkKind = 'video' | 'post' | 'discussion'
+export type BookmarkKind = 'course' | 'video' | 'post' | 'discussion'
 
 export interface BookmarkItem {
   kind: BookmarkKind

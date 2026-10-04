@@ -39,7 +39,7 @@ const currentFinished = computed(() => (lesson.value?.video_percent ?? 0) >= 99 
 const units = computed<WorkspaceUnit[]>(() => {
   let n = 0
   return (course.value?.syllabus ?? []).map(unit => ({
-    titulo: unit.titulo,
+    titulo: capitalizeFirst(unit.titulo),
     lessons: (unit.videos ?? []).map((v: LessonVideo): WorkspaceLesson => {
       const isCurrent = v.slug === lesson.value?.slug
       const finished = progressRows.value.get(v.id)?.is_finish === true || (isCurrent && currentFinished.value)

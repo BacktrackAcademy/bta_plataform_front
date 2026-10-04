@@ -39,6 +39,8 @@ export interface ProfilePerson {
   headline: string | null
   avatar_url: string | null
   profile_public: boolean
+  is_me: boolean
+  is_following: boolean
 }
 
 export interface ProfilePeoplePage {

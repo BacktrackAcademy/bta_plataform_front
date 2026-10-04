@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProfilePeoplePage } from '~/interfaces/profile'
+import type { ProfilePeoplePage, ProfilePerson } from '~/interfaces/profile'
 
 // Lista de seguidores / siguiendo (solo se muestra a usuarios con sesión).
 defineProps<{
@@ -10,6 +10,29 @@ defineProps<{
   loading?: boolean
 }>()
 defineEmits<{ (e: 'page', page: number): void }>()
+
+// Seguir / dejar de seguir desde la lista (estado local por usuario, sobre lo que trae el API).
+const api = useNuxtApp().$api as typeof $fetch
+const overrides = reactive<Record<string, boolean>>({})
+const busy = reactive<Record<string, boolean>>({})
+const isFollowing = (p: ProfilePerson) => overrides[p.username] ?? p.is_following
+// Un perfil no público responde 404 en el API (ni seguir ni dejar de seguir), así que no se ofrece.
+const canToggle = (p: ProfilePerson) => !p.is_me && p.profile_public
+
+async function toggleFollow(person: ProfilePerson) {
+  if (busy[person.username]) return
+  busy[person.username] = true
+  try {
+    const res = await api<{ following: boolean }>(
+      `/profile/${encodeURIComponent(person.username)}/follow`,
+      { method: isFollowing(person) ? 'DELETE' : 'POST' },
+    )
+    overrides[person.username] = res.following
+  }
+  finally {
+    busy[person.username] = false
+  }
+}
 </script>
 
 <template>
@@ -52,6 +75,17 @@ defineEmits<{ (e: 'page', page: number): void }>()
         >
           Ver perfil
         </NuxtLink>
+        <button
+          v-if="canToggle(person)"
+          type="button"
+          class="bt-focus shrink-0 rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors disabled:opacity-60"
+          :class="isFollowing(person) ? 'border border-strong text-foreground hover:bg-foreground/10' : 'bg-primary text-primary-foreground hover:bg-primary/90'"
+          :aria-pressed="isFollowing(person)"
+          :disabled="busy[person.username]"
+          @click="toggleFollow(person)"
+        >
+          {{ isFollowing(person) ? 'Siguiendo' : 'Seguir' }}
+        </button>
       </li>
     </ul>
 

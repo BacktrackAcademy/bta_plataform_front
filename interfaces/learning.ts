@@ -24,7 +24,10 @@ export interface LessonUnit {
 
 export interface LessonProgressRow {
   id: number
+<<<<<<< HEAD
   name?: string
+=======
+>>>>>>> origin/claude/sweet-ramanujan-d3ya46
   total: number
   predicted: number
   is_finish?: boolean
@@ -68,6 +71,7 @@ export interface WorkspaceUnit {
   titulo: string
   lessons: WorkspaceLesson[]
 }
+<<<<<<< HEAD
 
 export interface LessonComment {
   id: number
@@ -76,3 +80,5 @@ export interface LessonComment {
   mine: boolean
   user: { id: number, name?: string, lastname?: string, username?: string }
 }
+=======
+>>>>>>> origin/claude/sweet-ramanujan-d3ya46

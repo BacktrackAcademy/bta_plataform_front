@@ -39,7 +39,7 @@ const currentFinished = computed(() => (lesson.value?.video_percent ?? 0) >= 99 
 const units = computed<WorkspaceUnit[]>(() => {
   let n = 0
   return (course.value?.syllabus ?? []).map(unit => ({
-    titulo: unit.titulo,
+    titulo: capitalizeFirst(unit.titulo),
     lessons: (unit.videos ?? []).map((v: LessonVideo): WorkspaceLesson => {
       const isCurrent = v.slug === lesson.value?.slug
       const finished = progressRows.value.get(v.id)?.is_finish === true || (isCurrent && currentFinished.value)
@@ -225,8 +225,8 @@ onKeyStroke('Escape', () => {
 
           <div class="max-w-5xl space-y-10 px-4 pb-10 pt-2 sm:px-6">
             <LearningProgressChart v-if="lesson.video_details_in_seconds?.length" :rows="lesson.video_details_in_seconds" :current-id="lesson.id" />
-            <LearningExamCard v-if="lesson.exam" :exam="lesson.exam" :course-slug="course.slug" class="max-w-3xl" />
-            <LearningLessonComments :key="lesson.slug" :slug="lesson.slug" class="max-w-3xl" />
+            <LearningExamCard v-if="lesson.exam" :exam="lesson.exam" :course-slug="course.slug" />
+            <LearningLessonComments :key="lesson.slug" :slug="lesson.slug" />
           </div>
         </div>
 

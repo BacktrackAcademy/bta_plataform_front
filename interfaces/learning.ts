@@ -24,6 +24,7 @@ export interface LessonUnit {
 
 export interface LessonProgressRow {
   id: number
+  name?: string
   total: number
   predicted: number
   is_finish?: boolean
@@ -66,4 +67,12 @@ export interface WorkspaceLesson extends LessonVideo {
 export interface WorkspaceUnit {
   titulo: string
   lessons: WorkspaceLesson[]
+}
+
+export interface LessonComment {
+  id: number
+  body: string
+  created_at: string
+  mine: boolean
+  user: { id: number, name?: string, lastname?: string, username?: string }
 }

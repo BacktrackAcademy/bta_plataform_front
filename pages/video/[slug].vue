@@ -222,6 +222,12 @@ onKeyStroke('Escape', () => {
               {{ lesson.description }}
             </p>
           </article>
+
+          <div class="max-w-5xl space-y-10 px-4 pb-10 pt-2 sm:px-6">
+            <LearningProgressChart v-if="lesson.video_details_in_seconds?.length" :rows="lesson.video_details_in_seconds" />
+            <LearningExamCard v-if="lesson.exam" :exam="lesson.exam" :course-slug="course.slug" class="max-w-3xl" />
+            <LearningLessonComments :key="lesson.slug" :slug="lesson.slug" class="max-w-3xl" />
+          </div>
         </div>
 
         <!-- Siguiente acción: siempre a la vista -->

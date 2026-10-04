@@ -94,7 +94,7 @@ const selectorsBar = computed(() => props.type === 'grouped' ? GroupedBar.select
         :grid-line="false"
         :color="colors"
         :tick-line="false"
-        tick-text-color="white"
+        tick-text-color="hsl(var(--foreground-muted))"
       />
       <VisAxis
         v-if="showYAxis"
@@ -109,7 +109,7 @@ const selectorsBar = computed(() => props.type === 'grouped' ? GroupedBar.select
             class: 'text-muted',
           },
         }"
-        tick-text-color="white"
+        tick-text-color="hsl(var(--foreground-muted))"
       />
 
       <slot />

@@ -16,6 +16,7 @@ const error = ref<string | null>(null)
 const loading = ref(false)
 const errorCode = ref<string | null>(null)
 const route = useRoute()
+const redirect = usePostLoginRedirect()
 
 // Maps Auth.js error codes/messages to a terminal-style code + friendly message
 function describeError(raw: string): { code: string, message: string } {
@@ -65,8 +66,8 @@ async function loginUser(credentials: Record<string, any>) {
     if (result?.error) {
       throw new Error(result.error)
     }
-    // Redirigir al dashboard después de un login exitoso
-    router.push('/dashboard')
+    // Tras un login exitoso: el destino con el que llegó el visitante (si es válido) o el dashboard
+    router.push(redirect.consume() ?? '/dashboard')
   }
   catch (err: any) {
     setError(err.message || 'unknown')
@@ -80,7 +81,7 @@ async function handleSocialLogin(provider: 'github' | 'linkedin') {
   setError(null)
   try {
     const result = await signIn(provider, {
-      callbackUrl: '/dashboard',
+      callbackUrl: redirect.target.value ?? '/dashboard',
     })
 
     if (result?.error) {

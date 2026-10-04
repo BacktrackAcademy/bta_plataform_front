@@ -12,6 +12,7 @@ useSeoMeta({
 definePageMeta({
   auth: false,
   layout: 'auth',
+  middleware: 'guest',
 })
 
 interface RegistrationInfo {
@@ -25,6 +26,9 @@ const errorCode = ref<string | null>(null)
 const loading = ref(false)
 const registered = ref(false)
 const config = useRuntimeConfig()
+// "Empezar ahora" desde el sitio público trae ?redirect=: se guarda porque el email de confirmación rompe la cadena de URLs.
+const redirect = usePostLoginRedirect()
+redirect.remember()
 
 function setError(code: string | null, message: string | null) {
   errorCode.value = code
@@ -71,7 +75,7 @@ async function handleRegister(registrationInfo: RegistrationInfo) {
         code="ACCOUNT_CREATED"
         message="Cuenta creada. Revisa tu correo y confirma tu cuenta para poder iniciar sesión."
       />
-      <NuxtLink to="/login" :class="[linkClass, 'font-mono text-sm text-foreground-muted hover:text-primary-text']">
+      <NuxtLink :to="redirect.withRedirect('/login')" :class="[linkClass, 'font-mono text-sm text-foreground-muted hover:text-primary-text']">
         &gt; Ir a iniciar sesión
       </NuxtLink>
     </div>
@@ -86,7 +90,7 @@ async function handleRegister(registrationInfo: RegistrationInfo) {
       <div class="mt-8 flex flex-col items-center gap-2 font-mono text-[13px]">
         <p class="text-foreground-muted">
           ¿Ya tienes cuenta?
-          <NuxtLink to="/login" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
+          <NuxtLink :to="redirect.withRedirect('/login')" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
             Iniciar sesión
           </NuxtLink>
         </p>

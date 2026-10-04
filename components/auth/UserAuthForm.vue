@@ -34,6 +34,8 @@ function handleSocialLogin(provider: 'github' | 'linkedin') {
 }
 
 const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounded-md border border-input font-mono text-xs text-foreground-secondary transition-colors duration-200 hover:bg-foreground/[0.05] hover:border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none'
+
+const { withRedirect } = usePostLoginRedirect()
 </script>
 
 <template>
@@ -101,7 +103,7 @@ const socialClass = 'flex-1 flex items-center justify-center gap-2.5 h-10 rounde
     <div class="flex flex-col items-center gap-2 font-mono text-xs">
       <p class="text-foreground-muted">
         ¿No tienes cuenta?
-        <NuxtLink to="/crear-cuenta" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
+        <NuxtLink :to="withRedirect('/crear-cuenta')" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
           Crear cuenta
         </NuxtLink>
       </p>

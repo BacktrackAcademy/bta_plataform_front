@@ -21,6 +21,8 @@ const navGroups = [
   },
 ]
 const route = useRoute()
+// Ya autenticado: el destino guardado en el registro (cookie bta_next) cumplió su función.
+onMounted(() => (useCookie('bta_next').value = null))
 // Pantallas "workspace" (p. ej. estudiar una clase): ocupan todo el alto, sin footer y admiten modo foco.
 const isWorkspace = computed(() => route.meta.workspace === true)
 const { focus } = useFocusMode()

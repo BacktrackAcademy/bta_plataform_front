@@ -24,13 +24,18 @@ export interface LessonUnit {
 
 export interface LessonProgressRow {
   id: number
-<<<<<<< HEAD
   name?: string
-=======
->>>>>>> origin/claude/sweet-ramanujan-d3ya46
   total: number
   predicted: number
   is_finish?: boolean
+}
+
+export type ExamState = 'locked' | 'ready' | 'no_opportunities' | 'in_progress' | 'finished' | 'approved'
+
+export interface LessonExam {
+  id: number
+  state: ExamState
+  percent?: number | null
 }
 
 export interface LessonResponse extends LessonVideo {
@@ -55,6 +60,8 @@ export interface LessonResponse extends LessonVideo {
   course_advance?: number
   /** Acceso real al curso completo (campo nuevo; puede faltar en backends anteriores). */
   course_access?: boolean
+  /** Estado del examen del curso (campo nuevo); null/ausente si el curso no tiene examen. */
+  exam?: LessonExam | null
 }
 
 export type LessonState = 'completed' | 'current' | 'available' | 'locked'
@@ -71,7 +78,6 @@ export interface WorkspaceUnit {
   titulo: string
   lessons: WorkspaceLesson[]
 }
-<<<<<<< HEAD
 
 export interface LessonComment {
   id: number
@@ -80,5 +86,3 @@ export interface LessonComment {
   mine: boolean
   user: { id: number, name?: string, lastname?: string, username?: string }
 }
-=======
->>>>>>> origin/claude/sweet-ramanujan-d3ya46

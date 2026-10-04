@@ -25,6 +25,9 @@ const route = useRoute()
 const isWorkspace = computed(() => route.meta.workspace === true)
 const { focus } = useFocusMode()
 const focusActive = computed(() => isWorkspace.value && focus.value)
+// En el workspace el shell ocupa exactamente el viewport: el documento no debe hacer scroll (evita bandas vacías
+// bajo la app si algo —tooltips, overlays— se añade al <body>).
+useHead({ bodyAttrs: { class: computed(() => isWorkspace.value ? 'md:overflow-hidden' : '') } })
 // Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
 const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 

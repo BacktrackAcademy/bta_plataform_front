@@ -61,7 +61,7 @@ const authorOf = (c: LessonComment) => [c.user.name, c.user.lastname].filter(Boo
 
 <template>
   <section aria-labelledby="comments-title">
-    <h2 id="comments-title" class="t-eyebrow">
+    <h2 id="comments-title" class="font-mono text-[13px] text-foreground-muted">
       <span class="text-primary-text">//</span> comentarios<template v-if="total">
         ({{ total }})
       </template>

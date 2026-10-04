@@ -45,7 +45,7 @@ const units = computed<WorkspaceUnit[]>(() => {
       const finished = progressRows.value.get(v.id)?.is_finish === true || (isCurrent && currentFinished.value)
       const locked = !v.is_free && !hasAccess.value
       const state: LessonState = isCurrent ? 'current' : locked ? 'locked' : finished ? 'completed' : 'available'
-      return { ...v, number: ++n, finished, locked, state }
+      return { ...v, titlevideo: lessonTitle(v.titlevideo), number: ++n, finished, locked, state }
     }),
   }))
 })
@@ -59,7 +59,7 @@ function target(l?: WorkspaceLesson | LessonVideo | null) {
   if (!l)
     return null
   const known = flat.value.find(x => x.slug === l.slug)
-  return { slug: l.slug, title: l.titlevideo, number: known?.number, locked: known ? known.locked : !l.is_free && !hasAccess.value }
+  return { slug: l.slug, title: lessonTitle(l.titlevideo), number: known?.number, locked: known ? known.locked : !l.is_free && !hasAccess.value }
 }
 const prevTarget = computed(() => currentIndex.value >= 0 ? target(flat.value[currentIndex.value - 1]) : target(lesson.value?.prev))
 const nextTarget = computed(() => currentIndex.value >= 0 ? target(flat.value[currentIndex.value + 1]) : target(lesson.value?.next))
@@ -69,7 +69,7 @@ const completedLessons = computed(() => hasFinishData.value ? flat.value.filter(
 const percent = computed(() => totalLessons.value > 0 ? Math.min(100, Math.round((completedLessons.value / totalLessons.value) * 100)) : 0)
 const studied = computed(() => lesson.value?.time_studied_text ?? '')
 const minutes = computed(() => minutesOf(lesson.value?.total))
-const lessonLabel = computed(() => current.value ? `${pad(current.value.number)} — ${lesson.value?.titlevideo}` : lesson.value?.titlevideo ?? '')
+const lessonLabel = computed(() => current.value ? `${pad(current.value.number)} — ${lessonTitle(lesson.value?.titlevideo)}` : lessonTitle(lesson.value?.titlevideo))
 
 // Progreso de reproducción: misma regla de siempre (POST /details/add_percentage), sin tocar su cadencia.
 const { $api } = useNuxtApp()
@@ -193,7 +193,7 @@ onKeyStroke('Escape', () => {
           </button>
 
           <article class="max-w-3xl px-4 py-5 sm:px-6">
-            <p v-if="currentUnit" class="t-eyebrow truncate">
+            <p v-if="currentUnit" class="truncate font-mono text-[13px] text-foreground-muted">
               <span class="text-primary-text">//</span> {{ currentUnit.titulo }}
             </p>
             <h1 class="mt-1 font-oswald text-xl font-semibold leading-snug text-foreground sm:text-2xl">
@@ -224,7 +224,7 @@ onKeyStroke('Escape', () => {
           </article>
 
           <div class="max-w-5xl space-y-10 px-4 pb-10 pt-2 sm:px-6">
-            <LearningProgressChart v-if="lesson.video_details_in_seconds?.length" :rows="lesson.video_details_in_seconds" />
+            <LearningProgressChart v-if="lesson.video_details_in_seconds?.length" :rows="lesson.video_details_in_seconds" :current-id="lesson.id" />
             <LearningExamCard v-if="lesson.exam" :exam="lesson.exam" :course-slug="course.slug" class="max-w-3xl" />
             <LearningLessonComments :key="lesson.slug" :slug="lesson.slug" class="max-w-3xl" />
           </div>

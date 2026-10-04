@@ -45,7 +45,7 @@ const stateLabel = { completed: 'Completada', current: 'Clase actual', available
 <template>
   <div class="flex h-full min-h-0 flex-col bg-surface-1">
     <header class="shrink-0 border-b border-subtle px-4 py-3">
-      <p class="t-eyebrow">
+      <p class="font-mono text-[13px] text-foreground-muted">
         <span class="text-primary-text">//</span> temario
       </p>
       <h2 class="mt-1 line-clamp-2 font-oswald text-base font-medium leading-snug text-foreground">
@@ -66,13 +66,13 @@ const stateLabel = { completed: 'Completada', current: 'Clase actual', available
         <h3 class="sticky top-0 z-10 border-b border-subtle bg-surface-1">
           <button
             type="button"
-            class="bt-focus flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors duration-fast hover:bg-surface-2"
+            class="bt-focus flex w-full items-start gap-2 px-4 py-2.5 text-left transition-colors duration-fast hover:bg-surface-2"
             :aria-expanded="open[i]"
             @click="toggle(i)"
           >
-            <Icon name="lucide:chevron-right" class="size-3.5 shrink-0 text-foreground-subtle transition-transform duration-fast" :class="{ 'rotate-90': open[i] }" aria-hidden="true" />
-            <span class="t-eyebrow min-w-0 flex-1 truncate !text-foreground-secondary">{{ unit.titulo }}</span>
-            <span class="font-mono text-xs text-foreground-subtle">{{ unit.lessons.filter(l => l.finished).length }}/{{ unit.lessons.length }}</span>
+            <Icon name="lucide:chevron-right" class="mt-0.5 size-3.5 shrink-0 text-foreground-subtle transition-transform duration-fast" :class="{ 'rotate-90': open[i] }" aria-hidden="true" />
+            <span class="min-w-0 flex-1 text-[13px] font-medium leading-snug text-foreground-secondary">{{ unit.titulo }}</span>
+            <span class="mt-px font-mono text-xs text-foreground-subtle">{{ unit.lessons.filter(l => l.finished).length }}/{{ unit.lessons.length }}</span>
           </button>
         </h3>
 

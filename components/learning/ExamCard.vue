@@ -36,7 +36,7 @@ const view = computed<View>(() => {
 
 <template>
   <section aria-labelledby="exam-title">
-    <h2 id="exam-title" class="t-eyebrow">
+    <h2 id="exam-title" class="font-mono text-[13px] text-foreground-muted">
       <span class="text-primary-text">//</span> certifícate
     </h2>
     <div class="mt-3 flex flex-col gap-3 rounded-lg border border-subtle bg-surface-1 p-4 sm:flex-row sm:items-center sm:justify-between">

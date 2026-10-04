@@ -34,7 +34,7 @@ const totalStudied = computed(() => secondsToHM(props.rows.reduce((sum, r) => su
         <span class="shrink-0">total <span class="text-foreground-muted">{{ totalStudied }}</span></span>
       </p>
 
-      <ol class="max-h-[22rem] overflow-y-auto px-4 py-2 font-mono text-[13px]">
+      <ol class="px-4 py-2 font-mono text-[13px]">
         <li
           v-for="row in items"
           :key="row.id"

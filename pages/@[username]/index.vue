@@ -37,8 +37,9 @@ const description = computed(() => {
   const text = [p.value.headline, p.value.aboutme].filter(Boolean).join('. ').replace(/\s+/g, ' ').trim()
   return (text || `Perfil de ${p.value.full_name} en Backtrack Academy.`).slice(0, 155)
 })
-const ogImage = computed(() => p.value.avatar_url || siteUrl('/og-image.png'))
-const robots = computed(() => (p.value.indexable ? 'index, follow' : 'noindex, follow'))
+const ogImage = computed(() => p.value.avatar_url || siteUrl('/og-default.jpg'))
+// El perfil indexable vive en backtrackacademy.com/@usuario (canonical); esta copia dentro de la app nunca se indexa.
+const robots = 'noindex, follow'
 
 useSeoMeta({
   title,
@@ -56,26 +57,8 @@ useSeoMeta({
   twitterImage: ogImage,
 })
 
-useHead(() => ({
-  // Sin canonical en perfiles noindex: evitamos señales mixtas.
-  link: p.value.indexable ? [{ rel: 'canonical', href: canonical.value }] : [],
-  script: p.value.indexable
-    ? [{
-        type: 'application/ld+json',
-        // Solo datos que el usuario hizo públicos. `sameAs` únicamente con enlaces que él cargó.
-        innerHTML: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Person',
-          'name': p.value.full_name,
-          'url': canonical.value,
-          ...(p.value.avatar_url && { image: p.value.avatar_url }),
-          ...(description.value && { description: description.value }),
-          ...(p.value.headline && { jobTitle: p.value.headline }),
-          ...(Object.values(p.value.links).length && { sameAs: Object.values(p.value.links) }),
-        }).replace(/</g, '\\u003c'),
-      }]
-    : [],
-}))
+// Sin canonical ni JSON-LD aquí: la copia de la app es noindex y la señal indexable es la de backtrackacademy.com/@usuario
+// (noindex + canonical a otra URL serían señales mixtas).
 
 // ---- Seguir / compartir ------------------------------------------------------------------
 const api = useNuxtApp().$api as typeof $fetch

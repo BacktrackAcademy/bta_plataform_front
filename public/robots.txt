@@ -1,0 +1,6 @@
+# app.backtrackacademy.com es la aplicación autenticada: NO se posiciona (el SEO vive en backtrackacademy.com).
+# No se bloquea con Disallow a propósito: cada respuesta lleva X-Robots-Tag: noindex, nofollow
+# (server/middleware/noindex.ts) y, si el crawler no puede entrar, nunca ve el noindex y la URL
+# puede quedar indexada solo por enlaces externos.
+User-agent: *
+Allow: /

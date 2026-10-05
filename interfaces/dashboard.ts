@@ -23,6 +23,8 @@ export interface CourseProgress extends HistoryCourse {
   count_video?: number
   total_user?: number
   last_video_viewed?: { titlevideo?: string } | null
+  /** Último momento en que el alumno estudió este curso (la lista viene ordenada por esto). */
+  last_activity_at?: string | null
   approved_exam?: boolean
   exam?: { id: number, time?: string | null } | null
   user_exam?: { certification_key?: string | null, percent?: number | null } | null

@@ -87,6 +87,9 @@ export default defineNuxtConfig({
     '/': { redirect: '/login' },
     '/registro': { redirect: { to: '/crear-cuenta', statusCode: 301 } },
     '/olvide-contrasena': { redirect: { to: '/recuperar-contrasena', statusCode: 301 } },
+    // El historial antiguo vive ahora en Mi progreso (ordenado por último acceso).
+    '/dashboard/historial': { redirect: { to: '/mi-progreso', statusCode: 301 } },
+    '/historial': { redirect: { to: '/mi-progreso', statusCode: 301 } },
     '/reenviar-email': { redirect: { to: '/reenviar-confirmacion', statusCode: 301 } },
   },
 

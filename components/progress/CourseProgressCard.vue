@@ -11,6 +11,7 @@ const percent = computed(() => percentOf(props.course))
 const status = computed<CourseStatus>(() => statusOf(props.course))
 const certUrl = computed(() => certificateUrl(props.course))
 const certId = computed(() => certificateId(props.course))
+const { timeAgo } = useFormatter()
 
 // One quiet label per state (text + icon). Magenta only where there is progress or an achievement.
 const LABEL: Record<CourseStatus, { text: string, icon: string }> = {
@@ -61,6 +62,9 @@ const label = computed(() => LABEL[status.value])
           <p class="t-meta mt-2 flex items-center justify-between !text-xs">
             <span v-if="course.number_videos">{{ course.count_video ?? 0 }} / {{ course.number_videos }} lecciones</span>
             <span class="text-foreground-secondary">{{ percent }}%</span>
+          </p>
+          <p v-if="course.last_activity_at" class="t-meta mt-1 !text-xs">
+            Último acceso {{ timeAgo(course.last_activity_at) }}
           </p>
         </template>
       </div>

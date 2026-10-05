@@ -1,31 +1,21 @@
 <script setup lang="ts">
 import type { LessonExam } from '~/interfaces/learning'
 
-// Estado del examen del curso. Iniciar/continuar/ver resultados ocurre en el flujo web actual (Rails, con sesión propia).
+// Estado del examen del curso. El examen completo (iniciar, rendir, resultado y certificado) vive en /examen/:id.
 const props = defineProps<{ exam: LessonExam, courseSlug: string }>()
-
-const config = useRuntimeConfig()
-const legacyOrigin = computed(() => {
-  try {
-    return new URL(String(config.public.apiBaseUrl)).origin
-  }
-  catch {
-    return 'https://backtrackacademy.com'
-  }
-})
 
 interface View { icon: string, title: string, text: string, label?: string, href?: string, external?: boolean, disabled?: boolean }
 const view = computed<View>(() => {
-  const base = legacyOrigin.value
+  const exam = `/examen/${props.exam.id}`
   switch (props.exam.state) {
     case 'ready':
-      return { icon: 'lucide:file-check-2', title: 'Ya puedes rendir el examen', text: 'Es un examen por curso. Se inicia desde la plataforma de exámenes.', label: 'Iniciar examen', href: `${base}/curso/${props.courseSlug}`, external: true }
+      return { icon: 'lucide:file-check-2', title: 'Ya puedes rendir el examen', text: 'Es un examen por curso. Se rinde aquí mismo.', label: 'Iniciar examen', href: exam }
     case 'in_progress':
-      return { icon: 'lucide:timer', title: 'Tienes un examen en curso', text: 'Retómalo donde lo dejaste.', label: 'Continuar examen', href: `${base}/exams/${props.exam.id}`, external: true }
+      return { icon: 'lucide:timer', title: 'Tienes un examen en curso', text: 'Retómalo donde lo dejaste.', label: 'Continuar examen', href: exam }
     case 'finished':
-      return { icon: 'lucide:file-text', title: 'Examen rendido', text: props.exam.percent != null ? `Tu resultado: ${Math.round(props.exam.percent)} %. Necesitas 70 % para aprobar.` : 'Revisa tu resultado.', label: 'Ver resultados', href: `${base}/examen/result/${props.exam.id}`, external: true }
+      return { icon: 'lucide:file-text', title: 'Examen rendido', text: props.exam.percent != null ? `Tu resultado: ${Math.round(props.exam.percent)} %. Necesitas 70 % para aprobar.` : 'Revisa tu resultado.', label: 'Ver resultados', href: exam }
     case 'approved':
-      return { icon: 'lucide:badge-check', title: 'Examen aprobado', text: props.exam.percent != null ? `Resultado: ${Math.round(props.exam.percent)} %.` : 'Completaste el examen del curso.', label: 'Ver resultados', href: `${base}/examen/result/${props.exam.id}`, external: true }
+      return { icon: 'lucide:badge-check', title: 'Examen aprobado', text: props.exam.percent != null ? `Resultado: ${Math.round(props.exam.percent)} %.` : 'Completaste el examen del curso.', label: 'Ver resultados', href: exam }
     case 'no_opportunities':
       return { icon: 'lucide:ticket-x', title: 'Te quedaste sin oportunidades', text: 'Puedes conseguir más con una suscripción.', label: 'Ver planes', href: '/suscripciones' }
     default:
@@ -51,11 +41,7 @@ const view = computed<View>(() => {
           </p>
         </div>
       </div>
-      <a v-if="view.href && view.external" :href="view.href" target="_blank" rel="noopener" class="bt-btn-primary shrink-0">
-        {{ view.label }}
-        <Icon name="lucide:external-link" class="size-4" aria-hidden="true" />
-      </a>
-      <NuxtLink v-else-if="view.href" :to="view.href" class="bt-btn-secondary shrink-0">
+      <NuxtLink v-if="view.href" :to="view.href" :class="exam.state === 'no_opportunities' ? 'bt-btn-secondary shrink-0' : 'bt-btn-primary shrink-0'">
         {{ view.label }}
       </NuxtLink>
     </div>

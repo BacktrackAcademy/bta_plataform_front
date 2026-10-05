@@ -11,9 +11,11 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { loading: false, error: null, errorCode: null })
+type SocialProvider = 'google' | 'github' | 'facebook' | 'linkedin'
+
 const emit = defineEmits<{
   register: [userInfo: { email: string, password: string }]
-  socialLogin: [provider: 'github' | 'linkedin']
+  socialLogin: [provider: SocialProvider]
 }>()
 
 const userInfo = ref({
@@ -27,7 +29,7 @@ function handleSubmit() {
   emit('register', userInfo.value)
 }
 
-function handleSocialLogin(provider: 'github' | 'linkedin') {
+function handleSocialLogin(provider: SocialProvider) {
   if (props.loading)
     return
   emit('socialLogin', provider)
@@ -89,7 +91,15 @@ const { withRedirect } = usePostLoginRedirect()
       <span class="h-px flex-1 bg-border" />
     </div>
 
-    <div class="flex gap-3">
+    <div class="grid grid-cols-2 gap-3">
+      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('google')">
+        <Icon name="mdi:google" class="size-5 text-[#EA4335]" />
+        Google
+      </button>
+      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('facebook')">
+        <Icon name="mdi:facebook" class="size-5 text-[#1877F2]" />
+        Facebook
+      </button>
       <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('github')">
         <Icon name="mdi:github" class="size-5" />
         GitHub

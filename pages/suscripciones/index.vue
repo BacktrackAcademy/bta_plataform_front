@@ -4,6 +4,14 @@ definePageMeta({
   auth: true,
 })
 
+const FREE_PLAN_MISSING = [
+  'Sin oportunidades de examen',
+  'Sin acceso a especialidades',
+  'Sin certificados de aprobación',
+  'Sin acompañamiento',
+  'Sin acceso a Discord',
+]
+
 interface Subscription {
   id: number
   name: string
@@ -14,23 +22,19 @@ interface Subscription {
   recommended: number
 }
 
-const { data: subscriptions } = useAPI<Subscription[]>('/subscriptions')
+const { data: apiSubscriptions } = useAPI<Subscription[]>('/subscriptions')
 const { data: eligibility } = useAPI<PaypalEligibility>('/paypal/eligibility')
-const { loading, error, subscribe, migrate } = usePaypalSubscription()
+const { loading, error, migrate } = usePaypalSubscription()
+const { isPremium } = usePremium()
 
-const busyPlan = ref<number | null>(null)
+// Mensual primero, luego anual (mayor duración): el plan Free va antes que ambos.
+const subscriptions = computed(() => [...(apiSubscriptions.value ?? [])].sort((a, b) => a.quantity - b.quantity))
 
 const hasActiveRest = computed(() =>
   ['active', 'suspended'].includes(eligibility.value?.rest_subscription?.status ?? ''))
 // Suscripción activa en PayPal pero sin acceso todavía: el cobro está en revisión (se concede al confirmarse).
 const paymentInReview = computed(() => hasActiveRest.value && eligibility.value?.premium === false)
 const canBuy = computed(() => eligibility.value?.flow === 'rest' && !hasActiveRest.value)
-
-async function onSubscribe(planId: number) {
-  busyPlan.value = planId
-  await subscribe(planId)
-  busyPlan.value = null
-}
 
 function formatDate(value: string | null | undefined) {
   return value ? new Date(value).toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' }) : ''
@@ -96,6 +100,36 @@ function formatDate(value: string | null | undefined) {
 
       <!-- Grid de Planes -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Plan Free: es el registro, ya lo tiene quien está viendo esta página -->
+        <div class="bt-surface flex flex-col items-center border border-subtle p-6 shadow-elev-1">
+          <h3 class="text-2xl font-semibold font-oswald text-foreground">
+            Plan Free
+          </h3>
+          <p class="t-body">
+            Registro gratuito
+          </p>
+          <span class="text-4xl font-bold mt-4 font-oswald text-foreground">
+            0 USD
+          </span>
+
+          <ul class="mt-6 space-y-3 text-foreground text-sm">
+            <li class="flex items-center">
+              <Icon name="lucide:check" class="text-primary-text mr-2" /> Acceso a cursos gratuitos
+            </li>
+            <li
+              v-for="feature in FREE_PLAN_MISSING"
+              :key="feature"
+              class="flex items-center text-foreground-subtle"
+            >
+              <Icon name="lucide:x" class="text-foreground-subtle mr-2" /> {{ feature }}
+            </li>
+          </ul>
+
+          <button class="mt-6 w-full bt-btn-lg bt-btn-secondary" disabled>
+            {{ isPremium ? 'Incluido en tu plan' : 'Tu plan actual' }}
+          </button>
+        </div>
+
         <div
           v-for="(subscription, i) in subscriptions"
           :key="i"
@@ -171,19 +205,34 @@ function formatDate(value: string | null | undefined) {
             </li>
           </ul>
 
-          <!-- Botón -->
-          <button
+          <!-- Botón: primero cae en el carrito (resumen + cupón) y recién ahí se paga -->
+          <NuxtLink
+            v-if="canBuy"
+            :to="{ path: '/suscripciones/carrito', query: { plan: subscription.id } }"
             class="mt-6 w-full bt-btn-lg"
-            :class="{
-              'bt-btn-primary': subscription.recommended === 1,
-              'bt-btn-secondary': subscription.recommended === 0,
-            }"
-            :disabled="!canBuy || loading"
-            @click="onSubscribe(subscription.id)"
+            :class="subscription.recommended === 1 ? 'bt-btn-primary' : 'bt-btn-secondary'"
           >
-            {{ busyPlan === subscription.id ? 'Redirigiendo a PayPal…' : 'Suscribirme con PayPal' }}
+            Continuar al carrito
+          </NuxtLink>
+          <button v-else class="mt-6 w-full bt-btn-lg bt-btn-secondary" disabled>
+            Continuar al carrito
           </button>
         </div>
+      </div>
+
+      <!-- Compras únicas -->
+      <div class="bt-surface mt-10 flex flex-col items-center gap-3 border border-subtle p-6 text-center shadow-elev-1 md:flex-row md:justify-between md:text-left">
+        <div>
+          <h3 class="text-xl font-semibold font-oswald uppercase text-foreground">
+            ¿Necesitas más oportunidades o vouchers?
+          </h3>
+          <p class="t-small mt-1">
+            Compra intentos de examen o vouchers de especialidad por separado, sin cambiar de plan.
+          </p>
+        </div>
+        <NuxtLink to="/suscripciones/extras" class="bt-btn-secondary bt-btn-lg whitespace-nowrap">
+          Ver oportunidades y vouchers
+        </NuxtLink>
       </div>
 
       <!-- Nota Importante -->

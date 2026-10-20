@@ -27,6 +27,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   legacy_subscription_active: 'Ya tienes un pago recurrente activo. Cancélalo o migra tu suscripción antes de crear otra.',
   subscription_exists: 'Ya tienes una suscripción vigente.',
   cart_not_supported: 'Este plan no se puede comprar por aquí todavía.',
+  invalid_coupon: 'El cupón no es válido o ya venció.',
   product_not_found: 'El plan seleccionado ya no está disponible.',
   invalid_redirect_url: 'No pudimos iniciar el pago. Contacta a soporte.',
   paypal_unavailable: 'PayPal no responde en este momento. Intenta de nuevo en unos minutos.',

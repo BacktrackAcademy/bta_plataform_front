@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const { isPremium } = usePremium()
+const { count: cartCount } = useCart()
+// El carrito vive en localStorage: el contador solo se pinta en cliente para no desajustar la hidratación.
+const mounted = ref(false)
+onMounted(() => (mounted.value = true))
 
 // Authenticated shell: sidebar (lg) → icon rail (md) → bottom bar (mobile).
 const navGroups = [
@@ -124,6 +128,18 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
           </NuxtLink>
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
           <CommonThemeToggle />
+          <NuxtLink
+            to="/suscripciones/carrito"
+            class="relative inline-flex size-9 items-center justify-center rounded-md text-foreground-subtle transition-colors hover:text-foreground"
+            :aria-label="mounted && cartCount ? `Carrito, ${cartCount} ${cartCount === 1 ? 'producto' : 'productos'}` : 'Carrito'"
+          >
+            <Icon name="lucide:shopping-cart" class="size-5" />
+            <span
+              v-if="mounted && cartCount"
+              class="absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-4 text-white"
+              aria-hidden="true"
+            >{{ cartCount > 99 ? '99+' : cartCount }}</span>
+          </NuxtLink>
           <NotificationsNotificationBell />
           <ProfileMenu />
         </div>

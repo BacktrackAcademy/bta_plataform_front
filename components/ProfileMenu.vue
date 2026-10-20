@@ -71,6 +71,12 @@ async function handleLogout() {
           <span>Editar perfil</span>
         </NuxtLink>
       </DropdownMenuItem>
+      <DropdownMenuItem as-child :class="itemClass">
+        <NuxtLink to="/mi-actividad">
+          <span class="text-primary-text" aria-hidden="true">&gt;</span>
+          <span>Mi actividad</span>
+        </NuxtLink>
+      </DropdownMenuItem>
       <DropdownMenuItem :class="itemClass" class="!text-danger focus:!bg-danger/10 focus:!text-danger" @select="handleLogout">
         <span aria-hidden="true">&gt;</span>
         <span>Cerrar sesión</span>

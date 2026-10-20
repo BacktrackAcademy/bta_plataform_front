@@ -20,6 +20,7 @@ if (error.value?.statusCode === 404) {
   <ProfilePeopleList
     :username="username"
     title="Seguidores"
+    active="followers"
     empty="Todavía no tiene seguidores."
     :page-data="data"
     :loading="status === 'pending'"

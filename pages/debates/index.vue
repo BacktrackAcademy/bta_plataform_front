@@ -23,12 +23,15 @@ const currentPage = ref(1)
 const itemsPerPage = ref(4)
 
 // Usar la paginación del servidor
+const kind = ref<string>('')
 const { data: discussions, status } = useAPI<DiscussionResponse>('/discussions', {
   query: computed(() => ({
     page: currentPage.value,
     per_page: itemsPerPage.value,
+    kind: kind.value || undefined,
   })),
 })
+watch(kind, () => { currentPage.value = 1 })
 
 // Obtener el total de páginas y elementos de la respuesta del servidor
 const totalItems = computed(() => discussions.value?.total_items)
@@ -50,8 +53,22 @@ useSeoMeta({
 <template>
   <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Debates">
-      Explora y participa en las discusiones de la comunidad.
+      Pregunta, comparte hallazgos y aprende junto a la comunidad.
+      <template #actions>
+        <NuxtLink to="/debates/crear" class="bt-btn-primary">
+          <Icon name="lucide:plus" class="size-4" /> Crear debate
+        </NuxtLink>
+      </template>
     </PageHeader>
+
+    <div class="mt-6 flex flex-wrap gap-2" role="group" aria-label="Filtrar por tipo">
+      <button type="button" class="bt-chip" :aria-pressed="kind === ''" @click="kind = ''">
+        Todos
+      </button>
+      <button v-for="k in DISCUSSION_KINDS" :key="k.value" type="button" class="bt-chip" :aria-pressed="kind === k.value" @click="kind = k.value">
+        {{ k.label }}
+      </button>
+    </div>
 
     <div v-if="status === 'pending'" class="mt-8 space-y-4" aria-busy="true">
       <div v-for="n in 3" :key="n" class="bt-surface space-y-4 p-6">
@@ -73,6 +90,10 @@ useSeoMeta({
           :discussion="discussion"
         />
       </div>
+
+      <p v-if="!discussions?.data?.length" class="t-small mt-8">
+        Aún no hay debates aquí. ¡Empieza el primero!
+      </p>
 
       <!-- Paginación -->
       <div class="mt-8 flex justify-center">

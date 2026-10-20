@@ -28,6 +28,13 @@ function describeError(raw: string): { code: string, message: string } {
       return { code: 'SRV_503', message: 'No pudimos contactar el servidor de autenticación. Intenta de nuevo en unos minutos.' }
     case 'AccessDenied':
       return { code: 'AUTH_403', message: 'Acceso denegado para esta cuenta.' }
+    case 'email_not_verified':
+      return { code: 'OAUTH_422', message: 'Tu proveedor no confirmó tu correo, así que no podemos vincular tu cuenta. Confirma el correo en el proveedor o ingresa con tu contraseña.' }
+    case 'provider_not_configured':
+      return { code: 'OAUTH_503', message: 'Este método de acceso no está disponible por ahora. Usa tu correo y contraseña.' }
+    case 'invalid_token':
+    case 'provider_unreachable':
+      return { code: 'OAUTH_ERR', message: 'No pudimos validar tu sesión con el proveedor. Inténtalo de nuevo.' }
     case 'OAuthSignin':
     case 'OAuthCallback':
     case 'OAuthAccountNotLinked':
@@ -77,7 +84,7 @@ async function loginUser(credentials: Record<string, any>) {
   }
 }
 
-async function handleSocialLogin(provider: 'github' | 'linkedin') {
+async function handleSocialLogin(provider: 'google' | 'github' | 'facebook' | 'linkedin') {
   setError(null)
   try {
     const result = await signIn(provider, {

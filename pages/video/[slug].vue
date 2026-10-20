@@ -71,21 +71,54 @@ const studied = computed(() => lesson.value?.time_studied_text ?? '')
 const minutes = computed(() => minutesOf(lesson.value?.total))
 const lessonLabel = computed(() => current.value ? `${pad(current.value.number)} — ${lessonTitle(lesson.value?.titlevideo)}` : lessonTitle(lesson.value?.titlevideo))
 
-// Progreso de reproducción: misma regla de siempre (POST /details/add_percentage), sin tocar su cadencia.
+// Progreso de reproducción: POST /video/:slug/progress (0-100, 2 decimales; el servidor ignora lo que el tiempo real no permite).
 const { $api } = useNuxtApp()
 function addPercentage(percent: number) {
   if (!lesson.value)
     return
-  $api('/details/add_percentage', {
-    method: 'POST',
-    body: { detail_id: lesson.value.id, percent: percent * 100 },
-  }).catch(() => {})
+  const value = Math.min(100, Math.round(percent * 10000) / 100)
+  if (value <= 0)
+    return
+  $api(`/video/${lesson.value.slug}/progress`, { method: 'POST', body: { percent: value } }).catch(() => {})
 }
 // Al terminar el video se relee el estado real (el backend decide cuándo una clase queda completada).
 const wasFinished = ref(false)
 function onEnded() {
   wasFinished.value = true
   refresh()
+}
+
+// Me sirve / Guardar: alternan en el servidor y reflejan el estado real que devuelve.
+const liked = ref(false)
+const likes = ref(0)
+const bookmarked = ref(false)
+watch(lesson, (l) => {
+  liked.value = l?.liked_by_me ?? false
+  likes.value = l?.likes_count ?? 0
+  bookmarked.value = l?.bookmarked ?? false
+}, { immediate: true })
+const actionBusy = ref(false)
+async function toggleLike() {
+  if (!lesson.value || actionBusy.value)
+    return
+  actionBusy.value = true
+  try {
+    const r = await $api<{ liked_by_me: boolean, likes_count: number }>(`/video/${lesson.value.slug}/like`, { method: 'POST' })
+    liked.value = r.liked_by_me
+    likes.value = r.likes_count
+  }
+  catch {}
+  finally { actionBusy.value = false }
+}
+async function toggleBookmark() {
+  if (!lesson.value || actionBusy.value)
+    return
+  actionBusy.value = true
+  try {
+    bookmarked.value = (await $api<{ bookmarked: boolean }>(`/video/${lesson.value.slug}/bookmark`, { method: 'POST' })).bookmarked
+  }
+  catch {}
+  finally { actionBusy.value = false }
 }
 
 // Compartir: enlace a la clase (sólo cliente, sin backend).
@@ -212,7 +245,15 @@ onKeyStroke('Escape', () => {
                 <Icon name="lucide:circle-check" class="size-4" aria-hidden="true" />
                 Completada
               </span>
-              <button type="button" class="bt-btn-ghost !h-8 !px-2.5 sm:ml-auto" @click="share">
+              <button type="button" class="bt-btn-ghost !h-8 !px-2.5 sm:ml-auto" :aria-pressed="liked" :disabled="!hasAccess" @click="toggleLike">
+                <Icon name="lucide:thumbs-up" class="size-4" :class="liked && 'text-primary-text'" aria-hidden="true" />
+                Me sirve<template v-if="likes"> · {{ likes }}</template>
+              </button>
+              <button type="button" class="bt-btn-ghost !h-8 !px-2.5" :aria-pressed="bookmarked" :disabled="!hasAccess" @click="toggleBookmark">
+                <Icon name="lucide:bookmark" class="size-4" :class="bookmarked && 'fill-current text-primary-text'" aria-hidden="true" />
+                {{ bookmarked ? 'Guardada' : 'Guardar' }}
+              </button>
+              <button type="button" class="bt-btn-ghost !h-8 !px-2.5" @click="share">
                 <Icon :name="copied ? 'lucide:check' : 'lucide:share-2'" class="size-4" aria-hidden="true" />
                 {{ copied ? 'Enlace copiado' : 'Compartir' }}
               </button>

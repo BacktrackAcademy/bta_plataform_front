@@ -17,6 +17,7 @@ const navGroups = [
     items: [
       { to: '/articulos', label: 'Artículos', icon: 'lucide:file-text' },
       { to: '/debates', label: 'Debates', icon: 'lucide:message-circle' },
+      { to: '/ranking', label: 'Ranking', icon: 'lucide:trophy' },
     ],
   },
 ]

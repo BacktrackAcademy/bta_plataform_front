@@ -62,6 +62,9 @@ export interface LessonResponse extends LessonVideo {
   course_access?: boolean
   /** Estado del examen del curso (campo nuevo); null/ausente si el curso no tiene examen. */
   exam?: LessonExam | null
+  likes_count?: number
+  liked_by_me?: boolean
+  bookmarked?: boolean
 }
 
 export type LessonState = 'completed' | 'current' | 'available' | 'locked'

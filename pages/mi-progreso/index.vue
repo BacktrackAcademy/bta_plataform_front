@@ -49,8 +49,7 @@ const counts = computed(() => ({
   certified: list.value.filter(c => statusOf(c) === 'certified').length,
 }))
 
-// Course to resume: first one already started and unfinished, else first unfinished.
-// TODO(backend): expose last_activity_at per course so this is "most recently studied" instead of list order.
+// Course to resume: the API orders by last activity, so this is the most recently studied unfinished course.
 const current = computed(() =>
   list.value.find(c => statusOf(c) === 'in_progress')
   ?? list.value.find(c => percentOf(c) < 100),

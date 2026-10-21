@@ -51,6 +51,13 @@ interface Course {
 const route = useRoute()
 const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 
+// El botón de compra lleva directo al carrito con el plan mensual (quantity = 1) preseleccionado.
+const { data: plans } = useAPI<{ id: number, quantity: number }[]>('/subscriptions')
+const monthlyCartLink = computed(() => {
+  const monthly = plans.value?.find(p => p.quantity === 1)
+  return monthly ? { path: '/suscripciones/carrito', query: { plan: monthly.id } } : '/suscripciones'
+})
+
 const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.stars_evaluation ?? 0))))
 const isFree = computed(() => !course.value?.price)
 const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
@@ -223,7 +230,7 @@ function canWatch(video: Video) {
           </p>
 
           <NuxtLink
-            to="/suscripciones"
+            :to="monthlyCartLink"
             class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
           >
             <Icon name="lucide:zap" class="size-4" />

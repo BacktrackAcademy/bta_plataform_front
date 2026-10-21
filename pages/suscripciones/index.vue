@@ -8,8 +8,6 @@ const FREE_PLAN_MISSING = [
   'Sin oportunidades de examen',
   'Sin acceso a especialidades',
   'Sin certificados de aprobación',
-  'Sin acompañamiento',
-  'Sin acceso a Discord',
 ]
 
 interface Subscription {
@@ -186,22 +184,6 @@ function formatDate(value: string | null | undefined) {
 
             <li class="flex items-center">
               <Icon name="lucide:check" class="text-primary-text mr-2" /> Certificados de aprobación
-            </li>
-
-            <!-- Acompañamiento -->
-            <li v-if="subscription.recommended === 1 || subscription.recommended === 0" class="flex items-center">
-              <Icon name="lucide:check" class="text-primary-text mr-2" /> Estudio con acompañamiento
-            </li>
-            <li v-else class="flex items-center text-foreground-subtle">
-              <Icon name="lucide:x" class="text-foreground-subtle mr-2" /> Sin acompañamiento
-            </li>
-
-            <!-- Comunidad Discord -->
-            <li v-if="subscription.recommended === 1 || subscription.recommended === 0" class="flex items-center">
-              <Icon name="lucide:check" class="text-primary-text mr-2" /> Acceso a comunidad en Discord
-            </li>
-            <li v-else class="flex items-center text-foreground-subtle">
-              <Icon name="lucide:x" class="text-foreground-subtle mr-2" /> Sin acceso a Discord
             </li>
           </ul>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 import CourseThumb from '~/components/dashboard/CourseThumb.vue'
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
 // Single article widget (dashboard + /articulos). Same visual language as CourseCard; optional fields are hidden when absent.
 const props = defineProps<{

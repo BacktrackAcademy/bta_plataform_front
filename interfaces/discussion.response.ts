@@ -71,6 +71,7 @@ export interface DiscussionDetail {
   category: { id: number, name: string, slug: string } | null
   likes_count: number
   liked_by_me: boolean
+  bookmarked?: boolean
   mine: boolean
   can_moderate: boolean
   user: User

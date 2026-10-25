@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Article } from '@/interfaces/articles.response'
+import BookmarkButton from '~/components/bookmarks/BookmarkButton.vue'
 
 // Obtener slug de la ruta
 const route = useRoute('articulos-slug')
@@ -85,6 +86,10 @@ const isoDate = computed(() => {
             <time :datetime="isoDate" class="font-mono text-foreground-muted">
               {{ formattedDate }}
             </time>
+          </div>
+
+          <div class="flex justify-center">
+            <BookmarkButton kind="post" :slug="article.slug" :initial="article.bookmarked" />
           </div>
         </header>
 

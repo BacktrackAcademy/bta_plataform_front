@@ -105,7 +105,7 @@ async function remove(item: BookmarkItem) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[900px] space-y-6 px-5 py-6 sm:px-8 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] space-y-6 px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Guardados">
       Contenido que guardaste para revisar más tarde.
       <span v-if="!loading && !failed && items.length" class="ml-2 border-l border-border pl-3 text-foreground-subtle">

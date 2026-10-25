@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MarkdownEditor from '~/components/common/MarkdownEditor.vue'
+import BookmarkButton from '~/components/bookmarks/BookmarkButton.vue'
 import type { DiscussionComment, DiscussionDetail } from '@/interfaces/discussion.response'
 import { IsPublic } from '@/interfaces/discussion.response'
 
@@ -147,6 +148,7 @@ async function remove(c: DiscussionComment) {
         <button v-if="isPublished" type="button" class="bt-chip" :aria-pressed="liked" @click="toggleLike">
           <Icon name="lucide:thumbs-up" class="size-4" /> Me sirve · {{ likes }}
         </button>
+        <BookmarkButton v-if="isPublished" kind="discussion" :slug="discussion.slug || discussion.id" :initial="discussion.bookmarked" />
         <button v-if="discussion.mine && isPublished" type="button" class="bt-chip" :aria-pressed="!!discussion.resolved_at" @click="toggleResolved">
           <Icon name="lucide:check-circle-2" class="size-4" /> {{ discussion.resolved_at ? 'Resuelto' : 'Marcar como resuelto' }}
         </button>

@@ -16,6 +16,9 @@ const profilePath = computed(() => (user.value?.username ? `/@${user.value.usern
 const shortName = computed(() => [user.value?.name?.split(' ')[0], user.value?.lastname?.split(' ')[0]].filter(Boolean).join(' '))
 const fullName = computed(() => [user.value?.name, user.value?.lastname].filter(Boolean).join(' '))
 
+const canWrite = computed(() => ['admin', 'content', 'blogger', 'teacher'].includes(user.value?.role))
+const isAdmin = computed(() => user.value?.role === 'admin')
+
 const itemClass = 'group/item cursor-pointer gap-2 rounded-md px-3 py-2 text-sm text-foreground-secondary focus:bg-surface-4 focus:text-foreground'
 
 async function handleLogout() {
@@ -75,6 +78,18 @@ async function handleLogout() {
         <NuxtLink to="/mi-actividad">
           <span class="text-primary-text" aria-hidden="true">&gt;</span>
           <span>Mi actividad</span>
+        </NuxtLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem v-if="canWrite" as-child :class="itemClass">
+        <NuxtLink to="/articulos/mis-articulos">
+          <span class="text-primary-text" aria-hidden="true">&gt;</span>
+          <span>Mis artículos</span>
+        </NuxtLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem v-if="isAdmin" as-child :class="itemClass">
+        <NuxtLink to="/admin/articulos">
+          <span class="text-primary-text" aria-hidden="true">&gt;</span>
+          <span>Revisar artículos</span>
         </NuxtLink>
       </DropdownMenuItem>
       <DropdownMenuItem :class="itemClass" class="!text-danger focus:!bg-danger/10 focus:!text-danger" @select="handleLogout">

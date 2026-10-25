@@ -25,6 +25,7 @@ function toSessionUser(data: any) {
     number_followers: data.user.number_followers,
     number_followeds: data.user.number_followeds,
     validate_pay: data.validate_pay,
+    role: data.user.role,
   }
 }
 

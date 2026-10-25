@@ -38,7 +38,7 @@ async function toggle() {
 <template>
   <button
     type="button"
-    class="bt-btn-ghost !h-8 !px-2.5"
+    class="bt-btn-secondary !h-9 !px-3"
     :aria-pressed="saved"
     :aria-busy="busy"
     :disabled="busy"

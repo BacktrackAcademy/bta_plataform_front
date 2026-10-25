@@ -17,6 +17,9 @@ const max = computed(() => Math.max(1, ...(data.value?.study.series.map(d => d.s
 const dayLabel = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString('es', { weekday: 'short', day: 'numeric' })
 const tierClass = { bronze: 'text-amber-600', silver: 'text-slate-300', gold: 'text-yellow-400' } as const
 const tierLabel = { bronze: 'Bronce', silver: 'Plata', gold: 'Oro' } as const
+const tierHalo = { bronze: 'from-amber-600/25', silver: 'from-slate-300/20', gold: 'from-yellow-400/25' } as const
+const tierHover = { bronze: 'hover:border-amber-600/50', silver: 'hover:border-slate-300/45', gold: 'hover:border-yellow-400/55' } as const
+const kindLabel = { badge_course: 'Curso', badge_degree: 'Carrera' } as const
 const dateLabel = (iso: string) => new Date(iso).toLocaleDateString('es', { year: 'numeric', month: 'short', day: 'numeric' })
 </script>
 
@@ -163,20 +166,46 @@ const dateLabel = (iso: string) => new Date(iso).toLocaleDateString('es', { year
         <p v-if="!data.badges.length" class="t-small mt-4">
           Aprueba el examen de un curso para ganar tu primera medalla. Mientras más alto tu puntaje, mejor la medalla.
         </p>
-        <ul v-else class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <li v-for="b in data.badges" :key="b.id" class="bt-surface flex items-center gap-3 p-4">
-            <img v-if="b.image_url" :src="b.image_url" :alt="b.name" class="size-14 shrink-0 object-contain">
-            <Icon v-else name="lucide:medal" class="size-14 shrink-0 text-primary-text" />
-            <div class="min-w-0">
-              <p class="truncate font-oswald text-base text-foreground">
+        <ul v-else class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <li
+            v-for="b in data.badges"
+            :key="b.id"
+            class="bt-surface group flex flex-col items-center overflow-hidden text-center transition-colors"
+            :class="b.tier ? tierHover[b.tier] : ''"
+          >
+            <!-- Medalla sobre un halo del color de su nivel -->
+            <div
+              class="flex w-full items-center justify-center bg-gradient-to-b to-transparent pb-3 pt-6"
+              :class="b.tier ? tierHalo[b.tier] : 'from-primary/10'"
+            >
+              <img
+                v-if="b.image_url"
+                :src="b.image_url"
+                :alt="b.name"
+                class="size-24 object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)] transition-transform duration-200 group-hover:scale-105"
+                loading="lazy"
+              >
+              <Icon v-else name="lucide:medal" class="size-24 text-primary-text" />
+            </div>
+
+            <div class="flex w-full flex-1 flex-col items-center gap-1 px-4 pb-4">
+              <p class="line-clamp-2 font-oswald text-lg leading-tight text-foreground">
                 {{ b.name }}
               </p>
-              <p v-if="b.target" class="t-small truncate">
+              <p v-if="b.target" class="t-small line-clamp-2">
                 {{ b.target.title }}
               </p>
-              <p class="font-mono text-xs" :class="b.tier ? tierClass[b.tier] : 'text-foreground-muted'">
-                {{ b.tier ? tierLabel[b.tier] : '' }} · {{ dateLabel(b.earned_at) }}
-              </p>
+              <div class="mt-auto flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-3 font-mono text-xs">
+                <span
+                  v-if="b.tier"
+                  class="rounded-full border border-current/30 px-2 py-0.5 uppercase tracking-wide"
+                  :class="tierClass[b.tier]"
+                >
+                  {{ tierLabel[b.tier] }}
+                </span>
+                <span v-if="kindLabel[b.kind]" class="text-foreground-subtle">{{ kindLabel[b.kind] }}</span>
+                <span class="text-foreground-muted">{{ dateLabel(b.earned_at) }}</span>
+              </div>
             </div>
           </li>
         </ul>

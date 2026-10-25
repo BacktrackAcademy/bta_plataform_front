@@ -54,9 +54,10 @@ const route = useRoute()
 const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 
 // El botón de compra lleva directo al carrito con el plan mensual (quantity = 1) preseleccionado.
-const { data: plans } = useAPI<{ id: number, quantity: number }[]>('/subscriptions')
+const { data: plans } = useAPI<{ id: number, quantity: number, price?: number }[]>('/subscriptions')
+const monthlyPlan = computed(() => plans.value?.find(p => p.quantity === 1))
 const monthlyCartLink = computed(() => {
-  const monthly = plans.value?.find(p => p.quantity === 1)
+  const monthly = monthlyPlan.value
   return monthly ? { path: '/suscripciones/carrito', query: { plan: monthly.id } } : '/suscripciones'
 })
 
@@ -221,14 +222,17 @@ function canWatch(video: Video) {
       <aside class="lg:order-last">
         <div class="bt-surface border-border p-6 shadow-elev-2 lg:sticky lg:top-6">
           <p class="font-mono text-sm text-foreground-muted">
-            <span class="text-primary-text">$</span> consíguelo
+            <span class="text-primary-text">$</span> {{ isFree ? 'consíguelo' : 'suscríbete' }}
           </p>
           <p class="mt-1 font-oswald text-5xl font-semibold text-foreground">
             <template v-if="isFree">
               GRATIS
             </template>
+            <template v-else-if="monthlyPlan?.price">
+              {{ monthlyPlan.price }} <span class="text-2xl text-foreground-muted">USD / mes</span>
+            </template>
             <template v-else>
-              {{ course.price }} <span class="text-2xl text-foreground-muted">USD</span>
+              <span class="text-3xl">Acceso Premium</span>
             </template>
           </p>
 
@@ -237,11 +241,11 @@ function canWatch(video: Video) {
             class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
           >
             <Icon name="lucide:zap" class="size-4" />
-            Comprar suscripción mensual
+            {{ isFree ? 'Ver planes' : 'Suscribirme ahora' }}
           </NuxtLink>
           <p class="t-small mt-3 text-center">
             <template v-if="!isFree">
-              O compra solo este curso por {{ course.price }} USD
+              Este curso y todo el catálogo incluidos. Cancela cuando quieras.
             </template>
             <template v-else>
               ¡Es absolutamente gratis!

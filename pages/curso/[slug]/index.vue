@@ -37,7 +37,7 @@ interface Course {
   wallpaper_thumb?: string
   image_thumb?: string
   metatag: string
-  price?: number | null
+  is_free?: boolean
   level_name?: string
   stars_evaluation?: number
   count_evaluation?: number
@@ -56,7 +56,7 @@ const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 // El botón de compra lleva directo al carrito con el plan mensual (quantity = 1) preseleccionado.
 const { data: plans } = useAPI<{ id: number, quantity: number, price: number | string }[]>('/subscriptions')
 const monthlyPlan = computed(() => plans.value?.find(p => p.quantity === 1))
-// El precio grande de un curso de pago es el del plan mensual, que es lo que lleva el botón; el del curso suelto va debajo.
+// El único precio es el de la suscripción: el del plan mensual, que es lo que lleva el botón.
 const monthlyPrice = computed(() => {
   const n = Number(monthlyPlan.value?.price)
   return Number.isFinite(n) && n > 0 ? n : null
@@ -68,7 +68,7 @@ const monthlyCartLink = computed(() => {
 
 const firstLesson = computed(() => course.value?.syllabus?.flatMap(t => t.videos ?? [])[0]?.slug)
 const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.stars_evaluation ?? 0))))
-const isFree = computed(() => !course.value?.price)
+const isFree = computed(() => !!course.value?.is_free)
 const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
 const teacherName = computed(() => [course.value?.teacher?.name, course.value?.teacher?.lastname].filter(Boolean).join(' '))
 const duration = computed(() => (course.value ? formatCourseDuration(course.value) : ''))
@@ -237,9 +237,6 @@ function canWatch(video: Video) {
             <template v-else-if="monthlyPrice">
               {{ monthlyPrice }} <span class="text-2xl text-foreground-muted">USD / mes</span>
             </template>
-            <template v-else>
-              {{ course.price }} <span class="text-2xl text-foreground-muted">USD</span>
-            </template>
           </p>
 
           <!-- Gratis: el botón principal es empezar; comprar solo aplica a cursos de pago -->
@@ -265,9 +262,6 @@ function canWatch(video: Video) {
             </NuxtLink>
             <p class="t-small mt-3 text-center">
               Incluye todos los cursos de la plataforma.
-              <template v-if="course.price">
-                O compra solo este curso por {{ course.price }} USD.
-              </template>
             </p>
           </template>
 

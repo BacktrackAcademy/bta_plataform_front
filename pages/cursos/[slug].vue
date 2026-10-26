@@ -88,16 +88,10 @@ if (data.value) {
                 <div class="text-foreground-secondary mb-2">
                   Consíguelo
                 </div>
-                <div class="text-4xl font-bold text-foreground">
-                  {{ course?.price }} USD
-                </div>
               </div>
-              <Button class="w-full uppercase mb-4">
+              <Button class="w-full uppercase">
                 Comprar suscripción mensual
               </Button>
-              <p class="text-sm text-center text-foreground-secondary">
-                Puedes comprar el curso por: {{ course?.price }} USD
-              </p>
             </CardContent>
           </Card>
         </div>

@@ -12,13 +12,17 @@ import {
   PaginationPrev,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import PageHeader from '~/components/common/PageHeader.vue'
 import ArticleCard from '~/components/articles/ArticleCard.vue'
+import PageHeader from '~/components/common/PageHeader.vue'
 
 definePageMeta({
   layout: 'custom',
   auth: true,
 })
+
+// Gestión visible solo para admin y autores (blogger / content).
+const { data: me } = useAPI<{ role: string }>('/user/info', { lazy: true, server: false })
+const canManage = computed(() => ['admin', 'blogger', 'content'].includes(me.value?.role ?? ''))
 
 const currentPage = ref(1)
 const itemsPerPage = ref(6)
@@ -53,6 +57,18 @@ useSeoMeta({
   <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Noticias sobre seguridad">
       Actualizaciones, novedades y tips de la comunidad de ciberseguridad.
+      <template v-if="canManage" #actions>
+        <div class="flex gap-2">
+          <NuxtLink to="/articulos/administrar" class="bt-btn-secondary">
+            <Icon name="lucide:settings-2" class="size-4" />
+            Administrar
+          </NuxtLink>
+          <NuxtLink to="/articulos/crear" class="bt-btn-primary">
+            <Icon name="lucide:plus" class="size-4" />
+            Nuevo artículo
+          </NuxtLink>
+        </div>
+      </template>
     </PageHeader>
 
     <div v-if="status === 'pending'" class="grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-3">

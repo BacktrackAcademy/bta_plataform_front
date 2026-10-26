@@ -40,3 +40,29 @@ export interface User {
   username: string
   avatar_url: string
 }
+
+// Vista de gestión (admin / autores): incluye borradores.
+export interface ManagedArticle {
+  id: number
+  slug: string
+  title: string
+  short: string | null
+  category_id: number
+  user_id: number
+  is_public: boolean | null
+  published_at: string | null
+  created_at: string
+  updated_at: string
+  image_thumb_service: string
+  user: User
+  category: Category
+}
+
+export interface ManagedArticlesResponse {
+  data: ManagedArticle[]
+  current_page: number
+  per_page: number
+  total_pages: number
+  total_items: number
+  counts: { published: number, draft: number }
+}

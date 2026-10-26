@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { CourseProgress, CoursesProgressResponse } from '~/interfaces/dashboard'
+import type { SpecialtyCard } from '~/interfaces/specialties'
 import ContinueMission from '~/components/progress/ContinueMission.vue'
 import CourseProgressCard from '~/components/progress/CourseProgressCard.vue'
 import ProgressPager from '~/components/progress/ProgressPager.vue'
 import PageHeader from '~/components/common/PageHeader.vue'
 import StateCard from '~/components/common/StateCard.vue'
+import ProgressBar from '~/components/dashboard/ProgressBar.vue'
 import { Skeleton } from '~/components/ui/skeleton'
 
 definePageMeta({
@@ -37,6 +39,14 @@ const { data: courses, status, refresh } = useAsyncData<CourseProgress[]>('mi-pr
   )
   return [first, ...rest].flatMap(r => r.courses ?? [])
 }, { lazy: true, default: () => [] })
+
+// Especialidades en las que ya avanzó (o certificó): su ruta completa vive en /especialidades.
+const { data: specialtiesData } = useAPI<{ data: SpecialtyCard[] }>('/specialties', { lazy: true })
+const mySpecialties = computed(() =>
+  (specialtiesData.value?.data ?? [])
+    .filter(s => s.progress.courses_started > 0 || s.progress.status === 'certified')
+    .sort((a, b) => Number(b.progress.status === 'in_progress') - Number(a.progress.status === 'in_progress') || b.progress.percent - a.progress.percent),
+)
 
 const loading = computed(() => status.value === 'pending' || status.value === 'idle')
 const failed = computed(() => status.value === 'error')
@@ -126,6 +136,35 @@ const emptyText: Record<Filter, string> = {
     <template v-else>
       <Skeleton v-if="loading" class="h-40 w-full" />
       <ContinueMission v-else-if="current" :course="current" />
+
+      <!-- Especialidades en curso -->
+      <section v-if="mySpecialties.length" aria-labelledby="specialties-title">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <h2 id="specialties-title" class="bt-section-title !text-xl">
+            Mis especialidades
+          </h2>
+          <NuxtLink to="/especialidades" class="t-small text-primary-text underline-offset-2 hover:underline">
+            Ver todas
+          </NuxtLink>
+        </div>
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <li v-for="sp in mySpecialties.slice(0, 3)" :key="sp.slug" class="bt-card bt-card-interactive p-4">
+            <p class="t-meta !text-xs">
+              {{ sp.progress.status === 'certified' ? 'Certificada' : sp.level }}
+            </p>
+            <h3 class="mt-1 line-clamp-2 font-oswald text-lg font-medium leading-snug text-foreground">
+              <NuxtLink :to="`/especialidad/${sp.slug}`" class="bt-focus rounded-sm after:absolute after:inset-0">
+                {{ sp.name }}
+              </NuxtLink>
+            </h3>
+            <ProgressBar class="mt-4" :value="sp.progress.percent" :label="`Progreso en ${sp.name}`" />
+            <p class="t-meta mt-2 flex items-center justify-between !text-xs">
+              <span>{{ sp.progress.courses_completed }} / {{ sp.progress.courses_total }} cursos</span>
+              <span class="text-foreground-secondary">{{ sp.progress.percent }}%</span>
+            </p>
+          </li>
+        </ul>
+      </section>
 
       <!-- Learning path -->
       <section ref="listEl" class="scroll-mt-20" aria-labelledby="path-title">

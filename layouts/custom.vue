@@ -12,6 +12,8 @@ const navGroups = [
     items: [
       { to: '/dashboard', label: 'Inicio', icon: 'lucide:home' },
       { to: '/cursos', label: 'Mis cursos', icon: 'lucide:book-open' },
+      { to: '/especialidades', label: 'Especialidades', icon: 'lucide:layers' },
+      { to: '/examenes', label: 'Exámenes', icon: 'lucide:file-check-2' },
       { to: '/mi-progreso', label: 'Mi progreso', icon: 'lucide:bar-chart-3' },
       { to: '/guardados', label: 'Guardados', icon: 'lucide:bookmark' },
     ],
@@ -56,7 +58,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
         </NuxtLink>
       </div>
 
-      <div class="flex justify-around gap-1 px-2 py-1.5 md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:px-3 md:py-5">
+      <div class="flex justify-around gap-1 overflow-x-auto px-2 py-1.5 md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:overflow-x-visible md:px-3 md:py-5">
         <ul
           v-for="group in navGroups"
           :key="group.label"
@@ -66,7 +68,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
           <li class="mb-1.5 hidden px-3 font-mono text-xs uppercase tracking-[0.16em] text-foreground-subtle lg:block" aria-hidden="true">
             <span class="text-primary-text/80">//</span> {{ group.label }}
           </li>
-          <li v-for="item in group.items" :key="item.to" class="flex-1 md:flex-none">
+          <li v-for="item in group.items" :key="item.to" class="min-w-[72px] flex-1 md:min-w-0 md:flex-none">
             <NuxtLink
               :to="item.to"
               :title="item.label"

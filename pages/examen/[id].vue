@@ -148,7 +148,9 @@ onBeforeUnmount(stopTimer)
       <section v-if="phase === 'intro'">
         <PageHeader :title="summary.title">
           <template v-if="summary.target">
-            {{ summary.target.title }}
+            <NuxtLink :to="summary.kind === 'exam_degree' ? `/especialidad/${summary.target.slug}` : `/curso/${summary.target.slug}`" class="transition-colors hover:text-primary-text">
+              {{ summary.kind === 'exam_degree' ? 'Especialidad' : 'Curso' }}: {{ summary.target.title }}
+            </NuxtLink>
           </template>
         </PageHeader>
         <p v-if="summary.description" class="t-body mt-6">

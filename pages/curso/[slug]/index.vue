@@ -54,9 +54,15 @@ const route = useRoute()
 const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 
 // El botón de compra lleva directo al carrito con el plan mensual (quantity = 1) preseleccionado.
-const { data: plans } = useAPI<{ id: number, quantity: number }[]>('/subscriptions')
+const { data: plans } = useAPI<{ id: number, quantity: number, price: number | string }[]>('/subscriptions')
+const monthlyPlan = computed(() => plans.value?.find(p => p.quantity === 1))
+// El precio grande de un curso de pago es el del plan mensual, que es lo que lleva el botón; el del curso suelto va debajo.
+const monthlyPrice = computed(() => {
+  const n = Number(monthlyPlan.value?.price)
+  return Number.isFinite(n) && n > 0 ? n : null
+})
 const monthlyCartLink = computed(() => {
-  const monthly = plans.value?.find(p => p.quantity === 1)
+  const monthly = monthlyPlan.value
   return monthly ? { path: '/suscripciones/carrito', query: { plan: monthly.id } } : '/suscripciones'
 })
 
@@ -228,6 +234,9 @@ function canWatch(video: Video) {
             <template v-if="isFree">
               GRATIS
             </template>
+            <template v-else-if="monthlyPrice">
+              {{ monthlyPrice }} <span class="text-2xl text-foreground-muted">USD / mes</span>
+            </template>
             <template v-else>
               {{ course.price }} <span class="text-2xl text-foreground-muted">USD</span>
             </template>
@@ -255,7 +264,10 @@ function canWatch(video: Video) {
               Comprar suscripción mensual
             </NuxtLink>
             <p class="t-small mt-3 text-center">
-              O compra solo este curso por {{ course.price }} USD
+              Incluye todos los cursos de la plataforma.
+              <template v-if="course.price">
+                O compra solo este curso por {{ course.price }} USD.
+              </template>
             </p>
           </template>
 

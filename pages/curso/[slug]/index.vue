@@ -60,6 +60,7 @@ const monthlyCartLink = computed(() => {
   return monthly ? { path: '/suscripciones/carrito', query: { plan: monthly.id } } : '/suscripciones'
 })
 
+const firstLesson = computed(() => course.value?.syllabus?.flatMap(t => t.videos ?? [])[0]?.slug)
 const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.stars_evaluation ?? 0))))
 const isFree = computed(() => !course.value?.price)
 const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
@@ -232,21 +233,31 @@ function canWatch(video: Video) {
             </template>
           </p>
 
-          <NuxtLink
-            :to="monthlyCartLink"
-            class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
-          >
-            <Icon name="lucide:zap" class="size-4" />
-            Comprar suscripción mensual
-          </NuxtLink>
-          <p class="t-small mt-3 text-center">
-            <template v-if="!isFree">
+          <!-- Gratis: el botón principal es empezar; comprar solo aplica a cursos de pago -->
+          <template v-if="isFree">
+            <NuxtLink
+              :to="firstLesson ? `/video/${firstLesson}` : '/cursos'"
+              class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
+            >
+              <Icon name="lucide:play" class="size-4" />
+              Empezar curso
+            </NuxtLink>
+            <p class="t-small mt-3 text-center">
+              Sin costo, a tu propio ritmo.
+            </p>
+          </template>
+          <template v-else>
+            <NuxtLink
+              :to="monthlyCartLink"
+              class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
+            >
+              <Icon name="lucide:zap" class="size-4" />
+              Comprar suscripción mensual
+            </NuxtLink>
+            <p class="t-small mt-3 text-center">
               O compra solo este curso por {{ course.price }} USD
-            </template>
-            <template v-else>
-              ¡Es absolutamente gratis!
-            </template>
-          </p>
+            </p>
+          </template>
 
           <ul class="mt-6 space-y-3 border-t border-subtle pt-5 text-sm text-foreground-secondary">
             <li v-if="totalLessons" class="flex items-center gap-3">

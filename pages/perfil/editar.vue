@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import PageHeader from '~/components/common/PageHeader.vue'
 import { Button } from '~/components/ui/button'
 
 definePageMeta({ layout: 'custom', auth: true })
@@ -415,9 +416,9 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
     <NuxtLink :to="publicPath" class="bt-focus inline-flex items-center gap-1.5 rounded font-sans text-sm text-foreground-subtle transition-colors hover:text-foreground">
       <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" /> Volver al perfil
     </NuxtLink>
-    <h1 class="mt-4 font-oswald text-3xl font-semibold leading-none tracking-tight text-foreground sm:text-4xl">
-      Configuración
-    </h1>
+    <PageHeader title="Configuración" class="mt-4">
+      Administra tu perfil, privacidad, facturación y notificaciones.
+    </PageHeader>
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
       <!-- Navegación de secciones -->

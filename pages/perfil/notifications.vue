@@ -115,7 +115,7 @@ async function onReadAll() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[760px] space-y-6 px-5 py-6 sm:px-8 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] space-y-6 px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Notificaciones">
       Mantente al día con tu actividad.
       <template #actions>

@@ -23,7 +23,7 @@ const rest = computed(() => (page.value === 1 ? data.value?.data.slice(3) : data
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Ranking">
       Puntaje por tiempo de estudio y participación en la comunidad. Solo aparecen quienes tienen su perfil público.
     </PageHeader>

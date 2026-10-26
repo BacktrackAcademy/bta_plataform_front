@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageHeader from '~/components/common/PageHeader.vue'
+
 definePageMeta({
   layout: 'custom',
   auth: true,
@@ -81,8 +83,8 @@ function removePlan() {
 </script>
 
 <template>
-  <section class="min-h-screen py-10">
-    <div class="container mx-auto px-4 md:px-10 xl:px-20">
+  <section class="min-h-screen">
+    <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
       <!-- Pasos: el carrito es el segundo -->
       <nav class="mb-6 flex items-center gap-2 text-xs uppercase tracking-wider text-foreground-subtle" aria-label="Pasos">
         <NuxtLink to="/suscripciones" class="hover:text-foreground">
@@ -94,17 +96,9 @@ function removePlan() {
         <span>3. Pago</span>
       </nav>
 
-      <div class="mb-8 flex items-center gap-3">
-        <Icon name="lucide:shopping-cart" class="size-8 text-primary-text" />
-        <div>
-          <h2 class="t-h1 uppercase leading-none">
-            Mi carrito
-          </h2>
-          <p class="t-body mt-1">
-            Revisa tu plan y tus packs, aplica tu cupón y confirma la compra.
-          </p>
-        </div>
-      </div>
+      <PageHeader title="Mi carrito" class="mb-8">
+        Revisa tu plan y tus packs, aplica tu cupón y confirma la compra.
+      </PageHeader>
 
       <p v-if="status === 'pending'" class="t-body">
         Cargando…

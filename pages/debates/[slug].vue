@@ -88,7 +88,7 @@ async function remove(c: DiscussionComment) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <NuxtLink to="/debates" class="bt-focus inline-flex items-center gap-1 rounded-sm text-sm text-foreground-secondary hover:text-primary-text">
       <Icon name="lucide:chevron-left" class="size-4" /> Debates
     </NuxtLink>

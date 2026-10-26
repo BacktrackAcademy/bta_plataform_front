@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageHeader from '~/components/common/PageHeader.vue'
+
 definePageMeta({
   layout: 'custom',
   auth: true,
@@ -40,16 +42,11 @@ function unitPrice(a: Addon) {
 </script>
 
 <template>
-  <section class="min-h-screen py-12">
-    <div class="container mx-auto px-4 md:px-10 xl:px-20">
-      <div class="mb-10 text-center">
-        <h2 class="t-h1 uppercase">
-          Oportunidades y vouchers
-        </h2>
-        <p class="t-body mt-2">
-          Compra más intentos de examen o vouchers de especialidad, sin cambiar tu plan. Pago con PayPal.
-        </p>
-      </div>
+  <section class="min-h-screen">
+    <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+      <PageHeader title="Oportunidades y vouchers" class="mb-10">
+        Compra más intentos de examen o vouchers de especialidad, sin cambiar tu plan. Pago con PayPal.
+      </PageHeader>
 
       <div class="mx-auto mb-8 max-w-3xl space-y-3 text-sm">
         <NuxtLink

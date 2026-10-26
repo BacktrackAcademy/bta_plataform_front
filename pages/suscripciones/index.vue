@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageHeader from '~/components/common/PageHeader.vue'
+
 definePageMeta({
   layout: 'custom',
   auth: true,
@@ -40,17 +42,12 @@ function formatDate(value: string | null | undefined) {
 </script>
 
 <template>
-  <section class="min-h-screen py-12">
-    <div class="container mx-auto px-4 md:px-10 xl:px-20">
+  <section class="min-h-screen">
+    <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
       <!-- Título -->
-      <div class="text-center mb-12">
-        <h2 class="t-h1 uppercase">
-          Elige tu plan
-        </h2>
-        <p class="t-body mt-2">
-          Accede a los mejores cursos de seguridad informática con el plan que mejor se adapte a ti.
-        </p>
-      </div>
+      <PageHeader title="Elige tu plan" class="mb-10">
+        Accede a los mejores cursos de seguridad informática con el plan que mejor se adapte a ti.
+      </PageHeader>
 
       <!-- Estado de la cuenta / errores -->
       <div class="max-w-3xl mx-auto mb-8 space-y-3 text-sm">

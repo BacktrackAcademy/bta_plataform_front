@@ -51,7 +51,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Debates">
       Pregunta, comparte hallazgos y aprende junto a la comunidad.
       <template #actions>

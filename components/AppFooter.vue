@@ -3,6 +3,8 @@
 defineProps<{ compact?: boolean }>()
 
 const landingUrl = useLandingUrl()
+// `:is="'NuxtLink'"` (string) no resuelve el componente: se pinta una etiqueta sin navegación.
+const NuxtLink = resolveComponent('NuxtLink')
 const year = new Date().getFullYear()
 
 const columns = computed(() => [
@@ -96,10 +98,6 @@ function toTop() {
                 <span class="text-primary-text">$</span>
                 <a href="mailto:contacto@backtrackacademy.com" class="ml-2 text-foreground transition-colors hover:text-primary-text">mail contacto@</a>
               </p>
-              <p>
-                <span class="text-primary-text">$</span>
-                <a href="mailto:ventas@backtrackacademy.com" class="ml-2 text-foreground transition-colors hover:text-primary-text">mail ventas@ <span class="text-foreground-subtle"># empresas</span></a>
-              </p>
               <p class="flex items-center gap-2 text-foreground-muted">
                 <span class="text-primary-text">$</span>
                 <span>status</span>
@@ -139,7 +137,7 @@ function toTop() {
             <ul class="space-y-2.5 text-[15px]">
               <li v-for="l in col.links" :key="l.label">
                 <component
-                  :is="l.external ? 'a' : 'NuxtLink'"
+                  :is="l.external ? 'a' : NuxtLink"
                   v-bind="l.external ? { href: l.to } : { to: l.to }"
                   class="foot__link group inline-flex items-center"
                   :class="l.highlight ? 'text-primary-text' : 'text-foreground-muted hover:text-foreground'"

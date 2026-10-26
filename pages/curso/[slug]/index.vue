@@ -54,12 +54,19 @@ const route = useRoute()
 const { data: course } = await useAPI<Course>(`/course/${route.params.slug}`)
 
 // El botón de compra lleva directo al carrito con el plan mensual (quantity = 1) preseleccionado.
-const { data: plans } = useAPI<{ id: number, quantity: number }[]>('/subscriptions')
+const { data: plans } = useAPI<{ id: number, quantity: number, price: number | string }[]>('/subscriptions')
+const monthlyPlan = computed(() => plans.value?.find(p => p.quantity === 1))
+// El precio grande de un curso de pago es el del plan mensual, que es lo que lleva el botón; el del curso suelto va debajo.
+const monthlyPrice = computed(() => {
+  const n = Number(monthlyPlan.value?.price)
+  return Number.isFinite(n) && n > 0 ? n : null
+})
 const monthlyCartLink = computed(() => {
-  const monthly = plans.value?.find(p => p.quantity === 1)
+  const monthly = monthlyPlan.value
   return monthly ? { path: '/suscripciones/carrito', query: { plan: monthly.id } } : '/suscripciones'
 })
 
+const firstLesson = computed(() => course.value?.syllabus?.flatMap(t => t.videos ?? [])[0]?.slug)
 const stars = computed(() => Math.min(5, Math.max(0, Math.round(course.value?.stars_evaluation ?? 0))))
 const isFree = computed(() => !course.value?.price)
 const heroImage = computed(() => course.value?.wallpaper_thumb || course.value?.image_thumb)
@@ -227,26 +234,42 @@ function canWatch(video: Video) {
             <template v-if="isFree">
               GRATIS
             </template>
+            <template v-else-if="monthlyPrice">
+              {{ monthlyPrice }} <span class="text-2xl text-foreground-muted">USD / mes</span>
+            </template>
             <template v-else>
               {{ course.price }} <span class="text-2xl text-foreground-muted">USD</span>
             </template>
           </p>
 
-          <NuxtLink
-            :to="monthlyCartLink"
-            class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
-          >
-            <Icon name="lucide:zap" class="size-4" />
-            Comprar suscripción mensual
-          </NuxtLink>
-          <p class="t-small mt-3 text-center">
-            <template v-if="!isFree">
-              O compra solo este curso por {{ course.price }} USD
-            </template>
-            <template v-else>
-              ¡Es absolutamente gratis!
-            </template>
-          </p>
+          <!-- Gratis: el botón principal es empezar; comprar solo aplica a cursos de pago -->
+          <template v-if="isFree">
+            <NuxtLink
+              :to="firstLesson ? `/video/${firstLesson}` : '/cursos'"
+              class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
+            >
+              <Icon name="lucide:play" class="size-4" />
+              Empezar curso
+            </NuxtLink>
+            <p class="t-small mt-3 text-center">
+              Sin costo, a tu propio ritmo.
+            </p>
+          </template>
+          <template v-else>
+            <NuxtLink
+              :to="monthlyCartLink"
+              class="bt-btn-primary bt-btn-lg mt-5 w-full font-oswald text-lg uppercase tracking-wider"
+            >
+              <Icon name="lucide:zap" class="size-4" />
+              Comprar suscripción mensual
+            </NuxtLink>
+            <p class="t-small mt-3 text-center">
+              Incluye todos los cursos de la plataforma.
+              <template v-if="course.price">
+                O compra solo este curso por {{ course.price }} USD.
+              </template>
+            </p>
+          </template>
 
           <ul class="mt-6 space-y-3 border-t border-subtle pt-5 text-sm text-foreground-secondary">
             <li v-if="totalLessons" class="flex items-center gap-3">

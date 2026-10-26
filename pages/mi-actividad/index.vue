@@ -24,7 +24,7 @@ const dateLabel = (iso: string) => new Date(iso).toLocaleDateString('es', { year
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-[900px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+  <div class="mx-auto w-full max-w-[1200px] px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
     <PageHeader title="Mi actividad">
       Tu tiempo de estudio, tus exámenes y las medallas que has conseguido.
     </PageHeader>

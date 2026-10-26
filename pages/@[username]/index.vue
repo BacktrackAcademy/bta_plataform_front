@@ -80,13 +80,13 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
       <!-- Vista previa del dueño con perfil privado -->
       <div
         v-if="p.is_owner && !p.public"
-        class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning/[0.06] px-4 py-3 text-sm text-warning"
+        class="mb-4 flex flex-wrap items-center justify-between gap-3 bt-surface px-4 py-3 text-sm text-foreground-secondary"
         role="status"
       >
         <p>
-          <span class="text-warning">$</span> Solo tú ves esta página. Para que otras personas la encuentren, activa tu perfil público.
+          <span class="font-mono text-primary-text">$</span> Solo tú ves esta página. Para que otras personas la encuentren, activa tu perfil público.
         </p>
-        <NuxtLink to="/perfil/editar#privacidad" class="bt-focus rounded border border-warning/50 px-3 py-1 text-amber-100 transition-colors hover:bg-warning/15">
+        <NuxtLink to="/perfil/editar#privacidad" class="bt-btn-secondary !h-8">
           Configurar privacidad
         </NuxtLink>
       </div>

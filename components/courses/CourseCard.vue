@@ -13,7 +13,6 @@ const props = defineProps<{
     shortdes?: string
     pageviews?: number
     number_videos?: number
-    price?: number | null
     created_at?: string
     total_duration_text?: string
     total_duration_seconds?: number
@@ -27,8 +26,6 @@ const LEVELS = ['Básicos', 'Intermedios', 'Avanzados', 'Experto']
 const NEW_WINDOW_MS = 30 * 24 * 60 * 60 * 1000
 
 const author = computed(() => [props.course.teacher?.name, props.course.teacher?.lastname].filter(Boolean).join(' '))
-// Undefined price = not applicable (e.g. courses the user already owns): hide the pill instead of showing "Gratis".
-const price = computed(() => (props.course.price === undefined ? '' : props.course.price ? `$ ${props.course.price}` : 'Gratis'))
 const views = computed(() => (typeof props.course.pageviews === 'number' ? props.course.pageviews.toLocaleString('es-CL') : ''))
 const levelRank = computed(() => LEVELS.findIndex(l => l.toLowerCase() === props.course.level_name?.toLowerCase()) + 1)
 const isNew = computed(() => {
@@ -89,7 +86,7 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
 
       <div class="h-4 shrink-0" />
       <div class="mt-auto flex items-center justify-between gap-3 border-t border-subtle pt-3.5">
-        <span v-if="hasProgress && !price" class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground-secondary transition-colors duration-fast group-hover:text-primary-text">
+        <span v-if="hasProgress" class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground-secondary transition-colors duration-fast group-hover:text-primary-text">
           Continuar
           <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-base group-hover:translate-x-1" />
         </span>
@@ -103,7 +100,6 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
             {{ course.number_videos }} lecciones
           </span>
         </div>
-        <span v-if="price" class="bt-badge-primary bt-badge shrink-0 font-mono text-[13px] font-semibold">{{ price }}</span>
       </div>
     </div>
   </NuxtLink>

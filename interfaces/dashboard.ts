@@ -59,7 +59,6 @@ export interface LatestCourse {
   slug: string
   image_thumb?: string | null
   level_name?: string
-  price?: number | null
   number_videos?: number
   shortdes?: string
   pageviews?: number

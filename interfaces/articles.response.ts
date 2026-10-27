@@ -22,6 +22,7 @@ export interface Article {
   image_thumb_service: string
   likes_count: number
   bookmarked?: boolean
+  liked_by_me?: boolean
   image_thumb_variant_310: string
   icon_thumb: string
   user: User

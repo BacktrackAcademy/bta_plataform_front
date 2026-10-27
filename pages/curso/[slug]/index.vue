@@ -2,6 +2,7 @@
 // import { useSeoMeta } from '#app'
 import { useRoute } from 'vue-router'
 import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
+import LikeButton from '~/components/common/LikeButton.vue'
 import BookmarkButton from '~/components/bookmarks/BookmarkButton.vue'
 
 definePageMeta({
@@ -48,6 +49,8 @@ interface Course {
   teacher?: Teacher
   syllabus?: Theme[]
   bookmarked?: boolean
+  likes_count?: number
+  liked_by_me?: boolean
 }
 
 const route = useRoute()
@@ -137,6 +140,7 @@ function canWatch(video: Video) {
 
         <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
           <BookmarkButton kind="course" :slug="course.slug" :initial="course.bookmarked" />
+          <LikeButton :endpoint="`/course/${course.slug}/like`" :initial-liked="course.liked_by_me" :initial-count="course.likes_count" />
           <NuxtLink :to="`/curso/${course.slug}/opiniones`" class="group flex items-center gap-2">
             <span class="flex" role="img" :aria-label="`${stars} de 5 estrellas`">
               <Icon v-for="n in 5" :key="n" name="lucide:star" class="size-4" :class="n <= stars ? 'fill-warning text-warning' : 'text-foreground/20'" />

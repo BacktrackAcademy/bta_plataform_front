@@ -87,5 +87,7 @@ export interface LessonComment {
   body: string
   created_at: string
   mine: boolean
+  likes_count?: number
+  liked_by_me?: boolean
   user: { id: number, name?: string, lastname?: string, username?: string }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LessonComment } from '~/interfaces/learning'
+import LikeButton from '~/components/common/LikeButton.vue'
 import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
 // Comentarios de la clase: GET/POST/DELETE /video/:slug/comments.
@@ -115,6 +116,7 @@ const authorOf = (c: LessonComment) => [c.user.name, c.user.lastname].filter(Boo
           <p class="t-body mt-1 whitespace-pre-line break-words">
             {{ c.body }}
           </p>
+          <LikeButton class="mt-1 -ml-2.5" :endpoint="`/comment/${c.id}/like`" :initial-liked="c.liked_by_me" :initial-count="c.likes_count" />
         </div>
         <button v-if="c.mine" type="button" class="bt-icon-btn !size-8 shrink-0" aria-label="Eliminar comentario" title="Eliminar" @click="remove(c)">
           <Icon name="lucide:trash-2" class="size-4" />

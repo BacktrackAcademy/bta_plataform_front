@@ -30,6 +30,12 @@ export interface LessonProgressRow {
   is_finish?: boolean
 }
 
+/** Respuesta de POST /video/:slug/progress. `video` puede faltar en backends anteriores. */
+export interface ProgressResponse {
+  course_advance: number
+  video?: { id: number, predicted: number, total: number, percent: number, is_finish: boolean }
+}
+
 export type ExamState = 'locked' | 'ready' | 'no_opportunities' | 'in_progress' | 'finished' | 'approved'
 
 export interface LessonExam {

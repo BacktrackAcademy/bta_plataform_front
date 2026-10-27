@@ -18,8 +18,8 @@ useSeoMeta({
 })
 
 const PER_PAGE = 20
-const CATEGORY_LABELS = { courses: 'Cursos', articles: 'Artículos', community: 'Comunidad', system: 'Sistema' } as const
-const VALID: NotificationFilter[] = ['all', 'unread', 'courses', 'articles', 'community']
+const CATEGORY_LABELS = { courses: 'Cursos', articles: 'Artículos', community: 'Comunidad', skills: 'Skills', system: 'Sistema' } as const
+const VALID: NotificationFilter[] = ['all', 'unread', 'courses', 'articles', 'community', 'skills']
 
 const route = useRoute()
 const router = useRouter()
@@ -49,7 +49,7 @@ const filters = computed(() => {
   return [
     { key: 'all' as NotificationFilter, label: 'Todas' },
     { key: 'unread' as NotificationFilter, label: 'No leídas', count: unreadCount.value },
-    ...(['courses', 'articles', 'community'] as const)
+    ...(['courses', 'articles', 'community', 'skills'] as const)
       .filter(k => counts[k])
       .map(k => ({ key: k as NotificationFilter, label: CATEGORY_LABELS[k] })),
   ]

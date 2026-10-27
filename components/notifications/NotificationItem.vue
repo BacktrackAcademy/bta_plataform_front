@@ -15,6 +15,7 @@ const ICONS: Record<NotificationCategory, string> = {
   courses: 'lucide:graduation-cap',
   articles: 'lucide:file-text',
   community: 'lucide:users',
+  skills: 'lucide:library',
   system: 'lucide:bell',
 }
 
@@ -29,6 +30,8 @@ const link = computed<{ to: string, external: boolean } | null>(() => {
     case 'post': return { to: `/articulos/${t.slug}`, external: false }
     case 'video': return { to: `/video/${t.slug}`, external: false }
     case 'user': return { to: `/@${t.username}`, external: false }
+    // Rechazada (21) o suspendida (22): el autor ya no puede ver la ficha pública; va a su panel.
+    case 'skill': return { to: [21, 22].includes(props.item.type_id) ? '/skills/mis-skills' : `/skills/${t.slug}`, external: false }
     case 'discussion': return { to: siteUrl(`/debate/${t.slug}`), external: true }
     case 'url': return t.url.startsWith('/') ? { to: siteUrl(t.url), external: true } : { to: t.url, external: true }
     default: return null

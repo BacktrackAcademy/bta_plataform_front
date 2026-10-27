@@ -6,6 +6,7 @@ const mounted = ref(false)
 onMounted(() => (mounted.value = true))
 
 // Authenticated shell: sidebar (lg) → icon rail (md) → bottom bar (mobile).
+const SKILLS_OTHER = ['/skills/nueva', '/skills/editar', '/skills/mis-skills', '/skills/moderacion']
 const navGroups = [
   {
     label: 'Aprender',
@@ -24,6 +25,14 @@ const navGroups = [
       { to: '/articulos', label: 'Artículos', icon: 'lucide:file-text' },
       { to: '/debates', label: 'Debates', icon: 'lucide:message-circle' },
       { to: '/ranking', label: 'Ranking', icon: 'lucide:trophy' },
+    ],
+  },
+  {
+    label: 'Skills IA',
+    items: [
+      // /skills es prefijo de las demás: la Biblioteca (y sus fichas) se marca activa solo si no es otra pantalla del grupo.
+      { to: '/skills', label: 'Biblioteca', icon: 'lucide:sparkles', badge: 'IA', match: (p: string) => p === '/skills' || (p.startsWith('/skills/') && !SKILLS_OTHER.some(o => p.startsWith(o))) },
+      { to: '/skills/mis-skills', label: 'Mis skills', icon: 'lucide:folder-code', match: (p: string) => p.startsWith('/skills/mis-skills') },
     ],
   },
 ]
@@ -72,13 +81,14 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
             <NuxtLink
               :to="item.to"
               :title="item.label"
-              active-class="nav-active"
-              :class="navLinkBase"
+              :active-class="item.match ? '' : 'nav-active'"
+              :class="[navLinkBase, item.match?.(route.path) ? 'nav-active' : '']"
               class="h-12 flex-col justify-center gap-0.5 md:h-9 md:flex-row md:justify-center md:gap-3 lg:justify-start lg:px-3"
             >
               <span class="nav-bar absolute inset-y-1.5 left-0 hidden w-0.5 rounded-full bg-primary opacity-0 transition-opacity duration-fast md:block" aria-hidden="true" />
               <Icon :name="item.icon" class="nav-icon size-[18px] shrink-0 transition-colors duration-fast" />
               <span class="text-[10px] md:hidden lg:inline lg:text-sm">{{ item.label }}</span>
+              <span v-if="item.badge" class="ml-2 hidden rounded border border-primary/40 bg-primary/10 px-1.5 font-mono text-[10px] leading-4 text-primary-text lg:inline">{{ item.badge }}</span>
               <span class="nav-prompt ml-auto hidden font-mono text-primary-text lg:inline" aria-hidden="true">&gt;</span>
             </NuxtLink>
           </li>

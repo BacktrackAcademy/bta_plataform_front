@@ -13,6 +13,7 @@ const META: Record<BookmarkKind, { label: string, icon: string, cta: string }> =
   video: { label: 'Lección', icon: 'lucide:play', cta: 'Ver lección' },
   post: { label: 'Artículo', icon: 'lucide:file-text', cta: 'Leer artículo' },
   discussion: { label: 'Pregunta', icon: 'lucide:message-circle', cta: 'Ver discusión' },
+  skill: { label: 'Skill', icon: 'lucide:library', cta: 'Ver skill' },
 }
 const meta = computed(() => META[props.item.kind])
 const progress = computed(() => props.item.progress ?? 0)
@@ -25,6 +26,7 @@ const href = computed(() => {
     case 'course': return `/curso/${props.item.slug}`
     case 'video': return `/video/${props.item.slug}`
     case 'post': return `/articulos/${props.item.slug}`
+    case 'skill': return `/skills/${props.item.slug}`
     default: return siteUrl(`/debate/${props.item.slug}`)
   }
 })

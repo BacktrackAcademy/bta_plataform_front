@@ -68,7 +68,7 @@ const memberSince = computed(() => (p.value.member_since ? new Date(p.value.memb
 
 const a = computed(() => p.value.activity)
 const hasActivity = computed(() =>
-  a.value.certificates.length + a.value.articles.length + a.value.questions.length + a.value.courses.length > 0,
+  a.value.certificates.length + a.value.articles.length + a.value.questions.length + a.value.courses.length + (p.value.skills_library?.count ?? 0) > 0,
 )
 const linkLabels: Record<string, string> = { linkedin: 'LinkedIn', twitter: 'X', facebook: 'Facebook' }
 const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter: 'lucide:twitter', facebook: 'lucide:facebook' }
@@ -147,6 +147,24 @@ const linkIcons: Record<string, string> = { linkedin: 'lucide:linkedin', twitter
                 <NuxtLink :to="`/cursos/${c.slug}`" class="bt-surface bt-surface-hover bt-focus block truncate p-4 font-sans text-base font-semibold text-foreground">
                   {{ c.title }}
                 </NuxtLink>
+              </li>
+            </ul>
+          </ProfileSection>
+
+          <ProfileSection v-if="p.skills_library?.count" id="skills" title="Skills publicadas" :count="p.skills_library.count" :shown="p.skills_library.items.length">
+            <p class="mb-3 font-mono text-[13px] text-foreground-muted">
+              {{ p.skills_library.downloads }} descargas<template v-if="p.skills_library.rating_average">
+                · ★ {{ p.skills_library.rating_average }}
+              </template><template v-if="p.skills_library.categories.length">
+                · {{ p.skills_library.categories.map(c => c.name).join(', ') }}
+              </template>
+            </p>
+            <ul class="grid gap-3 sm:grid-cols-2">
+              <li v-for="sk in p.skills_library.items" :key="sk.slug">
+                <a :href="siteUrl(`/skills/${sk.slug}`)" class="bt-surface bt-surface-hover bt-focus block p-4">
+                  <span class="line-clamp-1 font-sans text-base font-semibold text-foreground">{{ sk.title }}</span>
+                  <span class="mt-1 line-clamp-2 block text-sm text-foreground-muted">{{ sk.summary }}</span>
+                </a>
               </li>
             </ul>
           </ProfileSection>

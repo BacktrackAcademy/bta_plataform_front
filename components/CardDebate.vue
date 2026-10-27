@@ -11,7 +11,7 @@ const initials = computed(() => {
 </script>
 
 <template>
-  <article class="bt-card bt-card-interactive max-w-3xl p-6 sm:p-8">
+  <article class="bt-card bt-card-interactive flex h-full flex-col p-6 sm:p-8">
     <header class="mb-4 flex items-center">
       <span
         class="mr-3 flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/15 text-sm font-semibold uppercase text-primary-text ring-1 ring-primary/40"
@@ -37,8 +37,8 @@ const initials = computed(() => {
         {{ discussion.title }}
       </NuxtLink>
     </h2>
-    <div class="t-body prose-sm line-clamp-4 max-w-none" v-html="discussion.body_html" />
-    <footer class="mt-6 flex items-center justify-between gap-4 border-t border-subtle pt-4">
+    <div class="t-body prose-sm mb-6 line-clamp-4 max-w-none" v-html="discussion.body_html" />
+    <footer class="mt-auto flex items-center justify-between gap-4 border-t border-subtle pt-4">
       <NuxtLink
         class="bt-focus inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-foreground-secondary transition-colors duration-fast hover:text-primary-text"
         :to="`/debates/${discussion.slug}`"

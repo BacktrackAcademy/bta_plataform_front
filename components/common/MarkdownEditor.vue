@@ -8,7 +8,9 @@ const props = withDefaults(defineProps<{
   maxlength?: number
   placeholder?: string
   required?: boolean
-}>(), { rows: 9, maxlength: 10000 })
+  /** Endpoint que renderiza la vista previa (debe usar el mismo sanitizado que el lector). */
+  previewUrl?: string
+}>(), { rows: 9, maxlength: 10000, previewUrl: '/markdown/preview' })
 
 const emit = defineEmits<{ 'update:modelValue': [value: string], 'submit': [] }>()
 
@@ -68,7 +70,7 @@ async function showPreview() {
   }
   loading.value = true
   try {
-    html.value = (await $api<{ html: string }>('/markdown/preview', { method: 'POST', body: { text: value.value } })).html
+    html.value = (await $api<{ html: string }>(props.previewUrl, { method: 'POST', body: { text: value.value } })).html
   }
   catch {
     previewError.value = 'No pudimos generar la vista previa.'
@@ -81,8 +83,9 @@ async function showPreview() {
 function onKey(e: KeyboardEvent) {
   if (!(e.ctrlKey || e.metaKey))
     return
-  if (e.key === 'Enter')
+  if (e.key === 'Enter') {
     emit('submit')
+  }
   else if (e.key === 'b') {
     e.preventDefault()
     wrap('**')

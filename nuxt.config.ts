@@ -90,6 +90,8 @@ export default defineNuxtConfig({
     // El historial antiguo vive ahora en Mi progreso (ordenado por último acceso).
     '/dashboard/historial': { redirect: { to: '/mi-progreso', statusCode: 301 } },
     '/historial': { redirect: { to: '/mi-progreso', statusCode: 301 } },
+    // Las skills guardadas viven en Guardados (filtro por tipo), no en una pantalla aparte.
+    '/skills/guardadas': { redirect: { to: '/guardados?tipo=skill', statusCode: 302 } },
     '/reenviar-email': { redirect: { to: '/reenviar-confirmacion', statusCode: 301 } },
   },
 

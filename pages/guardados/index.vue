@@ -24,6 +24,7 @@ const KINDS: { key: BookmarkKind, label: string }[] = [
   { key: 'video', label: 'Lecciones' },
   { key: 'post', label: 'Artículos' },
   { key: 'discussion', label: 'Preguntas' },
+  { key: 'skill', label: 'Skills' },
 ]
 
 const { $api } = useNuxtApp()
@@ -39,7 +40,10 @@ const failed = computed(() => status.value === 'error')
 const items = computed(() => data.value ?? [])
 
 const query = ref('')
-const filter = ref<Filter>('all')
+// ?tipo=skill abre directo el filtro (lo usa el acceso desde la biblioteca de skills).
+const route = useRoute()
+const initialKind = String(route.query.tipo ?? '')
+const filter = ref<Filter>(KINDS.some(k => k.key === initialKind) ? initialKind as BookmarkKind : 'all')
 
 const counts = computed(() => {
   const c: Record<string, number> = { all: items.value.length }

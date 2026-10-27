@@ -1,9 +1,9 @@
-export type NotificationCategory = 'courses' | 'articles' | 'community' | 'system'
-export type NotificationFilter = 'all' | 'unread' | 'courses' | 'articles' | 'community'
+export type NotificationCategory = 'courses' | 'articles' | 'community' | 'skills' | 'system'
+export type NotificationFilter = 'all' | 'unread' | 'courses' | 'articles' | 'community' | 'skills'
 
 // A dónde lleva la notificación. `null` en notificaciones antiguas cuyo recurso ya no existe.
 export type NotificationTarget =
-  | { kind: 'course' | 'post' | 'video' | 'discussion', slug: string }
+  | { kind: 'course' | 'post' | 'video' | 'discussion' | 'skill', slug: string }
   | { kind: 'user', username: string }
   | { kind: 'url', url: string }
 

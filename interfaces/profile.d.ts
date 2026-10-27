@@ -24,6 +24,13 @@ export interface PublicProfile {
     following: number
   }
   specialties: string[]
+  skills_library?: {
+    count: number
+    downloads: number
+    rating_average: number | null
+    categories: { name: string, slug: string }[]
+    items: { id: number, slug: string, title: string, summary: string, category: { name: string, slug: string }, downloads_count: number }[]
+  }
   links: { linkedin?: string, twitter?: string, facebook?: string }
   activity: {
     certificates: { title: string, slug: string | null, date: string | null }[]

@@ -16,6 +16,8 @@ const props = defineProps<{
   }
 }>()
 
+const landingUrl = useLandingUrl()
+
 const NEW_WINDOW_MS = 14 * 24 * 60 * 60 * 1000
 
 const published = computed(() => {
@@ -27,8 +29,10 @@ const dateLabel = computed(() => published.value?.toLocaleDateString('es-CL', { 
 </script>
 
 <template>
-  <NuxtLink
-    :to="`/articulos/${article.slug}`"
+  <a
+    :href="landingUrl(`/articulo/${article.slug}`)"
+    target="_blank"
+    rel="noopener"
     class="bt-card bt-card-interactive group flex h-full w-full flex-col"
   >
     <CourseThumb :src="article.image_thumb_service" :alt="article.title" :code="article.category?.name?.slice(0, 2).toUpperCase()" brand>
@@ -72,5 +76,5 @@ const dateLabel = computed(() => published.value?.toLocaleDateString('es-CL', { 
         </span>
       </div>
     </div>
-  </NuxtLink>
+  </a>
 </template>

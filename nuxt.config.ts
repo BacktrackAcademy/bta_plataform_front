@@ -71,8 +71,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_AUTH_ORIGIN,
-      // Base URL of the public landing app. Override with NUXT_PUBLIC_LANDING_URL
-      landingUrl: 'http://localhost:4322',
+      // Base URL of the public landing app. Override with NUXT_PUBLIC_LANDING_URL; sin ella cae al sitio
+      // público (antes era localhost y rompía el logo y el footer en producción).
+      landingUrl: process.env.NUXT_PUBLIC_LANDING_URL || process.env.NUXT_PUBLIC_SITE_URL || 'https://backtrackacademy.com',
       // Origen canónico público (canonical, og:url, JSON-LD). Override con NUXT_PUBLIC_SITE_URL.
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://backtrackacademy.com',
       authCookieName: process.env.NUXT_PUBLIC_AUTH_COOKIE_NAME,

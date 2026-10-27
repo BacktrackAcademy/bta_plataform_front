@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { CoursesHistory, CoursesProgressResponse, DashboardCourse, Degree, LatestArticlesResponse, LatestCoursesResponse } from '~/interfaces/dashboard'
+import ArticleCard from '~/components/articles/ArticleCard.vue'
+import StateCard from '~/components/common/StateCard.vue'
+import CourseCard from '~/components/courses/CourseCard.vue'
 import CurrentCourse from '~/components/dashboard/CurrentCourse.vue'
 import DashboardHeader from '~/components/dashboard/DashboardHeader.vue'
-import ArticleCard from '~/components/articles/ArticleCard.vue'
-import CourseCard from '~/components/courses/CourseCard.vue'
 import LearningPathCard from '~/components/dashboard/LearningPathCard.vue'
+import NewCourseBanner from '~/components/dashboard/NewCourseBanner.vue'
 import ProgressOverview from '~/components/dashboard/ProgressOverview.vue'
-import StateCard from '~/components/common/StateCard.vue'
 import { Skeleton } from '~/components/ui/skeleton'
 
 definePageMeta({
@@ -35,6 +36,11 @@ const courses = computed<DashboardCourse[]>(() => {
   }))
 })
 
+// Anuncio: el próximo lanzamiento (el de fecha más cercana; los sin fecha van al final).
+const { data: upcoming } = useAPI<LatestCoursesResponse>('/courses', { query: { coming_soon: true, per_page: 10 }, lazy: true })
+const featured = computed(() => [...(upcoming.value?.courses ?? [])]
+  .sort((a, b) => (a.timer ? Date.parse(a.timer) : Infinity) - (b.timer ? Date.parse(b.timer) : Infinity))[0])
+
 // The course to resume: first one not yet finished, otherwise the first one.
 const current = computed(() => courses.value.find(c => (c.percent ?? 0) < 100) ?? courses.value[0])
 const others = computed(() => courses.value.filter(c => c.id !== current.value?.id).slice(0, 3))
@@ -58,6 +64,8 @@ useSeoMeta({
     </StateCard>
 
     <template v-else>
+      <NewCourseBanner v-if="featured" :course="featured" class="animate-rise-in" />
+
       <!-- 1. Continuar + 2. Progreso -->
       <section class="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1fr)_300px]" aria-label="Continuar curso">
         <div v-if="loading" class="bt-surface flex flex-col md:flex-row">
@@ -129,7 +137,7 @@ useSeoMeta({
           <h2 id="paths-title" class="bt-section-title">
             Rutas de especialización
           </h2>
-          <NuxtLink to="/cursos" class="bt-focus group inline-flex items-center gap-1.5 rounded-sm text-sm text-foreground-muted transition-colors duration-fast hover:text-foreground">
+          <NuxtLink to="/especialidades" class="bt-focus group inline-flex items-center gap-1.5 rounded-sm text-sm text-foreground-muted transition-colors duration-fast hover:text-foreground">
             Ver todas las rutas
             <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-base group-hover:translate-x-1 motion-reduce:transition-none" />
           </NuxtLink>

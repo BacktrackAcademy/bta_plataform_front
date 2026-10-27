@@ -9,7 +9,7 @@ const code = computed(() =>
 </script>
 
 <template>
-  <div class="bt-card bt-card-interactive flex items-center gap-3.5 p-3.5">
+  <NuxtLink :to="`/especialidad/${degree.slug}`" class="bt-card bt-card-interactive bt-focus flex items-center gap-3.5 p-3.5">
     <span class="flex size-10 shrink-0 items-center justify-center rounded-md border border-primary/30 bg-primary/10 font-mono text-sm font-semibold text-primary-text" aria-hidden="true">
       {{ code }}
     </span>
@@ -21,5 +21,5 @@ const code = computed(() =>
         {{ degree.count_courses }} cursos · {{ degree.level }}
       </p>
     </div>
-  </div>
+  </NuxtLink>
 </template>

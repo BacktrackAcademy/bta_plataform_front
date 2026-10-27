@@ -74,6 +74,7 @@ const sections = [
   { key: 'redes', label: 'Redes sociales', icon: 'lucide:share-2', save: true },
   { key: 'facturacion', label: 'Datos de facturación', icon: 'lucide:receipt', save: true },
   { key: 'pagos', label: 'Historial de pagos', icon: 'lucide:wallet', save: false },
+  { key: 'recurrente', label: 'Pago recurrente', icon: 'lucide:repeat', save: false },
   { key: 'notificaciones', label: 'Notificaciones', icon: 'lucide:bell', save: false },
   { key: 'password', label: 'Contraseña', icon: 'lucide:key-round', save: false },
 ] as const
@@ -395,6 +396,50 @@ async function requestDeletion() {
   }
   catch {
     requestStatus.value = 'error'
+  }
+}
+
+// ---- Pago recurrente ---------------------------------------------------------------------
+// Bloqueado por defecto: para desactivarlo hay que desbloquearlo confirmando de forma explícita (fricción a propósito).
+const { data: eligibility, refresh: refreshEligibility } = useAPI<PaypalEligibility>('/paypal/eligibility')
+const { cancelSubscription, messageFor: paypalMessage } = usePaypalSubscription()
+const recurringSub = computed(() => {
+  const sub = eligibility.value?.rest_subscription
+  return sub && ['active', 'suspended'].includes(sub.status) ? sub : null
+})
+const legacySub = computed(() => eligibility.value?.legacy_subscription ?? null)
+const recConfirmOpen = ref(false)
+const recAck = ref(false)
+const recUnlocked = ref(false)
+const recBusy = ref(false)
+const recError = ref('')
+const recDone = ref(false)
+function recLock() {
+  recConfirmOpen.value = false
+  recUnlocked.value = false
+  recAck.value = false
+  recError.value = ''
+}
+function recUnlock() {
+  recUnlocked.value = true
+  recConfirmOpen.value = false
+}
+async function disableRecurring() {
+  if (!recurringSub.value)
+    return
+  recBusy.value = true
+  recError.value = ''
+  try {
+    await cancelSubscription(recurringSub.value.id)
+    recDone.value = true
+    recLock()
+    await refreshEligibility()
+  }
+  catch (e) {
+    recError.value = paypalMessage(e)
+  }
+  finally {
+    recBusy.value = false
   }
 }
 
@@ -932,6 +977,101 @@ const primaryBtn = 'bt-focus rounded-md bg-primary px-5 font-semibold text-prima
                   Quiero una cuenta premium
                 </NuxtLink>
               </Button>
+            </div>
+          </section>
+        </template>
+
+        <!-- PAGO RECURRENTE -->
+        <template v-else-if="active === 'recurrente'">
+          <section aria-labelledby="recurrente-title">
+            <h2 id="recurrente-title" :class="sectionTitle">
+              Pago recurrente
+            </h2>
+            <p :class="sectionLead">
+              Tu suscripción se renueva automáticamente en PayPal. Aquí puedes desactivarla.
+            </p>
+
+            <p v-if="recDone" class="mt-6 rounded-lg border border-success/40 bg-success/10 p-4 font-sans text-sm text-success" role="status">
+              Desactivamos tu pago recurrente. No se harán más cobros; conservas tu acceso hasta el final del período ya pagado.
+            </p>
+
+            <div v-if="recurringSub" class="mt-8 space-y-6">
+              <div class="flex items-start justify-between gap-4 rounded-lg border border-border p-5">
+                <div class="min-w-0">
+                  <p class="font-sans text-[15px] font-medium text-foreground">
+                    Renovación automática
+                  </p>
+                  <p class="mt-1 font-sans text-sm leading-relaxed text-foreground-muted">
+                    Plan de {{ recurringSub.plan_months }} {{ recurringSub.plan_months === 1 ? 'mes' : 'meses' }} · ${{ recurringSub.amount }} USD
+                    <template v-if="recurringSub.next_billing_at">
+                      · próximo cobro el {{ fmtDate(recurringSub.next_billing_at) }}
+                    </template>
+                  </p>
+                </div>
+                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-success/30 px-2.5 py-0.5 font-sans text-sm text-success">
+                  <Icon :name="recUnlocked ? 'lucide:lock-open' : 'lucide:lock'" class="size-3.5" aria-hidden="true" />
+                  {{ recurringSub.status === 'suspended' ? 'Pausado' : 'Activado' }}
+                </span>
+              </div>
+
+              <!-- Bloqueado -->
+              <div v-if="!recUnlocked">
+                <Button v-if="!recConfirmOpen" type="button" variant="outline" class="bt-focus border-strong bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground" @click="recConfirmOpen = true">
+                  <Icon name="lucide:lock" class="mr-2 size-4" aria-hidden="true" /> Desbloquear para desactivar
+                </Button>
+                <div v-else class="space-y-4 rounded-lg border border-warning/40 bg-warning/10 p-5">
+                  <p class="font-sans text-sm text-foreground">
+                    Antes de continuar, ten en cuenta que al desactivar el pago recurrente <strong>no se renovará tu suscripción</strong>:
+                    cuando termine el período ya pagado perderás el acceso Premium y tendrás que volver a suscribirte.
+                  </p>
+                  <label class="flex cursor-pointer items-start gap-3 font-sans text-sm text-foreground">
+                    <input v-model="recAck" type="checkbox" class="mt-0.5 size-4 accent-primary">
+                    <span>Entiendo que mi suscripción dejará de renovarse automáticamente.</span>
+                  </label>
+                  <div class="flex gap-2">
+                    <Button type="button" :class="primaryBtn" :disabled="!recAck" @click="recUnlock">
+                      Desbloquear
+                    </Button>
+                    <Button type="button" variant="ghost" class="bt-focus text-foreground-subtle hover:bg-foreground/10 hover:text-foreground" @click="recLock">
+                      Mejor no
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Desbloqueado -->
+              <div v-else class="space-y-3">
+                <p class="font-sans text-sm text-foreground-muted">
+                  Desbloqueado. Esta acción cancela la renovación en PayPal y no se puede deshacer.
+                </p>
+                <p v-if="recError" class="font-sans text-sm text-danger" role="alert">
+                  {{ recError }}
+                </p>
+                <div class="flex gap-2">
+                  <Button type="button" class="bt-focus bg-destructive text-destructive-foreground hover:bg-destructive/90" :disabled="recBusy" @click="disableRecurring">
+                    {{ recBusy ? 'Desactivando…' : 'Desactivar pago recurrente' }}
+                  </Button>
+                  <Button type="button" variant="ghost" class="bt-focus text-foreground-subtle hover:bg-foreground/10 hover:text-foreground" :disabled="recBusy" @click="recLock">
+                    Volver a bloquear
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Suscripciones antiguas (perfil legacy): se migran o gestionan con soporte -->
+            <div v-else-if="legacySub" class="mt-8 space-y-3 rounded-lg border border-border p-5 font-sans text-sm text-foreground-muted">
+              <p>
+                Tienes un pago recurrente del sistema anterior<template v-if="legacySub.next_billing_at">
+                  (próximo cobro el {{ fmtDate(legacySub.next_billing_at) }})
+                </template>.
+                Para desactivarlo escríbenos a contacto@backtrackacademy.com.
+              </p>
+            </div>
+
+            <div v-else-if="!recDone" class="mt-8 border-t border-subtle py-12 text-center">
+              <p class="font-sans text-base text-foreground-muted">
+                No tienes un pago recurrente activo.
+              </p>
             </div>
           </section>
         </template>

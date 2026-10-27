@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LessonProgressRow, LessonResponse, LessonState, LessonVideo, WorkspaceLesson, WorkspaceUnit } from '~/interfaces/learning'
+import type { LessonProgressRow, LessonResponse, LessonState, LessonVideo, ProgressResponse, WorkspaceLesson, WorkspaceUnit } from '~/interfaces/learning'
 import { onKeyStroke, useClipboard } from '@vueuse/core'
 import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 import ProgressBar from '~/components/dashboard/ProgressBar.vue'
@@ -79,7 +79,24 @@ function addPercentage(percent: number) {
   const value = Math.min(100, Math.round(percent * 10000) / 100)
   if (value <= 0)
     return
-  $api(`/video/${lesson.value.slug}/progress`, { method: 'POST', body: { percent: value } }).catch(() => {})
+  const slug = lesson.value.slug
+  $api<ProgressResponse>(`/video/${slug}/progress`, { method: 'POST', body: { percent: value } })
+    .then(applyProgress)
+    .catch(() => {})
+}
+// Refleja en vivo la respuesta del servidor en el gráfico "tu avance" (sin recargar la clase).
+function applyProgress(res: ProgressResponse) {
+  const l = lesson.value
+  const v = res?.video
+  if (!l || !v || v.id !== l.id)
+    return
+  l.course_advance = res.course_advance
+  const row = l.video_details_in_seconds?.find(r => r.id === v.id)
+  if (row) {
+    row.predicted = v.predicted
+    row.total = v.total
+    row.is_finish = v.is_finish
+  }
 }
 // Al terminar el video se relee el estado real (el backend decide cuándo una clase queda completada).
 const wasFinished = ref(false)

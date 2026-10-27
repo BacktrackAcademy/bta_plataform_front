@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Article } from '@/interfaces/articles.response'
+import LikeButton from '~/components/common/LikeButton.vue'
 import BookmarkButton from '~/components/bookmarks/BookmarkButton.vue'
 
 // Obtener slug de la ruta
@@ -88,7 +89,8 @@ const isoDate = computed(() => {
             </time>
           </div>
 
-          <div class="flex justify-center">
+          <div class="flex items-center justify-center gap-2">
+            <LikeButton :endpoint="`/article/${article.slug}/like`" :initial-liked="article.liked_by_me" :initial-count="article.likes_count" />
             <BookmarkButton kind="post" :slug="article.slug" :initial="article.bookmarked" />
           </div>
         </header>

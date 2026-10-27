@@ -139,6 +139,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
             <Icon name="lucide:zap" class="size-3.5" />
             Vuélvete Pro
           </NuxtLink>
+          <CommonScoreChip />
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
           <CommonThemeToggle />
           <NuxtLink

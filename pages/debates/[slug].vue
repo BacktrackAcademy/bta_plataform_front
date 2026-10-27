@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MarkdownEditor from '~/components/common/MarkdownEditor.vue'
+import LikeButton from '~/components/common/LikeButton.vue'
 import BookmarkButton from '~/components/bookmarks/BookmarkButton.vue'
 import type { DiscussionComment, DiscussionDetail } from '@/interfaces/discussion.response'
 import { IsPublic } from '@/interfaces/discussion.response'
@@ -172,6 +173,7 @@ async function remove(c: DiscussionComment) {
                 <span class="t-meta !text-xs">{{ timeAgo(c.created_at) }}</span>
               </p>
               <div class="t-body prose-sm mt-1 max-w-none break-words" v-html="c.body_html" />
+              <LikeButton class="mt-1 -ml-2.5" :endpoint="`/comment/${c.id}/like`" :initial-liked="c.liked_by_me" :initial-count="c.likes_count" />
             </div>
             <button v-if="c.mine" type="button" class="bt-icon-btn !size-8 shrink-0" aria-label="Eliminar respuesta" @click="remove(c)">
               <Icon name="lucide:trash-2" class="size-4" />

@@ -51,6 +51,8 @@ export interface DiscussionComment {
   body_html: string
   created_at: string
   mine: boolean
+  likes_count?: number
+  liked_by_me?: boolean
   user: User
 }
 

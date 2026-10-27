@@ -88,5 +88,7 @@ export function usePaypalSubscription() {
 
   const getSubscription = (id: number) => $api<PaypalSubscription>(`/paypal/subscriptions/${id}`)
 
-  return { loading, error, subscribe, migrate, getSubscription, messageFor }
+  const cancelSubscription = (id: number) => $api<PaypalSubscription>(`/paypal/subscriptions/${id}/cancel`, { method: 'POST' })
+
+  return { loading, error, subscribe, migrate, getSubscription, cancelSubscription, messageFor }
 }

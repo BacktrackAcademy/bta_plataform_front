@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import type { Datum } from '@/interfaces/discussion.response'
 
-defineProps<{ discussion: Datum }>()
+const props = defineProps<{ discussion: Datum }>()
 const { timeAgo } = useFormatter()
+
+const initials = computed(() => {
+  const { name, lastname, username } = props.discussion.user
+  return `${name?.[0] ?? ''}${lastname?.[0] ?? ''}` || username?.[0] || '?'
+})
 </script>
 
 <template>
   <article class="bt-card bt-card-interactive max-w-3xl p-6 sm:p-8">
     <header class="mb-4 flex items-center">
-      <picture class="mr-3 size-11 shrink-0 overflow-hidden rounded-full ring-1 ring-primary/40">
-        <img
-          class="size-full object-cover"
-          src="https://djo7sloxtuec0.cloudfront.net/assets/avatar-50-0786e8de7062852709e518d8a1d88272d584f121d70a493ea2a4857c60914f31.png"
-          alt=""
-        >
-      </picture>
+      <span
+        class="mr-3 flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/15 text-sm font-semibold uppercase text-primary-text ring-1 ring-primary/40"
+        aria-hidden="true"
+      >
+        {{ initials }}
+      </span>
       <div class="flex min-w-0 flex-col">
         <p class="text-[15px] text-foreground">
           {{ discussion.user.name }} {{ discussion.user.lastname }}

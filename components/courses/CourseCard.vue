@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CourseThumb from '~/components/dashboard/CourseThumb.vue'
 import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
+import CourseThumb from '~/components/dashboard/CourseThumb.vue'
 import ProgressBar from '~/components/dashboard/ProgressBar.vue'
 
 // Single course widget used across the platform (dashboard, catalog…). Optional fields are hidden when absent.
@@ -14,6 +14,8 @@ const props = defineProps<{
     pageviews?: number
     number_videos?: number
     created_at?: string
+    /** Aún no publicado: muestra «Próximamente» y la tarjeta no navega. */
+    coming_soon?: boolean
     total_duration_text?: string
     total_duration_seconds?: number
     /** When set, shows the user's progress in the course. */
@@ -22,6 +24,7 @@ const props = defineProps<{
   }
 }>()
 
+const NuxtLink = resolveComponent('NuxtLink')
 const LEVELS = ['Básicos', 'Intermedios', 'Avanzados', 'Experto']
 const NEW_WINDOW_MS = 30 * 24 * 60 * 60 * 1000
 
@@ -29,6 +32,8 @@ const author = computed(() => [props.course.teacher?.name, props.course.teacher?
 const views = computed(() => (typeof props.course.pageviews === 'number' ? props.course.pageviews.toLocaleString('es-CL') : ''))
 const levelRank = computed(() => LEVELS.findIndex(l => l.toLowerCase() === props.course.level_name?.toLowerCase()) + 1)
 const isNew = computed(() => {
+  if (props.course.coming_soon)
+    return false
   const t = props.course.created_at ? Date.parse(props.course.created_at) : Number.NaN
   return !Number.isNaN(t) && Date.now() - t < NEW_WINDOW_MS
 })
@@ -39,9 +44,11 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
 </script>
 
 <template>
-  <NuxtLink
-    :to="`/curso/${course.slug}`"
-    class="bt-card bt-card-interactive group flex h-full w-full flex-col"
+  <component
+    :is="course.coming_soon ? 'div' : NuxtLink"
+    :to="course.coming_soon ? undefined : `/curso/${course.slug}`"
+    class="bt-card group flex h-full w-full flex-col"
+    :class="course.coming_soon ? 'border-primary/50 shadow-[0_0_0_1px_hsl(var(--primary)/0.25),0_8px_30px_-12px_hsl(var(--primary)/0.45)]' : 'bt-card-interactive'"
   >
     <CourseThumb :src="course.image_thumb" :alt="course.titulo" brand>
       <span v-if="course.level_name" class="bt-overlay-chip absolute right-3 top-3 font-mono">
@@ -56,7 +63,14 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
         </span>
         {{ course.level_name }}
       </span>
-      <span v-if="isNew" class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider text-on-scrim-primary">
+      <span v-if="course.coming_soon" class="bt-overlay-chip absolute left-3 top-3 border-primary/60 font-mono uppercase tracking-wider text-on-scrim-primary">
+        <span class="relative flex size-2" aria-hidden="true">
+          <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:animate-none" />
+          <span class="relative inline-flex size-2 rounded-full bg-primary" />
+        </span>
+        Próximamente
+      </span>
+      <span v-else-if="isNew" class="bt-overlay-chip absolute left-3 top-3 font-mono uppercase tracking-wider text-on-scrim-primary">
         Nuevo
       </span>
       <span v-if="duration" class="bt-overlay-chip absolute bottom-3 left-3 font-mono">
@@ -90,7 +104,11 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
           Continuar
           <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-base group-hover:translate-x-1" />
         </span>
-        <div class="t-meta flex min-w-0 items-center gap-3">
+        <span v-if="course.coming_soon" class="inline-flex items-center gap-1.5 font-mono text-sm font-medium text-primary-text">
+          <Icon name="lucide:clock" class="size-3.5" />
+          Disponible muy pronto
+        </span>
+        <div v-else class="t-meta flex min-w-0 items-center gap-3">
           <span v-if="views" class="inline-flex items-center gap-1.5" title="Visitas">
             <Icon name="lucide:eye" class="size-3.5" />
             {{ views }}
@@ -102,5 +120,5 @@ const percent = computed(() => Math.min(100, Math.max(0, Math.round(props.course
         </div>
       </div>
     </div>
-  </NuxtLink>
+  </component>
 </template>

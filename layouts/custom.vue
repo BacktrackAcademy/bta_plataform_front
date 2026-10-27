@@ -11,7 +11,7 @@ const navGroups = [
     label: 'Aprender',
     items: [
       { to: '/dashboard', label: 'Inicio', icon: 'lucide:home' },
-      { to: '/cursos', label: 'Mis cursos', icon: 'lucide:book-open' },
+      { to: '/cursos', label: 'Cursos', icon: 'lucide:book-open' },
       { to: '/especialidades', label: 'Especialidades', icon: 'lucide:layers' },
       { to: '/examenes', label: 'Exámenes', icon: 'lucide:file-check-2' },
       { to: '/mi-progreso', label: 'Mi progreso', icon: 'lucide:bar-chart-3' },

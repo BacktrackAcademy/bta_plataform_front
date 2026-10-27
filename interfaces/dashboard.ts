@@ -42,6 +42,7 @@ export interface CoursesProgressResponse {
 export interface Degree {
   id: number
   name: string
+  slug: string
   description: string
   level: string
   count_courses: string
@@ -63,6 +64,9 @@ export interface LatestCourse {
   shortdes?: string
   pageviews?: number
   created_at?: string
+  coming_soon?: boolean
+  /** Fecha de lanzamiento (cuenta regresiva). */
+  timer?: string | null
   total_duration_text?: string
   total_duration_seconds?: number
   teacher?: { name: string, lastname: string, avatar_url?: string }

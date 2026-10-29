@@ -182,14 +182,14 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
 
     <div class="shell-body flex min-w-0 flex-col overflow-x-clip md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(64px+env(safe-area-inset-bottom))]'">
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
-      <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-subtle bg-background/85 px-3 backdrop-blur sm:gap-4 sm:px-6 lg:px-10">
+      <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-subtle bg-background/85 px-4 backdrop-blur sm:gap-4 sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">
           <CommonBrandLogo class="w-24 sm:w-28" />
         </NuxtLink>
         <p class="hidden min-w-0 items-center truncate font-mono text-sm text-foreground-secondary md:flex" aria-live="polite">
           <span class="text-primary-text">~/</span><span class="truncate">{{ sectionPath }}</span><span class="term-cursor ml-1" aria-hidden="true" />
         </p>
-        <div class="flex min-w-0 items-center gap-1 sm:gap-4">
+        <div class="flex min-w-0 items-center gap-3 sm:gap-4">
           <NuxtLink
             v-if="isPremium"
             to="/suscripciones"

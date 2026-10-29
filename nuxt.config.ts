@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from 'node:process'
 
+const authOrigin = process.env.NODE_ENV === 'production' ? (process.env.NUXT_AUTH_ORIGIN || 'http://localhost:4321') : undefined
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2025-01-18',
@@ -26,8 +28,10 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     originEnvKey: 'NUXT_AUTH_ORIGIN',
-    baseUrl: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:4321',
-    origin: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:4321',
+    // En dev el auth va por ruta relativa: así funciona desde cualquier origen (localhost, 127.0.0.1, IP de la red)
+    // sin CORS. NUXT_AUTH_ORIGIN solo se fija fuera de dev.
+    baseUrl: authOrigin,
+    origin: authOrigin,
     basePath: '/api/auth',
     enableSessionStorage: true,
     enableGlobalAppMiddleware: true,
@@ -55,7 +59,7 @@ export default defineNuxtConfig({
       },
     },
     defaultProvider: 'credentials',
-    baseURL: process.env.NUXT_AUTH_ORIGIN || 'http://localhost:4321',
+    baseURL: authOrigin ? authOrigin : '/api/auth',
   },
   shadcn: {
     /**

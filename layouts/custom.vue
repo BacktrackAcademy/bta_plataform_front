@@ -28,7 +28,7 @@ const navGroups = [
     ],
   },
   {
-    label: 'Skills IA',
+    label: 'Skills',
     items: [
       // /skills es prefijo de las demás: la Biblioteca (y sus fichas) se marca activa solo si no es otra pantalla del grupo.
       { to: '/skills', label: 'Biblioteca', icon: 'lucide:sparkles', badge: 'IA', match: (p: string) => p === '/skills' || (p.startsWith('/skills/') && !SKILLS_OTHER.some(o => p.startsWith(o))) },

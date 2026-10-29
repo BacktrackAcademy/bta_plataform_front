@@ -45,7 +45,7 @@ const { focus } = useFocusMode()
 const focusActive = computed(() => isWorkspace.value && focus.value)
 // En el workspace el shell ocupa exactamente el viewport: el documento no debe hacer scroll (evita bandas vacías
 // bajo la app si algo —tooltips, overlays— se añade al <body>).
-useHead({ bodyAttrs: { class: computed(() => isWorkspace.value ? 'md:overflow-hidden' : '') } })
+useHead({ bodyAttrs: { class: computed(() => `overflow-x-hidden${isWorkspace.value ? ' md:overflow-hidden' : ''}`) } })
 // Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
 const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 
@@ -70,7 +70,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
 </script>
 
 <template>
-  <div class="shell min-h-screen bg-background text-foreground" :class="{ 'shell--focus': focusActive }">
+  <div class="shell min-h-screen overflow-x-clip bg-background text-foreground" :class="{ 'shell--focus': focusActive }">
     <!-- L1 · Sidebar (lg) / icon rail (md) / bottom bar (mobile) -->
     <nav
       v-if="!focusActive"

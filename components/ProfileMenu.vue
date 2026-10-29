@@ -10,6 +10,8 @@ import {
 import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
 const { data: session, signOut } = useAuth()
+const colorMode = useColorMode()
+const isDark = computed(() => colorMode.value === 'dark')
 
 const user = computed(() => session.value?.user)
 const profilePath = computed(() => (user.value?.username ? `/@${user.value.username}` : '/perfil'))
@@ -36,7 +38,7 @@ async function handleLogout() {
       </span>
       <Icon
         name="lucide:chevron-down"
-        class="size-4 text-foreground-muted transition-transform duration-base group-data-[state=open]:rotate-180"
+        class="hidden size-4 text-foreground-muted transition-transform duration-base group-data-[state=open]:rotate-180 sm:block"
       />
     </DropdownMenuTrigger>
 
@@ -76,6 +78,10 @@ async function handleLogout() {
           <span class="text-primary-text" aria-hidden="true">&gt;</span>
           <span>Mi actividad</span>
         </NuxtLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem :class="itemClass" class="sm:hidden" @select.prevent="colorMode.preference = isDark ? 'light' : 'dark'">
+        <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="size-4 text-primary-text" aria-hidden="true" />
+        <span>{{ isDark ? 'Modo día' : 'Modo noche' }}</span>
       </DropdownMenuItem>
       <DropdownMenuItem :class="itemClass" class="!text-danger focus:!bg-danger/10 focus:!text-danger" @select="handleLogout">
         <span aria-hidden="true">&gt;</span>

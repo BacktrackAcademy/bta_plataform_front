@@ -180,7 +180,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
       </nav>
     </template>
 
-    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(64px+env(safe-area-inset-bottom))]'">
+    <div class="shell-body flex min-w-0 flex-col overflow-x-clip md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(64px+env(safe-area-inset-bottom))]'">
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
       <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-subtle bg-background/85 px-3 backdrop-blur sm:gap-4 sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">
@@ -209,9 +209,9 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
             <Icon name="lucide:zap" class="size-3.5" />
             <span class="hidden sm:inline">Vuélvete Pro</span>
           </NuxtLink>
-          <CommonScoreChip class="max-sm:hidden" />
+          <span class="max-sm:hidden"><CommonScoreChip /></span>
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
-          <CommonThemeToggle />
+          <span class="max-sm:hidden"><CommonThemeToggle /></span>
           <NuxtLink
             to="/suscripciones/carrito"
             class="relative inline-flex size-9 items-center justify-center rounded-md text-foreground-subtle transition-colors hover:text-foreground"

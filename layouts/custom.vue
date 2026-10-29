@@ -49,6 +49,14 @@ useHead({ bodyAttrs: { class: computed(() => isWorkspace.value ? 'md:overflow-hi
 // Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
 const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 
+// Barra inferior móvil: con 11 destinos hay scroll horizontal; el item activo se centra para que nunca quede fuera de vista.
+const navScroller = ref<HTMLElement | null>(null)
+function revealActive() {
+  nextTick(() => navScroller.value?.querySelector<HTMLElement>('.nav-active')?.scrollIntoView({ inline: 'center', block: 'nearest' }))
+}
+onMounted(revealActive)
+watch(() => route.path, revealActive)
+
 const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-sm font-medium text-foreground-muted transition-colors duration-fast ease-out hover:bg-foreground/[0.05] hover:text-foreground'
 </script>
 
@@ -58,7 +66,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
     <nav
       v-if="!focusActive"
       aria-label="Principal"
-      class="shell-menu fixed inset-x-0 bottom-0 z-40 border-t border-subtle bg-surface-1 md:static md:z-auto md:flex md:h-screen md:flex-col md:border-r md:border-t-0"
+      class="shell-menu fixed inset-x-0 bottom-0 z-40 border-t border-subtle bg-surface-1 pb-[env(safe-area-inset-bottom)] md:static md:z-auto md:flex md:h-screen md:flex-col md:border-r md:border-t-0"
     >
       <div class="hidden h-16 shrink-0 items-center justify-center border-b border-subtle md:flex lg:justify-start lg:px-6">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm" aria-label="Backtrack Academy — Inicio">
@@ -67,7 +75,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
         </NuxtLink>
       </div>
 
-      <div class="flex justify-around gap-1 overflow-x-auto px-2 py-1.5 md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:overflow-x-visible md:px-3 md:py-5">
+      <div ref="navScroller" class="flex justify-around gap-1 overflow-x-auto overscroll-x-contain px-2 py-1.5 md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:overflow-x-visible md:px-3 md:py-5">
         <ul
           v-for="group in navGroups"
           :key="group.label"
@@ -112,34 +120,36 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
       </div>
     </nav>
 
-    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[68px]'">
+    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(68px+env(safe-area-inset-bottom))]'">
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
-      <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-subtle bg-background/85 px-4 backdrop-blur sm:px-6 lg:px-10">
+      <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-subtle bg-background/85 px-3 backdrop-blur sm:gap-4 sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">
-          <CommonBrandLogo class="w-28" />
+          <CommonBrandLogo class="w-24 sm:w-28" />
         </NuxtLink>
         <p class="hidden min-w-0 items-center truncate font-mono text-sm text-foreground-secondary md:flex" aria-live="polite">
           <span class="text-primary-text">~/</span><span class="truncate">{{ sectionPath }}</span><span class="term-cursor ml-1" aria-hidden="true" />
         </p>
-        <div class="flex items-center gap-3 sm:gap-4">
+        <div class="flex min-w-0 items-center gap-1 sm:gap-4">
           <NuxtLink
             v-if="isPremium"
             to="/suscripciones"
-            class="bt-btn h-9 border border-warning/40 bg-warning/10 px-3.5 font-oswald text-[15px] uppercase tracking-wider text-warning hover:bg-warning/15"
+            class="bt-btn h-9 border border-warning/40 bg-warning/10 px-2.5 font-oswald text-[15px] uppercase tracking-wider text-warning hover:bg-warning/15 sm:px-3.5"
             title="Tu suscripción está activa"
+            aria-label="Cuenta Premium"
           >
             <Icon name="lucide:crown" class="size-3.5" />
-            Cuenta Premium
+            <span class="hidden sm:inline">Cuenta Premium</span>
           </NuxtLink>
           <NuxtLink
             v-else
             to="/suscripciones"
-            class="bt-btn-primary h-9 px-3.5 font-oswald text-[15px] uppercase tracking-wider"
+            class="bt-btn-primary h-9 px-2.5 font-oswald text-[15px] uppercase tracking-wider sm:px-3.5"
+            aria-label="Vuélvete Pro"
           >
             <Icon name="lucide:zap" class="size-3.5" />
-            Vuélvete Pro
+            <span class="hidden sm:inline">Vuélvete Pro</span>
           </NuxtLink>
-          <CommonScoreChip />
+          <CommonScoreChip class="max-sm:hidden" />
           <span class="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
           <CommonThemeToggle />
           <NuxtLink

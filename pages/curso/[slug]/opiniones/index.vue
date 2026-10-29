@@ -1,141 +1,172 @@
-<template>
-  <div class="bg-surface-1">
-    <nav class="text-foreground font-bold my-8 mx-auto max-w-[1200px]" aria-label="Breadcrumb">
-      <ol class="list-none p-0 inline-flex">
-        <li class="flex items-center">
-          <NuxtLink to='/cursos'>Cursos</NuxtLink>
-          <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-            <path
-              d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
-          </svg>
-        </li>
-        <li class="flex items-center">
-          <NuxtLink :to="'/curso/' + course.slug +'/'">{{ course.titulo }}</NuxtLink>
-          <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-            <path
-              d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" />
-          </svg>
-        </li>
-        <li>
-          <p class="text-foreground-subtle" aria-current="page">comentarios</p>
-        </li>
-      </ol>
-    </nav>
-    <section class="bg-surface-1 pt-0">
-        <!-- comentarios -->
-        <div class="flex flex-wrap max-w-[1200px] mx-auto gap-5 py-7 px-2 relative" >
-          <article v-for="(opinion, i) in opinions" :key="opinion.i + i" class="bg-surface-2 w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-lg">
-            <header class="flex mb-4">
-              <figure class="inline-block h-11 w-11 mr-4">
-                <img :src="opinion.user.avatar_url_small" class="rounded-full" :alt="opinion.user.name" />
-              </figure>
-              <div class="flex flex-col">
-                <h3 class="text-foreground-subtle font-normal">{{opinion.user.name}}</h3>
-                <p class="font-medium mb-2 no-underline text-info inline-block ">{{opinion.user.username}}</p>
-                <div class="flex">
-                  <svg v-for="(star,i) in opinion.evaluation" :key="i" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                    class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512">
-                    <path class="fill-warning"
-                      d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                    </path>
-                  </svg>
-                  <svg v-for="(star,i) in (5 - opinion.evaluation)" :key="i" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                    class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512">
-                    <path fill="currentColor"
-                      d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                    </path>
-                  </svg>
-                </div>
-              </div>
-            </header>
-            <div class="flex">
-              <div class="ml-3">
-                <p class="text-foreground">{{opinion.opinion}}</p>
-              </div>
-            </div>
-          </article>
-        </div>
-        <!-- <article class="bg-surface-2 w-[calc(50%-1.5rem)] flex flex-col py-4 px-5 mb-6 rounded-lg">
-          <header class="flex mb-4">
-            <figure class="inline-block h-11 w-11 mr-4">
-              <img src="https://api.lorem.space/image/face?w=44&h=44&hash=rrlz2me2" class="rounded-full" alt="avatar" />
-            </figure>
-            <div class="flex flex-col">
-              <h3 class="text-foreground-subtle font-normal">Enzo Gianolli</h3>
-              <p class="font-medium mb-2 no-underline text-info inline-block ">@eoooo</p>
-              <div class="flex">
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                  class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 576 512">
-                  <path class="fill-warning"
-                    d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                  </path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                  class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 576 512">
-                  <path class="fill-warning"
-                    d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                  </path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                  class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 576 512">
-                  <path class="fill-warning"
-                    d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                  </path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star"
-                  class="inline-block h-4 overflow-visible mr-2 fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 576 512">
-                  <path class="fill-warning"
-                    d="M381.2 150.3L524.9 171.5C536.8 173.2 546.8 181.6 550.6 193.1C554.4 204.7 551.3 217.3 542.7 225.9L438.5 328.1L463.1 474.7C465.1 486.7 460.2 498.9 450.2 506C440.3 513.1 427.2 514 416.5 508.3L288.1 439.8L159.8 508.3C149 514 135.9 513.1 126 506C116.1 498.9 111.1 486.7 113.2 474.7L137.8 328.1L33.58 225.9C24.97 217.3 21.91 204.7 25.69 193.1C29.46 181.6 39.43 173.2 51.42 171.5L195 150.3L259.4 17.97C264.7 6.954 275.9-.0391 288.1-.0391C300.4-.0391 311.6 6.954 316.9 17.97L381.2 150.3z">
-                  </path>
-                </svg>
-              </div>
-            </div>
-          </header>
-          <div class="flex">
-            <div class="ml-3">
-              <p class="text-foreground">muy bien explicado entendi casi todo solo tengo que repasar y poner todo en practica
-                poco a poco</p>
-            </div>
-          </div>
-        </article> -->
-    </section>
-  </div>
-</template>
+<script setup lang="ts">
+import TeacherAvatar from '~/components/courses/TeacherAvatar.vue'
 
-<script>
-export default {
-  name: 'comentario',
-  data() {
-    return {
-      course: [],
-      opinions: [],
+definePageMeta({
+  layout: 'custom',
+  auth: true,
+})
 
-    }
-  },
-  created() {
-    this.getCourse();
-    this.getOpinions();
-  },
-  methods: {
-    getCourse() {
-      this.$axios.get(`api/v1/course/${this.$route.params.slug}`).then((response) => {
-        this.course = response.data;
-      })
-    },
-    getOpinions() {
-      this.$axios.get(`api/v1/course/${this.$route.params.slug}/opinions`).then((response) => {
-        this.opinions = response.data;
-      })
-    }
+interface Opinion {
+  id?: number
+  opinion: string
+  evaluation: number
+  user: {
+    name?: string
+    username?: string
+    avatar_url_small?: string
   }
 }
+
+interface OpinionsPage {
+  data: Opinion[]
+  current_page: number
+  total_pages: number
+  total_items: number
+}
+
+const route = useRoute()
+const slug = route.params.slug as string
+const { $api } = useNuxtApp()
+
+const { data: course } = await useAPI<{ slug: string, titulo: string }>(`/course/${slug}`)
+const { data: first, status, error, refresh } = await useAPI<OpinionsPage>(`/course/${slug}/opinions`)
+
+const opinions = ref<Opinion[]>([])
+const page = ref(1)
+const totalPages = ref(1)
+const total = ref(0)
+watch(first, (v) => {
+  opinions.value = v?.data ?? []
+  page.value = v?.current_page ?? 1
+  totalPages.value = v?.total_pages ?? 1
+  total.value = v?.total_items ?? opinions.value.length
+}, { immediate: true })
+
+const loadingMore = ref(false)
+const moreError = ref(false)
+async function loadMore() {
+  loadingMore.value = true
+  moreError.value = false
+  try {
+    const next = await $api<OpinionsPage>(`/course/${slug}/opinions`, { query: { page: page.value + 1 } })
+    opinions.value.push(...next.data)
+    page.value = next.current_page
+    totalPages.value = next.total_pages
+  }
+  catch {
+    moreError.value = true
+  }
+  finally {
+    loadingMore.value = false
+  }
+}
+
+const stars = (o: Opinion) => Math.min(5, Math.max(0, Math.round(o.evaluation ?? 0)))
+const average = computed(() => opinions.value.length
+  ? opinions.value.reduce((sum, o) => sum + stars(o), 0) / opinions.value.length
+  : 0)
 </script>
 
-<style>
-</style>
+<template>
+  <div class="bg-background">
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-10">
+      <nav aria-label="Ruta" class="mb-6 font-mono text-sm text-foreground-muted">
+        <NuxtLink to="/cursos" class="transition-colors hover:text-primary-text">
+          ~/cursos
+        </NuxtLink>
+        <span class="mx-1 text-primary-text">/</span>
+        <NuxtLink :to="`/curso/${slug}`" class="transition-colors hover:text-primary-text">
+          {{ slug }}
+        </NuxtLink>
+        <span class="mx-1 text-primary-text">/</span>
+        <span class="text-foreground-secondary">opiniones</span>
+      </nav>
+
+      <CommonPageHeader title="Opiniones">
+        <template v-if="course">
+          Lo que dicen los estudiantes de {{ course.titulo }}
+        </template>
+        <template #actions>
+          <NuxtLink :to="`/curso/${slug}`" class="bt-btn-secondary inline-flex items-center gap-2">
+            <Icon name="lucide:arrow-left" class="size-4" />
+            Volver al curso
+          </NuxtLink>
+        </template>
+      </CommonPageHeader>
+
+      <div v-if="status === 'pending'" class="mt-8 grid gap-5 md:grid-cols-2" aria-busy="true">
+        <div v-for="n in 4" :key="n" class="bt-surface h-36 animate-pulse" />
+      </div>
+
+      <CommonStateCard
+        v-else-if="error"
+        class="mt-8"
+        variant="error"
+        title="No pudimos cargar las opiniones"
+        text="Revisa tu conexión e inténtalo de nuevo."
+      >
+        <button type="button" class="bt-btn-secondary" @click="refresh()">
+          Reintentar
+        </button>
+      </CommonStateCard>
+
+      <CommonStateCard
+        v-else-if="!opinions.length"
+        class="mt-8"
+        icon="lucide:message-square"
+        title="Aún no hay opiniones"
+        text="Sé el primero en opinar cuando termines el curso."
+      />
+
+      <template v-else>
+        <p class="t-meta mt-6 flex flex-wrap items-center gap-x-3">
+          <span class="flex items-center gap-1.5">
+            <Icon name="lucide:star" class="size-4 fill-warning text-warning" />
+            {{ average.toFixed(1) }} de 5
+          </span>
+          <span>·</span>
+          <span>{{ total }} {{ total === 1 ? 'opinión' : 'opiniones' }}</span>
+        </p>
+
+        <ul class="mt-6 grid gap-5 md:grid-cols-2">
+          <li v-for="(o, i) in opinions" :key="o.id ?? i">
+            <article class="bt-surface flex h-full flex-col gap-4 p-5">
+              <header class="flex items-center gap-3">
+                <TeacherAvatar :src="o.user.avatar_url_small" :name="o.user.name || o.user.username || 'Usuario'" class="!size-11 text-base" />
+                <div class="min-w-0 flex-1">
+                  <h3 class="truncate font-oswald text-lg leading-tight text-foreground">
+                    {{ o.user.name || o.user.username }}
+                  </h3>
+                  <p v-if="o.user.username" class="t-meta truncate">
+                    @{{ o.user.username.replace(/^@/, '') }}
+                  </p>
+                </div>
+                <span class="flex shrink-0" role="img" :aria-label="`${stars(o)} de 5 estrellas`">
+                  <Icon
+                    v-for="n in 5"
+                    :key="n"
+                    name="lucide:star"
+                    class="size-4"
+                    :class="n <= stars(o) ? 'fill-warning text-warning' : 'text-foreground/20'"
+                  />
+                </span>
+              </header>
+              <p class="leading-relaxed text-foreground-secondary">
+                {{ o.opinion }}
+              </p>
+            </article>
+          </li>
+        </ul>
+
+        <div v-if="page < totalPages" class="mt-8 flex flex-col items-center gap-3">
+          <button type="button" class="bt-btn-secondary" :disabled="loadingMore" @click="loadMore">
+            {{ loadingMore ? 'Cargando…' : 'Ver más opiniones' }}
+          </button>
+          <p v-if="moreError" class="t-small text-danger" role="alert">
+            No pudimos cargar más opiniones.
+          </p>
+        </div>
+      </template>
+    </div>
+  </div>
+</template>

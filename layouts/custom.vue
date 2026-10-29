@@ -49,13 +49,22 @@ useHead({ bodyAttrs: { class: computed(() => isWorkspace.value ? 'md:overflow-hi
 // Header breadcrumb as a shell path: /curso/foo → ~/curso/foo
 const sectionPath = computed(() => decodeURIComponent(route.path.replace(/^\/|\/$/g, '')) || 'dashboard')
 
-// Barra inferior móvil: con 11 destinos hay scroll horizontal; el item activo se centra para que nunca quede fuera de vista.
-const navScroller = ref<HTMLElement | null>(null)
-function revealActive() {
-  nextTick(() => navScroller.value?.querySelector<HTMLElement>('.nav-active')?.scrollIntoView({ inline: 'center', block: 'nearest' }))
+// Barra inferior móvil: 4 destinos principales + "Más" (hoja con todos los grupos).
+const moreOpen = ref(false)
+const primaryTo = ['/dashboard', '/cursos', '/mi-progreso', '/skills']
+const allItems = navGroups.flatMap(g => g.items)
+const primaryItems = primaryTo.map(to => allItems.find(i => i.to === to)!)
+function isItemActive(item: { to: string, match?: (p: string) => boolean }) {
+  return item.match ? item.match(route.path) : route.path === item.to || route.path.startsWith(`${item.to}/`)
 }
-onMounted(revealActive)
-watch(() => route.path, revealActive)
+const moreActive = computed(() => !primaryItems.some(isItemActive) && allItems.some(isItemActive))
+watch(() => route.fullPath, () => (moreOpen.value = false))
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape')
+    moreOpen.value = false
+}
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-sm font-medium text-foreground-muted transition-colors duration-fast ease-out hover:bg-foreground/[0.05] hover:text-foreground'
 </script>
@@ -66,7 +75,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
     <nav
       v-if="!focusActive"
       aria-label="Principal"
-      class="shell-menu fixed inset-x-0 bottom-0 z-40 border-t border-subtle bg-surface-1 pb-[env(safe-area-inset-bottom)] md:static md:z-auto md:flex md:h-screen md:flex-col md:border-r md:border-t-0"
+      class="shell-menu hidden md:static md:z-auto md:flex md:h-screen md:flex-col md:border-r md:border-subtle"
     >
       <div class="hidden h-16 shrink-0 items-center justify-center border-b border-subtle md:flex lg:justify-start lg:px-6">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm" aria-label="Backtrack Academy — Inicio">
@@ -75,7 +84,7 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
         </NuxtLink>
       </div>
 
-      <div ref="navScroller" class="flex justify-around gap-1 overflow-x-auto overscroll-x-contain px-2 py-1.5 md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:overflow-x-visible md:px-3 md:py-5">
+      <div class="flex md:flex-1 md:flex-col md:justify-start md:gap-0 md:overflow-y-auto md:overflow-x-visible md:px-3 md:py-5">
         <ul
           v-for="group in navGroups"
           :key="group.label"
@@ -120,7 +129,58 @@ const navLinkBase = 'bt-focus group relative flex items-center rounded-md text-s
       </div>
     </nav>
 
-    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(68px+env(safe-area-inset-bottom))]'">
+    <!-- Barra inferior (mobile): destinos principales + hoja "Más" -->
+    <template v-if="!focusActive">
+      <div v-if="moreOpen" class="fixed inset-0 z-40 bg-black/60 md:hidden" aria-hidden="true" @click="moreOpen = false" />
+      <section
+        v-if="moreOpen"
+        id="more-sheet"
+        role="dialog"
+        aria-label="Todas las secciones"
+        class="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-50 max-h-[70dvh] overflow-y-auto rounded-t-xl border border-b-0 border-subtle bg-surface-1 p-4 md:hidden"
+      >
+        <div v-for="group in navGroups" :key="group.label" class="mb-4 last:mb-0">
+          <p class="mb-2 px-1 font-mono text-xs uppercase tracking-[0.16em] text-foreground-subtle"><span class="text-primary-text/80">//</span> {{ group.label }}</p>
+          <ul class="grid grid-cols-2 gap-2">
+            <li v-for="item in group.items" :key="item.to">
+              <NuxtLink
+                :to="item.to"
+                :class="[navLinkBase, isItemActive(item) ? 'nav-active' : '']"
+                class="h-11 gap-3 border border-subtle px-3"
+              >
+                <Icon :name="item.icon" class="nav-icon size-[18px] shrink-0" />
+                <span class="truncate">{{ item.label }}</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </section>
+      <nav aria-label="Principal" class="fixed inset-x-0 bottom-0 z-50 flex border-t border-subtle bg-surface-1 pb-[env(safe-area-inset-bottom)] md:hidden">
+        <NuxtLink
+          v-for="item in primaryItems"
+          :key="item.to"
+          :to="item.to"
+          :class="[navLinkBase, isItemActive(item) ? 'nav-active' : '']"
+          class="h-16 flex-1 flex-col justify-center gap-1 rounded-none"
+        >
+          <Icon :name="item.icon" class="nav-icon size-5 shrink-0" />
+          <span class="text-[11px]">{{ item.label }}</span>
+        </NuxtLink>
+        <button
+          type="button"
+          :class="[navLinkBase, moreOpen || moreActive ? 'nav-active' : '']"
+          class="h-16 flex-1 flex-col justify-center gap-1 rounded-none"
+          aria-controls="more-sheet"
+          :aria-expanded="moreOpen"
+          @click="moreOpen = !moreOpen"
+        >
+          <Icon :name="moreOpen ? 'lucide:x' : 'lucide:menu'" class="nav-icon size-5 shrink-0" />
+          <span class="text-[11px]">Más</span>
+        </button>
+      </nav>
+    </template>
+
+    <div class="shell-body flex min-w-0 flex-col md:h-screen md:pb-0" :class="focusActive ? 'pb-0' : 'pb-[calc(64px+env(safe-area-inset-bottom))]'">
       <!-- Topbar: mismo nivel que el contenido, separada sólo por un borde -->
       <header v-if="!focusActive" class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-subtle bg-background/85 px-3 backdrop-blur sm:gap-4 sm:px-6 lg:px-10">
         <NuxtLink to="/dashboard" class="bt-focus rounded-sm md:hidden" aria-label="Backtrack Academy — Inicio">

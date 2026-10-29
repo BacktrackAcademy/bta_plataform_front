@@ -176,6 +176,12 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Sin desplazamiento ni rebote lateral en móvil: la app solo hace scroll vertical. */
+  html,
+  body {
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
   body {
     @apply bg-background text-foreground;
   }

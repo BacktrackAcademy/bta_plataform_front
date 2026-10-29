@@ -22,15 +22,15 @@ function toggleBurgerMenu() {
   <nav class="relative h-20 z-[999999]">
     <div
       :class="{ ' -translate-y-[300%]': !hamburgerMenuIsOpen }"
-      class="fixed lg:hidden w-full bg-surface-1 top-20 left-0 z-90 overflow-y-scroll h-[calc(100vh-5rem)] duration-500"
+      class="fixed left-0 top-20 z-[90] h-[calc(100dvh-5rem)] w-full overflow-y-auto bg-surface-1 duration-500 lg:hidden"
     >
       <HamburgerMenu @close="closeBurgerMenu" />
     </div>
     <div
       class="fixed top-0 left-0 w-full bg-surface-1"
     >
-      <div class="container flex gap-6 items-center h-20">
-        <div @click.prevent="closeBurgerMenu">
+      <div class="container flex h-20 items-center gap-6 border-b border-subtle">
+        <div class="shrink-0" @click="closeBurgerMenu">
           <NuxtLink to="/">
             <CommonBrandLogo class="w-32" />
           </NuxtLink>

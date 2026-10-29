@@ -1,6 +1,7 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
-  const { data: session } = useAuth() // Obtener la sesión de Sidebase Auth
+  const { data: session, signOut } = useAuth() // Obtener la sesión de Sidebase Auth
+  let closingSession = false
 
   const api = $fetch.create({
     baseURL: config.public.apiBaseUrl,
@@ -24,7 +25,21 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
 
       if (response.status === 401) {
-        await nuxtApp.runWithContext(() => navigateTo('/login'))
+        // Token rechazado por la API (p. ej. se regeneró): si solo se redirige a /login, la sesión sigue activa,
+        // el middleware guest devuelve al dashboard y las peticiones con el token viejo se repiten en bucle.
+        // Se cierra la sesión una sola vez, aunque lleguen varios 401 en paralelo.
+        if (closingSession)
+          return
+        closingSession = true
+        try {
+          await nuxtApp.runWithContext(() => signOut({ callbackUrl: '/login' }))
+        }
+        catch {
+          await nuxtApp.runWithContext(() => navigateTo('/login'))
+        }
+        finally {
+          closingSession = false
+        }
       }
     },
   })

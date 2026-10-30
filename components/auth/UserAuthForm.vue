@@ -92,7 +92,8 @@ const { withRedirect } = usePostLoginRedirect()
     </div>
 
     <div class="grid grid-cols-2 gap-3">
-      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('google')">
+      <!-- Oculto hasta configurar GOOGLE_CLIENT_ID en producción -->
+      <button v-if="false" type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('google')">
         <Icon name="mdi:google" class="size-5 text-[#EA4335]" />
         Google
       </button>

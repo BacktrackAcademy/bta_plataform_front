@@ -89,6 +89,8 @@ export default NuxtAuthHandler({
     GithubProvider.default({
       clientId: env('GITHUB_CLIENT_ID', 'NUXT_PUBLIC_GITHUB_ID'),
       clientSecret: env('GITHUB_CLIENT_SECRET', 'NUXT_PUBLIC_GITHUB_SECRET'),
+      // GitHub envía el parámetro `iss` (RFC 9207); sin issuer, openid-client falla con "issuer must be configured".
+      issuer: 'https://github.com/login/oauth',
       authorization: { params: { scope: 'read:user user:email' } },
     }),
     // @ts-expect-error You need to use .default here for it to work during SSR

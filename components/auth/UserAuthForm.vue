@@ -105,7 +105,8 @@ const { withRedirect } = usePostLoginRedirect()
         <Icon name="mdi:github" class="size-5" />
         GitHub
       </button>
-      <button type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('linkedin')">
+      <!-- Oculto hasta que el login con LinkedIn funcione en producción -->
+      <button v-if="false" type="button" :class="socialClass" :disabled="loading" @click="handleSocialLogin('linkedin')">
         <Icon name="mdi:linkedin" class="size-5 text-[#3B9AE8]" />
         LinkedIn
       </button>

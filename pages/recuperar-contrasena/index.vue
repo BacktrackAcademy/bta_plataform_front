@@ -15,28 +15,48 @@ definePageMeta({
   layout: 'auth',
 })
 
+const config = useRuntimeConfig()
 const email = ref('')
 const loading = ref(false)
+const sent = ref(false)
 const error = ref<string | null>(null)
 const errorCode = ref<string | null>(null)
 
-// TODO: the API does not expose this endpoint yet. Wire the request here once it exists.
 async function handleSubmit() {
   if (loading.value)
     return
   loading.value = true
   error.value = null
   errorCode.value = null
-  await Promise.resolve()
-  errorCode.value = 'SRV_501'
-  error.value = 'Esta función aún no está disponible. Intenta más tarde o contacta a soporte.'
-  loading.value = false
+  try {
+    await $fetch(`${config.public.apiBaseUrl}/users/password`, {
+      method: 'POST',
+      body: { email: email.value.trim() },
+    })
+    sent.value = true
+  }
+  catch {
+    errorCode.value = 'SRV_500'
+    error.value = 'No pudimos enviar el enlace en este momento. Intenta de nuevo más tarde.'
+  }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
 <template>
   <AuthShell title="Recupera tu acceso" subtitle="Te enviaremos un enlace para restablecer tu contraseña." variant="recover">
-    <form class="flex flex-col gap-7" @submit.prevent="handleSubmit">
+    <div v-if="sent" class="flex flex-col gap-7">
+      <AuthAlert variant="success" code="MAIL_SENT" message="Si el correo está registrado, te enviamos un enlace para restablecer tu contraseña. Revisa también tu carpeta de spam." />
+      <p class="text-center font-mono text-[13px] text-foreground-muted">
+        <NuxtLink to="/login" :class="[linkClass, 'font-medium text-foreground hover:text-primary-text']">
+          Volver a iniciar sesión
+        </NuxtLink>
+      </p>
+    </div>
+
+    <form v-else class="flex flex-col gap-7" @submit.prevent="handleSubmit">
       <AuthAlert v-if="error" :code="errorCode" :message="error" />
 
       <AuthField
